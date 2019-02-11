@@ -6,9 +6,8 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email           = models.EmailField(_('email address'), unique=True)
-    first_name      = models.CharField(max_length=60, blank=False, null=False)
-    last_name       = models.CharField(max_length=60, blank=False, null=False)
-    organization    = models.CharField(max_length=60, blank=True, null=True)
+    first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
+    last_name       = models.CharField(_('last name'), max_length=60, blank=False, null=False)
     date_joined     = models.DateTimeField(default=timezone.now)
     is_active       = models.BooleanField(default=True)
     is_staff        = models.BooleanField(default=False)
