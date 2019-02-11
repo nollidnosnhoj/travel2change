@@ -35,7 +35,7 @@ class LoginView(FormView):
 class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/signup.html'
-    success_url = '/login/'
+    success_url = '/account/login/'
 
 def logout_view(request):
     logout(request)

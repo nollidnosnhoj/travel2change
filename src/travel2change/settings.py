@@ -1,4 +1,5 @@
 import os  # isort:skip
+from django.utils.translation import gettext_lazy as _
 gettext = lambda s: s
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 """
@@ -58,8 +59,27 @@ INSTALLED_APPS = [
     'djangocms_snippet',
     'djangocms_googlemap',
     'djangocms_video',
-    'travel2change'
+    'djangocms_icon',
+    'djangocms_bootstrap4',
+    'djangocms_bootstrap4.contrib.bootstrap4_alerts',
+    'djangocms_bootstrap4.contrib.bootstrap4_badge',
+    'djangocms_bootstrap4.contrib.bootstrap4_card',
+    'djangocms_bootstrap4.contrib.bootstrap4_carousel',
+    'djangocms_bootstrap4.contrib.bootstrap4_collapse',
+    'djangocms_bootstrap4.contrib.bootstrap4_content',
+    'djangocms_bootstrap4.contrib.bootstrap4_grid',
+    'djangocms_bootstrap4.contrib.bootstrap4_jumbotron',
+    'djangocms_bootstrap4.contrib.bootstrap4_link',
+    'djangocms_bootstrap4.contrib.bootstrap4_listgroup',
+    'djangocms_bootstrap4.contrib.bootstrap4_media',
+    'djangocms_bootstrap4.contrib.bootstrap4_picture',
+    'djangocms_bootstrap4.contrib.bootstrap4_tabs',
+    'djangocms_bootstrap4.contrib.bootstrap4_utilities',
+    'travel2change',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'cms.middleware.utils.ApphookReloadMiddleware',
@@ -212,3 +232,54 @@ THUMBNAIL_PROCESSORS = (
 )
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Django CMS Bootstrap Settings
+
+DJANGOCMS_BOOTSTRAP4_TAG_CHOICES = ['div', 'section', 'article', 'header', 'footer', 'aside']
+
+DJANGOCMS_BOOTSTRAP4_CAROUSEL_TEMPLATES = (
+    ('default', _('Default')),
+)
+
+DJANGOCMS_BOOTSTRAP4_GRID_SIZE = 12
+
+DJANGOCMS_BOOTSTRAP4_GRID_CONTAINERS = (
+    ('container', _('Container')),
+    ('container-fluid', _('Fluid container')),
+)
+DJANGOCMS_BOOTSTRAP4_GRID_COLUMN_CHOICES = (
+    ('col', _('Column')),
+    ('w-100', _('Break')),
+    ('', _('Empty'))
+)
+
+DJANGOCMS_BOOTSTRAP4_USE_ICONS = True
+
+DJANGOCMS_BOOTSTRAP4_TAB_TEMPLATES = (
+    ('default', _('Default')),
+)
+
+DJANGOCMS_BOOTSTRAP4_SPACER_SIZES = (
+    ('0', '* 0'),
+    ('1', '* .25'),
+    ('2', '* .5'),
+    ('3', '* 1'),
+    ('4', '* 1.5'),
+    ('5', '* 3'),
+)
+
+DJANGOCMS_BOOTSTRAP4_CAROUSEL_ASPECT_RATIOS = (
+    (16, 9),
+)
+
+DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
+    ('primary', _('Primary')),
+    ('secondary', _('Secondary')),
+    ('success', _('Success')),
+    ('danger', _('Danger')),
+    ('warning', _('Warning')),
+    ('info', _('Info')),
+    ('light', _('Light')),
+    ('dark', _('Dark')),
+    ('custom', _('Custom')),
+)

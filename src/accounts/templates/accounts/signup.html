@@ -1,23 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
-    {% if user.is_authenticated %}
-        You are currently logged in.
-    {% else %}
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" />
-        </form>
-    {% endif %}
-</body>
-
-</html>
+{% extends "base.html" %}
+{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %} Register {% endblock %}
+{% addtoblock "css" %}
+    Hello
+{% endaddtoblock %}
+{% block content %}
+{% if user.is_authenticated %}
+    You are currently logged in.
+{% else %}
+<div class="row">
+    <div class="col-mid-4 col-sm-4 col-xs-12"></div>
+        <div class="col-mid-4 col-sm-4 col-xs-12">
+            <!--form start-->
+            <form class="form-container authform" method="post">
+                {% csrf_token %}
+                {{form|crispy}}
+                <button type="submit" class="btn btn-success btn-block">
+                    Submit
+                </button>
+            </form>
+            <!--form end-->
+        </div>
+        <div class="col-mid-4 col-sm-4 col-xs-12"></div>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}
