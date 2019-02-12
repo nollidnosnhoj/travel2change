@@ -1,0 +1,13 @@
+.t2c-navbar {
+    border-bottom: 0.094em solid #000;
+}
+
+.fullvh {
+    width: 100vh; height: 100vh;
+}
+.fullvh-width {
+    width: 100vh;
+}
+.fullvh-height {
+    height: 100vh;
+}

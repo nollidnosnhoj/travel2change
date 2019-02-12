@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %} Register {% endblock %}
+{% block content %}
+{% addtoblock "css" %}
+    <link 
+        rel="stylesheet" 
+        href="{% static 'css/authform.css' %}"
+    >
+{% endaddtoblock %}
+{% if user.is_authenticated %}
+    You are currently logged in.
+{% else %}
+    <div class="auth-container mt-5">
+        <h1>Register to travel2change</h1>
+        {% crispy form %}
+    </div>
+{% endif %}
+{% endblock content %}

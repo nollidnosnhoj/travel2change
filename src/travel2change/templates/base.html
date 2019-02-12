@@ -1,41 +1,90 @@
-{% load cms_tags menu_tags sekizai_tags %}
+{% load i18n cms_tags menu_tags sekizai_tags cache staticfiles %}
 <!doctype html>
 <html>
     <head>
-        <title>{% block title %}This is my new project home page{% endblock title %}</title>
+        <title>
+            {% block title %}
+                This is my new project home page
+            {% endblock title %}
+        </title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <style type="text/css">
-            .nav {
-                padding-left: 0;
-            }
-            .nav li {
-                display: inline;
-                list-style-type: none;
-                padding-right: 20px;
-            }
-            .container {
-                width: 940px;
-                margin: 0 auto
-            }
-            .content {
-                float: left;
-                width: 80%;
-            }
-            .sidebar {
-                float: left;
-                width: 20%;
-            }
-        </style>
         {% render_block "css" %}
+        {% addtoblock "css" %}
+        <link 
+            rel="stylesheet" 
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
+            integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+            crossorigin="anonymous"
+        >
+        <link 
+            rel="stylesheet" 
+            href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" 
+            integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" 
+            crossorigin="anonymous"
+        >
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        {% endaddtoblock %}
     </head>
     <body>
         {% cms_toolbar %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light t2c-navbar">
+            <div class="container">
+                <a class="navbar-brand" href="/">travel2change</a>
+                <button
+                    class="navbar-toggler navbar-toggler-right"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav mr-auto">
+                        {% show_menu 0 100 100 100 %}
+                    </ul>
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+                            <span class="navbar-text">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} </span>
+                            <a href="{% page_url 'account' %}logout/?next={{ request.path }}" class="nav-link ml-1">{% trans "Logout" %}</a>
+                        {% else %}
+                            <a class="nav-link ml-1" href="{% page_url 'account' %}login/">
+                                {% trans "Login" %}
+                            </a>
+                            <a class="nav-link ml-1" href="{% page_url 'account' %}register/">
+                                {% trans "Register" %}
+                            </a>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% block jumbo %}
+        {% endblock jumbo %}
         <div class="container">
-            <ul class="nav">
-                {% show_menu 0 100 100 100 %}
-            </ul>
-            {% block content %}{% endblock content %}
+            {% block content %}
+            {% endblock content %}
         </div>
         {% render_block "js" %}
+        {% addtoblock "js" %}
+            <script 
+                src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+                crossorigin="anonymous"
+            ></script>
+            <script 
+                src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" 
+                integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" 
+                crossorigin="anonymous"
+            ></script>
+            <script 
+                src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" 
+                integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" 
+                crossorigin="anonymous"
+            ></script>
+        {% endaddtoblock %}
     </body>
 </html>
