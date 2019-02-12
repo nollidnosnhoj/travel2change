@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+
+{% block title %}{% page_attribute "page_title" %}{% endblock title %}
+
+{% block jumbo %}
+<div class="jumbotron jumbotron-fluid fullvh-height">
+    <div class="container">
+        <h1 class="display-4">Fluid jumbotron</h1>
+        <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+    </div>
+</div>
+{% endblock jumbo %}
+
+{% block content %}
+
+{% placeholder "content" %}
+{% endblock content %}
