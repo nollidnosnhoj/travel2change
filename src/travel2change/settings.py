@@ -215,6 +215,7 @@ CMS_LANGUAGES = {
 
 CMS_TEMPLATES = (
     ## Customize this
+    ('home.html', 'Homepage'),
     ('fullwidth.html', 'Fullwidth'),
     ('sidebar_left.html', 'Sidebar Left'),
     ('sidebar_right.html', 'Sidebar Right')
