@@ -1,0 +1,16 @@
+
+.auth-container h1 {
+    text-align: center !important;
+}
+
+.authform {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px;
+    margin: auto;
+}
+
+/* hack */
+.input-group ~ .invalid-feedback{ 
+    display: block; 
+}
