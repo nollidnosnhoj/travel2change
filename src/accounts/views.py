@@ -16,6 +16,7 @@ class LoginView(FormView):
     template_name = 'accounts/login.html'
     login_url = "/"
 
+    # If form is valid (no validation errors)
     def form_valid(self, form):
         request = self.request
         next_get = request.GET.get('next')
@@ -23,7 +24,11 @@ class LoginView(FormView):
         redirect_path = next_get or next_post or None
         email = form.cleaned_data.get('email')
         password = form.cleaned_data.get('password')
+        if not self.cleaned_data.get('remember_me'):
+            request.session.set_expiry(0)
+        # authenticate user
         user = authenticate(request, username=email, password=password)
+        # if user exists
         if user is not None:
             login(request, user)
             if is_safe_url(redirect_path, request.get_host()):
