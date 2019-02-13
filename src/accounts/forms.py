@@ -1,11 +1,19 @@
 from django import forms
 from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from crispy_forms.layout import (
+    Layout, Submit, Row, Column, HTML
+)
+from django.contrib.auth.forms import (
+    UserCreationForm, UserChangeForm
+)
 from django.contrib.auth import (
     authenticate, get_user_model
 )
+from django.contrib.auth.password_validation import (
+    password_validators_help_texts, validate_password
+)
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -23,11 +31,16 @@ class CustomUserChangeForm(UserChangeForm):
 
 class LoginForm(forms.Form):
 
+    email       = forms.EmailField()
+    password    = forms.CharField(widget=forms.PasswordInput)
+    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['email'].label = False
+        self.fields['password'].label = False
         self.helper = FormHelper()
         self.helper.form_class = 'authform'
-        self.helper.form_show_labels = False
         self.helper.layout = Layout(
             PrependedText(
                 'email', 
@@ -39,11 +52,27 @@ class LoginForm(forms.Form):
                 '<i class="fa fa-key"></i>', 
                 placeholder='Password',
             ),
+            Row(
+                Column(
+                    'remember_me',
+                    css_class="col-md-6 col-xs-6 mb-0",
+                ),
+                Column(
+                    HTML("<a class='form-group forgot-pass' href='#'>Forgot Password</a>"),
+                    css_class="col-md-6 col-xs-6 mb-0",
+                ),
+                css_class="form-row",
+            ),
             Submit('submit', 'Login', css_class='btn-success btn-lg btn-block')
         )
-    
-    email       = forms.EmailField()
-    password    = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self, *args, **kwargs):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+        if email and password:
+            user = authenticate(username=email, password=password)
+            if not user:
+                raise forms.ValidationError(_("Email or Password is Incorrect."))
 
 class RegisterForm(forms.ModelForm):
 
@@ -56,22 +85,22 @@ class RegisterForm(forms.ModelForm):
             PrependedText(
                 'email', 
                 '<i class="fa fa-envelope"></i>', 
-                placeholder='Email Address'
+                placeholder='Email Address (required)'
             ),
             PrependedText(
                 'first_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='First Name'
+                placeholder='First Name (required)'
             ),
             PrependedText(
                 'last_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='Last Name'
+                placeholder='Last Name (required)'
             ),
             PrependedText(
                 'password',
                 '<i class="fa fa-key"></i>', 
-                placeholder='Password',
+                placeholder='Password (required)',
             ),
             Submit('submit', 'Register', css_class='btn-success btn-lg btn-block')
         )
@@ -81,6 +110,12 @@ class RegisterForm(forms.ModelForm):
 
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if validate_password(password, User) is not None:
+            raise forms.ValidationError(_(password_validators_help_texts()))
+        return password
 
     def save(self, commit=True):
         user = super().save(commit=False)

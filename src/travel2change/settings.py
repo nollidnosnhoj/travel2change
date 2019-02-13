@@ -284,3 +284,14 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('dark', _('Dark')),
     ('custom', _('Custom')),
 )
+
+CRISPY_CLASS_CONVERTERS = {
+    'textinput': "form-control cst__radius",
+    'urlinput': "form-control cst__radius",
+    'numberinput': "form-control cst__radius",
+    'emailinput': "form-control cst__radius",
+    'dateinput': "form-control cst__radius",
+    'textarea': "form-control cst__radius",
+    'passwordinput': "form-control cst__radius",
+    'select': "form-control cst__radius",
+}

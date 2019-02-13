@@ -9,5 +9,5 @@ app_name = "accounts"
 urlpatterns = [
     url(r'^login/', LoginView.as_view()),
     url(r'^logout/', logout_view),
-    url(r'^register/', RegisterView.as_view()),
+    url(r'^register/', RegisterView.as_view(), name='register'),
 ]
