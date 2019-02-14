@@ -41,7 +41,7 @@ class LoginForm(forms.Form):
         self.fields['email'].label = False
         self.fields['password'].label = False
         self.helper = FormHelper()
-        self.helper.form_class = 'authform'
+        self.helper.form_class = "mb-3"
         self.helper.layout = Layout(
             PrependedText(
                 'email', 
@@ -53,17 +53,7 @@ class LoginForm(forms.Form):
                 '<i class="fa fa-key"></i>', 
                 placeholder='Password',
             ),
-            Row(
-                Column(
-                    'remember_me',
-                    css_class="col-md-6 col-xs-6 mb-0",
-                ),
-                Column(
-                    HTML("<a class='form-group forgot-pass' href='#'>Forgot Password</a>"),
-                    css_class="col-md-6 col-xs-6 mb-0",
-                ),
-                css_class="form-row",
-            ),
+            'remember_me',
             Submit('submit', 'Login', css_class='btn-success btn-lg btn-block')
         )
 
@@ -89,28 +79,27 @@ class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_class = 'authform'
         self.helper.form_show_labels = False
         self.helper.layout = Layout(
             PrependedText(
                 'email', 
                 '<i class="fa fa-envelope"></i>', 
-                placeholder='Email Address (required)'
+                placeholder='Email Address*'
             ),
             PrependedText(
                 'first_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='First Name (required)'
+                placeholder='First Name*'
             ),
             PrependedText(
                 'last_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='Last Name (required)'
+                placeholder='Last Name*'
             ),
             PrependedText(
                 'password',
                 '<i class="fa fa-key"></i>', 
-                placeholder='Password (required)',
+                placeholder='Password*',
             ),
             Submit('submit', 'Register', css_class='btn-success btn-lg btn-block')
         )

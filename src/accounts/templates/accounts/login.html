@@ -10,13 +10,14 @@
     {% if user.is_authenticated %}
         <span>You are currently logged in.</span>
     {% else %}
-        <h1>Login to travel2change</h1>
-        {% crispy form %}
-        <hr>
-        <div class="text-center">
-            <p>
-                Don't have an account? <a href="{% url 'accounts:register' %}'">Click here to register!</a>
-            </p>
+        <div class="authform">
+            <h1>Login to travel2change</h1>
+            {% crispy form %}
+            <div class="text-center">
+                <p><a href="#"><small>Forgot Password?</small></a></p>
+                <hr>
+                <p>Don't have an account? <a href="{% url 'accounts:register' %}'">Click here to register!</a></p>
+            </div>
         </div>
     {% endif %}
 </div>
