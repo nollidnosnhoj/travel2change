@@ -48,13 +48,13 @@
                     <div class="navbar-nav">
                         {% if user.is_authenticated %}
                             <span class="navbar-text">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} </span>
-                            <a href="{% url 'accounts:logout' %}/?next={{ request.path }}" class="nav-link ml-1">{% trans "Logout" %}</a>
+                            <a href="{% url 'accounts:logout' %}/?next={{ request.path }}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
                         {% else %}
                             <a class="nav-link ml-1" href="{% url 'accounts:login' %}">
-                                {% trans "Login" %}
+                                <strong>{% trans "Login" %}</strong>
                             </a>
-                            <a class="nav-link ml-1" href="{% url 'accounts:register' %}">
-                                {% trans "Register" %}
+                            <a class="nav-link ml-1" href="{% url 'accounts:register' %}">          
+                                <strong>{% trans "Register" %}</strong>
                             </a>
                             </form>
                         {% endif %}
@@ -64,10 +64,8 @@
         </nav>
         {% block jumbo %}
         {% endblock jumbo %}
-        <div class="container">
-            {% block content %}
-            {% endblock content %}
-        </div>
+        {% block content %}
+        {% endblock content %}
         {% render_block "js" %}
         {% addtoblock "js" %}
             <script 
