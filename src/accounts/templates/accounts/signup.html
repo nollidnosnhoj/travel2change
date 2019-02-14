@@ -1,28 +1,23 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags sekizai_tags cache staticfiles %}
-{% block title %} Register {% endblock %}
-{% block content %}
-{% addtoblock "css" %}
-    <link 
-        rel="stylesheet" 
-        href="{% static 'css/authform.css' %}"
-    >
-{% endaddtoblock %}
+{% extends "auth.html" %}
 
-    <div class="authform mt-5">
-        {% if user.is_authenticated %}
-            <span>You are currently logged in.</span>
-        {% else %}
-            <h1>Register to travel2change</h1>
-            <div class="mb-2">
-                <small><em>*Required field</em></small>
-            </div>
-            {% crispy form %}
-            <div class="text-center">
-                <hr>
-                <p>Have an account? <a href="{% url 'accounts:login' %}">Login here!</a></p>
-            </div>
-        {% endif %}
-    </div>
+{% load crispy_forms_tags %}
 
-{% endblock content %}
+{% block title %} Login {% endblock %}
+
+{% block authblock %}
+
+    {% if user.is_authenticated %}
+        <span>You are currently logged in.</span>
+    {% else %}
+        <h1>Register to travel2change</h1>
+        <div class="mb-2">
+            <small><em>All fields are required.</em></small>
+        </div>
+        {% crispy form %}
+        <div class="text-center">
+            <hr>
+            <p>Have an account? <a href="{% url 'accounts:login' %}">Login here!</a></p>
+        </div>
+    {% endif %}
+
+{% endblock authblock %}
