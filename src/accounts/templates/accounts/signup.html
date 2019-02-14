@@ -8,12 +8,14 @@
         href="{% static 'css/authform.css' %}"
     >
 {% endaddtoblock %}
-{% if user.is_authenticated %}
-    You are currently logged in.
-{% else %}
+
     <div class="auth-container mt-5">
-        <h1>Register to travel2change</h1>
-        {% crispy form %}
+        {% if user.is_authenticated %}
+            You are currently logged in.
+        {% else %}
+            <h1>Register to travel2change</h1>
+            {% crispy form %}
+        {% endif %}
     </div>
-{% endif %}
+
 {% endblock content %}

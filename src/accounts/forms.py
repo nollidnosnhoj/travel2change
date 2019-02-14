@@ -1,9 +1,4 @@
 from django import forms
-from crispy_forms.bootstrap import PrependedText
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (
-    Layout, Submit, Row, Column, HTML
-)
 from django.contrib.auth.forms import (
     UserCreationForm, UserChangeForm
 )
@@ -14,8 +9,13 @@ from django.contrib.auth.password_validation import (
     password_validators_help_texts, validate_password
 )
 from django.utils.translation import gettext_lazy as _
+from crispy_forms.bootstrap import PrependedText
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import (
+    Layout, Submit, Row, Column, HTML
+)
 
-User = get_user_model()
+User = get_user_model() 
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -35,6 +35,7 @@ class LoginForm(forms.Form):
     password    = forms.CharField(widget=forms.PasswordInput)
     remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput())
 
+    # Form Builder
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].label = False
@@ -66,6 +67,7 @@ class LoginForm(forms.Form):
             Submit('submit', 'Login', css_class='btn-success btn-lg btn-block')
         )
 
+    # Authentication Validation
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
@@ -76,6 +78,14 @@ class LoginForm(forms.Form):
 
 class RegisterForm(forms.ModelForm):
 
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'password')
+
+    # Form Builder
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -104,19 +114,15 @@ class RegisterForm(forms.ModelForm):
             ),
             Submit('submit', 'Register', css_class='btn-success btn-lg btn-block')
         )
-    class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 'password')
 
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
-
+    # Password Validation Check
     def clean_password(self):
         password = self.cleaned_data.get('password')
         if validate_password(password, User) is not None:
             raise forms.ValidationError(_(password_validators_help_texts()))
         return password
 
+    # Save User Model to Database
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
