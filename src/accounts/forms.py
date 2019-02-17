@@ -6,7 +6,7 @@ from django.contrib.auth import (
     authenticate, get_user_model
 )
 from django.contrib.auth.password_validation import (
-    password_validators_help_texts, validate_password
+    password_validators_help_text_html, validate_password
 )
 from django.utils.translation import gettext_lazy as _
 from crispy_forms.bootstrap import PrependedText
@@ -69,7 +69,10 @@ class LoginForm(forms.Form):
 class RegisterForm(forms.ModelForm):
 
     email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=True,
+    )
 
     class Meta:
         model = User
@@ -84,22 +87,22 @@ class RegisterForm(forms.ModelForm):
             PrependedText(
                 'email', 
                 '<i class="fa fa-envelope"></i>', 
-                placeholder='Email Address*'
+                placeholder='Email Address'
             ),
             PrependedText(
                 'first_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='First Name*'
+                placeholder='First Name'
             ),
             PrependedText(
                 'last_name',
                 '<i class="fa fa-user"></i>', 
-                placeholder='Last Name*'
+                placeholder='Last Name'
             ),
             PrependedText(
                 'password',
                 '<i class="fa fa-key"></i>', 
-                placeholder='Password*',
+                placeholder='Password',
             ),
             Submit('submit', 'Register', css_class='btn-success btn-lg btn-block')
         )
@@ -108,7 +111,7 @@ class RegisterForm(forms.ModelForm):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         if validate_password(password, User) is not None:
-            raise forms.ValidationError(_(password_validators_help_texts()))
+            raise forms.ValidationError(_(password_validators_help_text_html()))
         return password
 
     # Save User Model to Database
