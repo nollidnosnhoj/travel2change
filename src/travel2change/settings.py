@@ -193,7 +193,8 @@ CMS_LANGUAGES = {
 CMS_TEMPLATES = (
     ## Customize this
     ('fullwidth.html', 'Fullwidth'),
-    ('signup.html', 'Sign Up')
+    ('sidebar_left.html', 'Sidebar Left'),
+    ('sidebar_right.html', 'Sidebar Right')
 )
 
 CMS_PERMISSION = True
