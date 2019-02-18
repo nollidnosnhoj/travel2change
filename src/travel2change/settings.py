@@ -92,6 +92,8 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
@@ -230,8 +232,7 @@ CMS_TEMPLATES = (
     ## Customize this
     ('home.html', 'Homepage'),
     ('fullwidth.html', 'Fullwidth'),
-    ('sidebar_left.html', 'Sidebar Left'),
-    ('sidebar_right.html', 'Sidebar Right')
+    ('signup.html', 'Sign Up')
 )
 
 CMS_PERMISSION = True
@@ -244,8 +245,6 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters'
 )
-
-AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Django CMS Bootstrap Settings
 
