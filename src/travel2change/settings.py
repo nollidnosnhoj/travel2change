@@ -34,7 +34,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django CMS Admin Style
     'djangocms_admin_style',
+
+    # Django Core Apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -43,7 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+
+    # travel2change Apps
     'accounts',
+
+    # Django CMS Apps
     'cms',
     'menus',
     'sekizai',
@@ -60,6 +67,8 @@ INSTALLED_APPS = [
     'djangocms_googlemap',
     'djangocms_video',
     'djangocms_icon',
+
+    # Django CMS Bootstrap Apps
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
     'djangocms_bootstrap4.contrib.bootstrap4_badge',
@@ -75,7 +84,11 @@ INSTALLED_APPS = [
     'djangocms_bootstrap4.contrib.bootstrap4_picture',
     'djangocms_bootstrap4.contrib.bootstrap4_tabs',
     'djangocms_bootstrap4.contrib.bootstrap4_utilities',
+
+    # Project App
     'travel2change',
+
+    # Third Party Apps
     'crispy_forms',
 ]
 
