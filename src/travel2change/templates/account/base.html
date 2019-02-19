@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load sekizai_tags cache staticfiles %}
+{% block content %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endaddtoblock %}
+
+<div class="authform mt-5">
+
+    {% block authblock %}
+
+    {% endblock authblock %}
+
+</div>
+
+{% endblock content %}

@@ -90,6 +90,9 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'crispy_forms',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -97,7 +100,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -201,7 +207,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
-                'cms.context_processors.cms_settings'
+                'cms.context_processors.cms_settings',
+                'django.template.context_processors.request',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -215,6 +222,12 @@ LANGUAGES = (
     ## Customize this
     ('en', gettext('en')),
 )
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
 
 CMS_LANGUAGES = {
     ## Customize this

@@ -17,9 +17,9 @@
             <button type="submit" class="btn-success btn-lg btn-block">Login</button>
         </form>
         <div class="text-center">
-            <p><a href="{% url 'accounts:password_reset' %}"><small>Forgot Password?</small></a></p>
+            <p><a href="{% url 'account_reset_password' %}"><small>Forgot Password?</small></a></p>
             <hr>
-            <p>Don't have an account? <a href="{% url 'accounts:register' %}'">Click here to register!</a></p>
+            <p>Don't have an account? <a href="{% url 'account_signup' %}'">Click here to register!</a></p>
         </div>
     {% endif %}
 

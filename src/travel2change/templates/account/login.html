@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Sign In" %}{% endblock %}
+
+{% block authblock %}
+<h1>{% trans "Sign in" %}</h1>
+<form class="mb-3" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button type="submit" class="btn-success btn-lg btn-block">Login</button>
+</form>
+<div class="text-center">
+    <p><a href="{% url 'account_reset_password' %}"><small>{% trans 'Forgot Password?' %}</small></a></p>
+    <hr>
+    <p>Don't have an account? <a href="{% url 'account_signup' %}'">{% trans 'Sign up!' %}</a></p>
+</div>
+
+{% endblock authblock %}
