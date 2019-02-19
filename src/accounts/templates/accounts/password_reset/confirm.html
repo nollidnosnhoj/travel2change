@@ -1,0 +1,18 @@
+{% extends "auth.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Change Password {% endblock %}
+
+{% block authblock %}
+
+{% if user.is_authenticated %}
+    <p>You can change your password in the Edit Profile</p>
+{% else %}
+  <h1>Change password</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn-success btn-lg btn-block" type="submit">Change Password</button>
+  </form>
+{% endif %}
+
+{% endblock authblock %}

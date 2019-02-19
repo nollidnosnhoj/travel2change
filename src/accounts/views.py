@@ -7,12 +7,13 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
 from django.views.generic import CreateView, FormView
-from .forms import LoginForm, RegisterForm
+from django.urls import reverse_lazy
+from .forms import LoginForm, RegisterForm, CustomPasswordResetForm
 
 class LoginView(FormView):
     form_class = LoginForm
     success_url = '/'
-    template_name = 'login.html'
+    template_name = 'accounts/login.html'
     login_url = "/"
 
     # If form is valid (no validation errors)
@@ -58,8 +59,10 @@ def logout_view(request):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'accounts/password_reset/form.html'
+    form_class = CustomPasswordResetForm
     email_template_name = 'accounts/password_reset/email.html'
-    subject_template_name = 'accounts/password_reset/subject.html'
+    subject_template_name = 'accounts/password_reset/subject.txt'
+    success_url = reverse_lazy("accounts:password_reset_done")
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'accounts/password_reset/done.html'

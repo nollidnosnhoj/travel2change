@@ -1,0 +1,13 @@
+{% extends 'auth.html' %}
+
+{% block title %} Password Reset Completed {% endblock %}
+
+{% block authblock %}
+
+<div class="alert alert-success">
+  <p>
+    Your password has been set. You may go ahead and <a href="{% url 'accounts:login' %}">sign in</a> now.
+  </p>
+</div>
+
+{% endblock authblock %}

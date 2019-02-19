@@ -1,9 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import (
-    UserCreationForm, UserChangeForm
-)
 from django.contrib.auth import (
     authenticate, get_user_model
+)
+from django.contrib.auth.forms import (
+    UserCreationForm, UserChangeForm,
+    PasswordResetForm
 )
 from django.contrib.auth.password_validation import (
     password_validators_help_text_html, validate_password
@@ -35,35 +36,16 @@ class LoginForm(forms.Form):
     password    = forms.CharField(widget=forms.PasswordInput)
     remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput())
 
-    # Form Builder
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['email'].label = False
-        self.fields['password'].label = False
-        self.helper = FormHelper()
-        self.helper.form_class = "mb-3"
-        self.helper.layout = Layout(
-            PrependedText(
-                'email', 
-                '<i class="fa fa-envelope"></i>', 
-                placeholder='Email Address'
-            ),
-            PrependedText(
-                'password',
-                '<i class="fa fa-key"></i>', 
-                placeholder='Password',
-            ),
-            'remember_me',
-            Submit('submit', 'Login', css_class='btn-success btn-lg btn-block')
-        )
-
     # Authentication Validation
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         if email and password:
             user = authenticate(username=email, password=password)
-            if not user:
+            if user is not None:
+                if not user.is_active:
+                    raise forms.ValidationError(_("This user is currently inactive."))
+            else:
                 raise forms.ValidationError(_("Email or Password is Incorrect."))
 
 class RegisterForm(forms.ModelForm):
@@ -77,35 +59,6 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'password')
-
-    # Form Builder
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False
-        self.helper.layout = Layout(
-            PrependedText(
-                'email', 
-                '<i class="fa fa-envelope"></i>', 
-                placeholder='Email Address'
-            ),
-            PrependedText(
-                'first_name',
-                '<i class="fa fa-user"></i>', 
-                placeholder='First Name'
-            ),
-            PrependedText(
-                'last_name',
-                '<i class="fa fa-user"></i>', 
-                placeholder='Last Name'
-            ),
-            PrependedText(
-                'password',
-                '<i class="fa fa-key"></i>', 
-                placeholder='Password',
-            ),
-            Submit('submit', 'Register', css_class='btn-success btn-lg btn-block')
-        )
 
     # Password Validation Check
     def clean_password(self):
@@ -121,3 +74,18 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        self.helper.layout = Layout(
+            PrependedText(
+                'email', 
+                '<i class="fa fa-envelope"></i>', 
+                placeholder='Email Address'
+            ),
+            Submit('submit', 'Reset Password', css_class='btn-success btn-lg btn-block')
+        )
