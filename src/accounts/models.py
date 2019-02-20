@@ -4,6 +4,10 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 
+'''
+TODO: Create a Profile Model that has a one-to-one relationship with the User Model
+'''
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email           = models.EmailField(_('email address'), unique=True)
     first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
@@ -29,6 +33,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def __str__(self):
+        if self.first_name and self.last_name:
+            return self.get_full_name()
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -36,3 +42,5 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+

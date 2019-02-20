@@ -1,4 +1,8 @@
 {
     "python.pythonPath": "env\\Scripts\\python.exe",
-    "editor.fontSize": 14
+    "files.associations": {
+        "requirements.txt": "python",
+        "*.html": "django-html",
+        "*.txt": "django-html",
+    },
 }
