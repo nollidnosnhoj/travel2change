@@ -48,12 +48,12 @@
                     <div class="navbar-nav">
                         {% if user.is_authenticated %}
                             <span class="navbar-text">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} </span>
-                            <a href="{% url 'accounts:logout' %}/?next={{ request.path }}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
+                            <a href="{% url 'account_logout' %}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
                         {% else %}
-                            <a class="nav-link ml-1" href="{% url 'accounts:login' %}">
+                            <a class="nav-link ml-1" href="{% url 'account_login' %}">
                                 <strong>{% trans "Login" %}</strong>
                             </a>
-                            <a class="nav-link ml-1" href="{% url 'accounts:register' %}">          
+                            <a class="nav-link ml-1" href="{% url 'account_signup' %}">          
                                 <strong>{% trans "Register" %}</strong>
                             </a>
                             </form>
