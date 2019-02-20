@@ -190,7 +190,6 @@ STATICFILES_DIRS = (
 )
 SITE_ID = 1
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -223,14 +222,17 @@ LANGUAGES = (
     ('en', gettext('en')),
 )
 
+# Django AllAuth Settings
+
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-
 LOGIN_REDIRECT_URL = "/"
+
+# Django CMS Settings
 
 CMS_LANGUAGES = {
     ## Customize this
