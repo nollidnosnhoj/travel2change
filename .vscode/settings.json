@@ -1,6 +1,7 @@
 {
     "python.pythonPath": "env\\Scripts\\python.exe",
     "files.associations": {
+        "requirements.txt": "python",
         "*.html": "django-html",
         "*.txt": "django-html",
     },
