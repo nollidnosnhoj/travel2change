@@ -1,8 +1,17 @@
 {
+    // Python.exe Path in Virtual Env (Windows)
+    // Mac/Linux: "env\\bin\\python.exe",
     "python.pythonPath": "env\\Scripts\\python.exe",
+
+    // Enable Django template highliting for HTML files
     "files.associations": {
-        "requirements.txt": "python",
         "*.html": "django-html",
         "*.txt": "django-html",
+    },
+    // Exclude files and folders
+    "files.exclude": {
+        "**/*.pyc": {"when": "$(basename).py"}, 
+        "**/__pycache__": true,
+        "**/env": true,
     },
 }
