@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'djangocms_video',
     'djangocms_icon',
     'djangocms_transfer',
+    'djangocms_history',
+    'djangocms_attributes_field',
 
     # Django CMS Bootstrap Apps
     'djangocms_bootstrap4',
