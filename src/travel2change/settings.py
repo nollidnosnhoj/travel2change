@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # travel2change Apps
     'accounts',
 
+    'djangocms_modules',
+
     # Django CMS Apps
     'cms',
     'menus',
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
     'djangocms_googlemap',
     'djangocms_video',
     'djangocms_icon',
+    'djangocms_transfer',
 
     # Django CMS Bootstrap Apps
     'djangocms_bootstrap4',
