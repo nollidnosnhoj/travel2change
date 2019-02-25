@@ -7,7 +7,11 @@ class Activity(models.Model):
     hightlights = models.TextField(max_length=400)
     requirements = models.TextField(max_length=400, blank=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    # Location Field
+    # Plain text Address
+    # TODO: Find a way to convert address into lat, long for map widgets
+    address = models.CharField(max_length=255, blank=False)
+    # Lat and Long
+    price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return self.title
