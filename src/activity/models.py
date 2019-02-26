@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 User = get_user_model()
@@ -27,7 +28,7 @@ class Activity(models.Model):
     title           = models.CharField(verbose_name=_("title"), max_length=255, blank=False)
     slug            = models.SlugField(max_length=255, unique=True)
     description     = models.TextField(verbose_name=_("description"), max_length=400)
-    hightlights     = models.TextField(verbose_name=_("highlights"), max_length=400)
+    highlights      = models.TextField(verbose_name=_("highlights"), max_length=400)
     requirements    = models.TextField(verbose_name=_("requirements"), max_length=400, blank=True)
     region          = models.ForeignKey(Region, verbose_name=_("region"), on_delete=models.CASCADE)
     tags            = models.ManyToManyField(Tag, verbose_name=_("tags"), blank=True)
@@ -49,6 +50,10 @@ class Activity(models.Model):
 
     def get_absolute_url(self):
         pass
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 class ActivityImage(models.Model):
     activity = models.ForeignKey(Activity, related_name='images', on_delete=models.CASCADE)
