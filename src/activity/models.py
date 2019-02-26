@@ -4,9 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
-User = get_user_model()
-
-# Create your models here.
+User = get_user_model()     # Get User Model Reference
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
@@ -22,6 +20,11 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    # Slugify the title as slug
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Activity(models.Model):
     host            = models.ForeignKey(User, related_name=_("host"), on_delete=models.CASCADE)
