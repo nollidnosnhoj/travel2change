@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     # travel2change Apps
     'accounts',
+    'activity',
 
     # Django CMS Apps
     'cms',
