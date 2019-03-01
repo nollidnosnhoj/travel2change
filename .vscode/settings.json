@@ -5,7 +5,6 @@
 
     // Enable Django template highliting for HTML files
     "files.associations": {
-        "*.html": "django-html",
         "*.txt": "django-html",
     },
     // Exclude files and folders
