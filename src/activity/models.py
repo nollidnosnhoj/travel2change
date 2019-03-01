@@ -84,9 +84,11 @@ class Activity(models.Model):
     def get_absolute_url(self):
         return reverse('activity_detail', kwargs={'slug' : self.slug} )
 
+    # Returns the Requirements Value as a List by splitting the commas
     def get_requirements_as_list(self):
         return self.requirements.split(', ')
 
+    # Returns the Highlights Value as a List by splitting the commas
     def get_highlights_as_list(self):
         return self.highlights.split(', ')
 
