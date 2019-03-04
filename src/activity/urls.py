@@ -5,7 +5,7 @@ from .forms import (
     AboutActivityForm,
     AddressActivityForm,
     LocationActivityForm,
-    ImagesActivityForm,
+    # ImagesActivityForm,
 )
 from .views import ActivityDetailView, ActivityWizard
 
@@ -15,7 +15,7 @@ ACTIVITY_CREATE_STEP_FORMS = [
     ("03", AboutActivityForm),
     ("04", AddressActivityForm),
     ("05", LocationActivityForm),
-    ("06", ImagesActivityForm),
+    # ("06", ImagesActivityForm),
 ]
 
 urlpatterns = [

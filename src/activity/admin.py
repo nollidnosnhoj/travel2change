@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (Activity, Tag, Region)
 
+
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
@@ -26,6 +27,7 @@ class ActivityAdmin(admin.ModelAdmin):
     )
     # prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('review_count', 'created',)
+
 
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Tag)

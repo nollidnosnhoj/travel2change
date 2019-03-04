@@ -8,83 +8,90 @@ from django.utils.translation import ugettext_lazy as _
 
 User = get_user_model()     # Get User Model Reference
 
+
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
 
-    regions = models.Manager()
+    objects = models.Manager()
     
     def __str__(self):
         return self.name
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
     font_awesome = models.CharField(max_length=60, blank=False)
 
-    tags = models.Manager()
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
 
+
 class Activity(models.Model):
-    host            = models.ForeignKey(User, related_name=_("host"), on_delete=models.CASCADE)
+    host            = models.ForeignKey(
+                        User,
+                        related_name=_("host"),
+                        on_delete=models.CASCADE
+                    )
     title           = models.CharField(
-                        verbose_name=_("title"), 
-                        max_length=255, 
-                        blank=False, 
+                        verbose_name=_("title"),
+                        max_length=255,
+                        blank=False,
                         null=False,
                         help_text=_("Insert a name for your activity"),
                     )
     slug            = models.SlugField(max_length=255, unique=True)
     description     = models.TextField(
-                        verbose_name=_("description"), 
+                        verbose_name=_("description"),
                         max_length=400,
                         help_text=_("Describe the activity. (Max. 400 characters)")
                     )
     highlights      = models.TextField(
-                        verbose_name=_("highlights"), 
-                        max_length=400, 
+                        verbose_name=_("highlights"),
+                        max_length=400,
                         help_text=_("List what makes this activity unique. (Max. 400 characters)")
                     )
     requirements    = models.TextField(
-                        verbose_name=_("requirements"), 
-                        max_length=400, 
+                        verbose_name=_("requirements"),
+                        max_length=400,
                         blank=True,
                         help_text=_("List all the requirements that you expect from participants. (e.g. age restrictions, required skills etc)")
                     )
     region          = models.ForeignKey(
-                        Region, 
-                        verbose_name=_("region"), 
+                        Region,
+                        verbose_name=_("region"),
                         related_name=_("activities"),
                         related_query_name=_("activity"),
                         help_text=_("Choose a region where you activity will be held."),
                         on_delete=models.CASCADE
                     )
     tags            = models.ManyToManyField(
-                        Tag, 
-                        verbose_name=_("tags"), 
+                        Tag,
+                        verbose_name=_("tags"),
                         blank=True,
                         help_text=_("Select tag(s) that best describe your activity.")
                     )
     address         = models.CharField(
-                        verbose_name=_("address"), 
+                        verbose_name=_("address"),
                         max_length=255,
                         help_text=_("Enter the address of the meeting place")
                     )
     latitude        = models.DecimalField(
-                        verbose_name=_("latitude"), 
-                        max_digits=9, 
-                        decimal_places=6, 
+                        verbose_name=_("latitude"),
+                        max_digits=9,
+                        decimal_places=6,
                         blank=True, null=True,
                     )
     longitude       = models.DecimalField(
-                        verbose_name=_("longitude"), 
-                        max_digits=9, 
-                        decimal_places=6, 
+                        verbose_name=_("longitude"),
+                        max_digits=9,
+                        decimal_places=6,
                         blank=True, null=True
                     )
     price           = models.DecimalField(
-                        verbose_name=_("price"), 
-                        max_digits=6, 
+                        verbose_name=_("price"),
+                        max_digits=6,
                         decimal_places=2,
                         help_text=_("Cost of participation. Enter \"0.00\" if the activity is free.")
                     )
@@ -95,7 +102,7 @@ class Activity(models.Model):
     modified        = models.DateTimeField(auto_now=True)
     approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
 
-    activities = models.Manager()
+    objects = models.Manager()
 
     class Meta:
         verbose_name = _("activity")
@@ -108,14 +115,14 @@ class Activity(models.Model):
     def save(self, *args, **kwargs):
         self.slug = temp_slug = slugify(self.title)
         for x in itertools.count(1):
-            if not Activity.activities.filter(slug=temp_slug).exists():
+            if not Activity.objects.filter(slug=temp_slug).exists():
                 break
             temp_slug = '{}-{}'.format(self.slug, x)
         self.slug = temp_slug
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('activity_detail', kwargs={'slug' : self.slug} )
+        return reverse('activity_detail', kwargs={'slug': self.slug})
 
     # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
@@ -124,6 +131,7 @@ class Activity(models.Model):
     # Returns the Highlights Value as a List by splitting the commas
     def highlights_as_list(self):
         return self.highlights.split(', ')
+
 
 class ActivityImage(models.Model):
     activity = models.ForeignKey(Activity, related_name='images', on_delete=models.CASCADE)
