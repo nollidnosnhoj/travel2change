@@ -1,30 +1,36 @@
 from django import forms
 
-from .models import Region, Tag
+from .models import Activity, ActivityImage, Region, Tag
 
 # Step One (Input Title, Region, and Description)
-class ActivityForm1(forms.Form):
-    title           = forms.CharField(max_length=100)
-    region          = forms.ModelChoiceField(queryset=Region.objects.all())
-    description     = forms.CharField(widget=forms.Textarea, max_length=400)
+class RegionActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['region', ]
+
+class TitleActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['title', 'description',]
 
 # Step Two (Input Highlights, Requirements, and Tags)
-class ActivityForm2(forms.Form):
-    highlights      = forms.CharField(widget=forms.Textarea, max_length=400)
-    requirements    = forms.CharField(widget=forms.Textarea)
-    tags            = forms.ModelMultipleChoiceField(
-                        queryset=Tag.objects.all(), 
-                        widget=forms.CheckboxSelectMultiple
-                    )
+class AboutActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['highlights', 'requirements', 'tags',]
 
 # Step Three (Input Location)
-class ActivityForm3(forms.Form):
-    pass
+class AddressActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['address',]
 
 # Step Four (Confirm Location is Correct)
-class ActivityForm4(forms.Form):
-    pass
+class LocationActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['latitude', 'longitude',]
 
-# Step Five ()
-class ActivityForm5(forms.Form):
+# Step Five (Upload Images)
+class ImagesActivityForm(forms.ModelForm):
     pass
