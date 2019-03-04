@@ -18,7 +18,7 @@
     {% if activity.requirements %}
         <h2>Requirements</h2>
         <ul>
-            {% for requirement in activity.get_requirements_as_list %}
+            {% for requirement in activity.requirements_as_list %}
                 <li>{{ requirement }}</li>
             {% endfor %}
         </ul>
