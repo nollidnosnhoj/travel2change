@@ -3,11 +3,6 @@
     // Mac/Linux: "env\\bin\\python.exe",
     "python.pythonPath": "env\\Scripts\\python.exe",
 
-    // Enable Django template highliting for HTML files
-    "files.associations": {
-        "*.html": "django-html",
-        "*.txt": "django-html",
-    },
     // Exclude files and folders
     "files.exclude": {
         "**/*.pyc": {"when": "$(basename).py"}, 
