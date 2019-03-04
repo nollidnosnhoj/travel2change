@@ -1,5 +1,7 @@
 ## Exporting and Importing Django CMS Content
 
+### Please backup your files before doing this. This is not a 100% gurantee.
+
 If you are creating a page in Django CMS, you will need to know how to save the state of your page when using a different version of the repo.
 
 **Prerequisites:**
