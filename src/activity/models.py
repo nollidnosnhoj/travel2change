@@ -1,14 +1,15 @@
+import itertools
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+# from moderation.db import ModeratedModel
 
 User = get_user_model()     # Get User Model Reference
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    image = models.ImageField(upload_to='region')
 
     regions = models.Manager()
     
@@ -17,7 +18,6 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
     font_awesome = models.CharField(max_length=60, blank=False)
 
     tags = models.Manager()
@@ -25,14 +25,15 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-    # Slugify the title as slug
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
 class Activity(models.Model):
     host            = models.ForeignKey(User, related_name=_("host"), on_delete=models.CASCADE)
-    title           = models.CharField(verbose_name=_("title"), max_length=255, blank=False, null=False)
+    title           = models.CharField(
+                        verbose_name=_("title"), 
+                        max_length=255, 
+                        blank=False, 
+                        null=False,
+                        help_text=_("Insert a name for your activity"),
+                    )
     slug            = models.SlugField(max_length=255, unique=True)
     description     = models.TextField(
                         verbose_name=_("description"), 
@@ -55,16 +56,32 @@ class Activity(models.Model):
                         verbose_name=_("region"), 
                         related_name=_("activities"),
                         related_query_name=_("activity"),
+                        help_text=_("Choose a region where you activity will be held."),
                         on_delete=models.CASCADE
                     )
-    tags            = models.ManyToManyField(Tag, verbose_name=_("tags"), blank=True)
+    tags            = models.ManyToManyField(
+                        Tag, 
+                        verbose_name=_("tags"), 
+                        blank=True,
+                        help_text=_("Select tag(s) that best describe your activity.")
+                    )
     address         = models.CharField(
                         verbose_name=_("address"), 
                         max_length=255,
                         help_text=_("Enter the address of the meeting place")
                     )
-    latitude        = models.DecimalField(verbose_name=_("latitude"), max_digits=9, decimal_places=6, blank=True)
-    longitude       = models.DecimalField(verbose_name=_("longitude"), max_digits=9, decimal_places=6, blank=True)
+    latitude        = models.DecimalField(
+                        verbose_name=_("latitude"), 
+                        max_digits=9, 
+                        decimal_places=6, 
+                        blank=True, null=True,
+                    )
+    longitude       = models.DecimalField(
+                        verbose_name=_("longitude"), 
+                        max_digits=9, 
+                        decimal_places=6, 
+                        blank=True, null=True
+                    )
     price           = models.DecimalField(
                         verbose_name=_("price"), 
                         max_digits=6, 
@@ -76,6 +93,7 @@ class Activity(models.Model):
 
     created         = models.DateTimeField(auto_now_add=True, verbose_name=_("activity created date"))
     modified        = models.DateTimeField(auto_now=True)
+    approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
 
     activities = models.Manager()
 
@@ -86,19 +104,25 @@ class Activity(models.Model):
     def __str__(self):
         return self.title
 
+    # Slugify the title as slug
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = temp_slug = slugify(self.title)
+        for x in itertools.count(1):
+            if not Activity.activities.filter(slug=temp_slug).exists():
+                break
+            temp_slug = '{}-{}'.format(self.slug, x)
+        self.slug = temp_slug
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('activity_detail', kwargs={'slug' : self.slug} )
 
     # Returns the Requirements Value as a List by splitting the commas
-    def get_requirements_as_list(self):
+    def requirements_as_list(self):
         return self.requirements.split(', ')
 
     # Returns the Highlights Value as a List by splitting the commas
-    def get_highlights_as_list(self):
+    def highlights_as_list(self):
         return self.highlights.split(', ')
 
 class ActivityImage(models.Model):
