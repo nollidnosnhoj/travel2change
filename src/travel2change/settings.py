@@ -1,18 +1,32 @@
-import os  # isort:skip
-from django.utils.translation import gettext_lazy as _
-gettext = lambda s: s
-DATA_DIR = os.path.dirname(os.path.dirname(__file__))
-
 import os
+import json
+
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
+
+gettext = lambda s: s
+
+DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Open Secrets JSON file and create function to get value of key.
+
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except:
+        raise ImproperlyConfigured("Set the {0} settings".format(setting))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '275r(#c+_uh4k&nbdmt*)mq)_v^689lkq&mypgpk*8e11wboo6'
+SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

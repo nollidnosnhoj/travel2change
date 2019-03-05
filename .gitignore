@@ -2,7 +2,10 @@
 # Created by https://www.gitignore.io/api/django
 # Edit at https://www.gitignore.io/?templates=django
 
+# Mac Junk Stuff
 .DS_Store/
+# Secret JSON File
+src/secrets.json
 
 ### Django ###
 *.log
