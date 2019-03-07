@@ -64,8 +64,12 @@
         </nav>
         {% block jumbo %}
         {% endblock jumbo %}
-        {% block content %}
-        {% endblock content %}
+        <div class="container">
+            <main class="content mt-5">
+                {% block content %}
+                {% endblock content %}
+            </main>
+        </div>
         {% render_block "js" %}
         {% addtoblock "js" %}
             <script 

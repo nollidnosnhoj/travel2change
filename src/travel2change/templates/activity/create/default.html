@@ -2,13 +2,11 @@
 {% load crispy_forms_tags %}
 {% block nstep %}{{ wizard.steps.step1 }}{% endblock nstep %}
 {% block create %}
-{% csrf_token %}
-<div>
-    {{ wizard.management_form }}
-    {{ wizard.form|crispy }}
-</div>
-{% if wizard.steps.prev %}
-    <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
-{% endif %}
+<h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2>
+{{ wizard.management_form }}
+{{ wizard.form|crispy }}
+    {% if wizard.steps.prev %}
+        <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
+    {% endif %}
 <button type="submit" class="btn btn-success">Submit</button>
 {% endblock create %}

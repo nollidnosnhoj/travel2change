@@ -1,10 +1,11 @@
 import itertools
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-# from moderation.db import ModeratedModel
+from .managers import ActivityManager
 
 User = get_user_model()     # Get User Model Reference
 
@@ -50,13 +51,15 @@ class Activity(models.Model):
     highlights      = models.TextField(
                         verbose_name=_("highlights"),
                         max_length=400,
-                        help_text=_("List what makes this activity unique. (Max. 400 characters)")
+                        help_text=_("List what makes this activity unique. (Max. 400 characters) "
+                                    "\nPlease insert each highlight per line.")
                     )
     requirements    = models.TextField(
                         verbose_name=_("requirements"),
                         max_length=400,
                         blank=True,
-                        help_text=_("List all the requirements that you expect from participants. (e.g. age restrictions, required skills etc)")
+                        help_text=_("List all the requirements that you expect from participants. (e.g. age restrictions, required skills etc) "
+                                    "\nPlease insert each requirement per line.")
                     )
     region          = models.ForeignKey(
                         Region,
@@ -93,7 +96,11 @@ class Activity(models.Model):
                         verbose_name=_("price"),
                         max_digits=6,
                         decimal_places=2,
-                        help_text=_("Cost of participation. Enter \"0.00\" if the activity is free.")
+                        default=0.00,
+                        blank=True,
+                        validators=[MinValueValidator(0.00)],
+                        help_text=_("Cost of participation."
+                                    "\nIf it's free, then leave it as 0.00 or blank")
                     )
 
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
@@ -102,7 +109,7 @@ class Activity(models.Model):
     modified        = models.DateTimeField(auto_now=True)
     approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
 
-    objects = models.Manager()
+    objects = ActivityManager()
 
     class Meta:
         verbose_name = _("activity")
@@ -113,12 +120,13 @@ class Activity(models.Model):
 
     # Slugify the title as slug
     def save(self, *args, **kwargs):
-        self.slug = temp_slug = slugify(self.title)
+        self.slug = init_slug = slugify(self.title)
+
         for x in itertools.count(1):
-            if not Activity.objects.filter(slug=temp_slug).exists():
+            if not Activity.objects.filter(slug=self.slug).exists():
                 break
-            temp_slug = '{}-{}'.format(self.slug, x)
-        self.slug = temp_slug
+            self.slug = '{}-{}'.format(init_slug, x)
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -126,11 +134,15 @@ class Activity(models.Model):
 
     # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
-        return self.requirements.split(', ')
+        return self.requirements.split('\n')
 
     # Returns the Highlights Value as a List by splitting the commas
     def highlights_as_list(self):
-        return self.highlights.split(', ')
+        return self.highlights.split('\n')
+
+    # Checks if the activity is free or not
+    def is_free(self):
+        return self.price == 0.00 or self.price is None
 
 
 class ActivityImage(models.Model):

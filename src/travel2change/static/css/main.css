@@ -3,11 +3,14 @@
 }
 
 .fullvh {
-    width: 100vh; height: 100vh;
+    width: 100%; height: 100vh;
 }
+
 .fullvh-width {
     width: 100vh;
 }
+
 .fullvh-height {
     height: 100vh;
 }
+

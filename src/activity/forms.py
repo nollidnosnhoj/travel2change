@@ -1,8 +1,6 @@
 from django import forms
 
-from .models import Activity, ActivityImage
-
-# Step One (Input Title, Region, and Description)
+from .models import Activity
 
 
 class RegionActivityForm(forms.ModelForm):
@@ -38,12 +36,12 @@ class LocationActivityForm(forms.ModelForm):
         fields = ['latitude', 'longitude', ]
 
 
-"""
-TODO:
-- Handle multiple images uploading
-"""
+# { "Step Name" : Form Class }
 
-
-# Step Five (Upload Images)
-class ImagesActivityForm(forms.ModelForm):
-    pass
+ACTIVITY_CREATE_FORMS_LIST = [
+    ("0", RegionActivityForm),
+    ("1", TitleActivityForm),
+    ("2", AboutActivityForm),
+    ("3", AddressActivityForm),
+    ("4", LocationActivityForm),
+]

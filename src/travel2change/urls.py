@@ -20,7 +20,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     url(r'^admin/', admin.site.urls),  # NOQA
     url(r'^account/', include('allauth.urls')),
-    url(r'^activity/', include('activity.urls')),
+    url(r'^activities/', include('activity.urls')),
     url(r'^', include('cms.urls')),
 )
 
@@ -29,4 +29,4 @@ if settings.DEBUG:
     urlpatterns = [
         url(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-        ] + staticfiles_urlpatterns() + urlpatterns
+                    ] + staticfiles_urlpatterns() + urlpatterns
