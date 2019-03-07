@@ -2,11 +2,16 @@
     // Python.exe Path in Virtual Env (Windows)
     // Mac/Linux: "env\\bin\\python.exe",
     "python.pythonPath": "env\\Scripts\\python.exe",
-
     // Exclude files and folders
     "files.exclude": {
         "**/*.pyc": {"when": "$(basename).py"}, 
         "**/__pycache__": true,
         "**/env": true,
     },
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E221, E126, E501, E301, W293",
+        "--verbose",
+    ]
 }

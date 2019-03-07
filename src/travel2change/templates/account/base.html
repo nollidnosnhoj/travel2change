@@ -4,13 +4,12 @@
 {% addtoblock "css" %}
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% endaddtoblock %}
+<div class="row justify-content-center m-2">
+    <div class="card auth col-lg-4">
+        {% block authblock %}
 
-<div class="authform mt-5">
-
-    {% block authblock %}
-
-    {% endblock authblock %}
-
+        {% endblock authblock %}
+    </div>
 </div>
 
 {% endblock content %}

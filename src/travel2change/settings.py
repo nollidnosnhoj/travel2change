@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     # travel2change Apps
     'accounts',
+    'activity',
 
     'djangocms_modules',
 
@@ -102,6 +103,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'formtools',
 ]
 
 MIDDLEWARE = [

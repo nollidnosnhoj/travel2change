@@ -6,7 +6,8 @@ from django.contrib.auth.forms import (
     UserCreationForm, UserChangeForm,
 )
 
-User = get_user_model() 
+User = get_user_model()
+
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -14,11 +15,13 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('email', 'first_name', 'last_name',)
 
+
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name',)
+
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(

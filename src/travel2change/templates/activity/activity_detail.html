@@ -1,0 +1,52 @@
+{% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
+{% block title %}{{ activity.title }}{% endblock title %}
+{% block content %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
+{% endaddtoblock %}
+<div class="row">
+    <article class="single-activity col-sm-8">
+        <div class="jumbotron">
+            <h1 class="display-4">{{ activity.title }}</h1>
+            <hr class="my-4">
+            <p class="lead">Hosted by {{ activity.host }}</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="block">
+                    <p>{{ activity.description }}</p>
+                </div>
+                <div class="block">
+                    <h2>Highlights</h2>
+                    <ul>
+                        {% for highlight in activity.highlights_as_list %}
+                            <li>{{ highlight }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% if activity.requirements %}
+                <div class="block">
+                    <h2>Requirements</h2>
+                    <ul>
+                    {% for requirement in activity.requirements_as_list %}
+                        <li>{{ requirement }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="block">
+                    <h2>Address</h2>
+                    <p>{{ activity.address }}</p>
+                </div>
+            </div>
+        </div>
+    </article>
+    <aside class="col-sm-4">
+        <div class="card fareharbor-placeholder mb-3">
+            <div class="card-body">
+                <p class="card-text">FareHarbor Placeholder</p>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock content %}
