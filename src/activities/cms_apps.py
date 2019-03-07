@@ -4,8 +4,8 @@ from django.utils.translation import ugettext as _
 
 
 @apphook_pool.register
-class ActivityApp(CMSApp):
-    app_name = _("activity")
+class ActivitiesApp(CMSApp):
+    app_name = _("activities")
     name = _("Activity Application")
 
     def get_urls(self, page=None, language=None, **kwargs):

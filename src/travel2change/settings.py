@@ -16,14 +16,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
     secrets = json.load(secrets_file)
 
+
 def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
-    except:
-        raise ImproperlyConfigured("Set the {0} settings".format(setting))
+    except ImproperlyConfigured:
+        print("Set the {0} settings".format(setting))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_secret('SECRET_KEY')
@@ -53,7 +55,7 @@ INSTALLED_APPS = [
 
     # travel2change Apps
     'accounts',
-    'activity',
+    'activities',
 
     'djangocms_modules',
 
@@ -213,7 +215,7 @@ STATICFILES_DIRS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'travel2change', 'templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'travel2change', 'templates'), ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
@@ -240,14 +242,12 @@ TEMPLATES = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LANGUAGES = (
-    ## Customize this
     ('en', gettext('en')),
 )
 
 # Django CMS Settings
 
 CMS_LANGUAGES = {
-    ## Customize this
     1: [
         {
             'code': 'en',
@@ -265,7 +265,6 @@ CMS_LANGUAGES = {
 }
 
 CMS_TEMPLATES = (
-    ## Customize this
     ('home.html', 'Homepage'),
     ('fullwidth.html', 'Fullwidth'),
     ('signup.html', 'Sign Up')
