@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
 
     # travel2change Apps
-    'accounts',
+    'users',
     'activities',
 
     'djangocms_modules',
@@ -149,7 +149,7 @@ MIGRATION_MODULES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -181,7 +181,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
+ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.SignupForm'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = "/"

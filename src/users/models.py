@@ -9,7 +9,7 @@ TODO: Create a Profile Model that has a one-to-one relationship with the User Mo
 '''
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     email           = models.EmailField(_('email address'), unique=True)
     first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
     last_name       = models.CharField(_('last name'), max_length=60, blank=False, null=False)
