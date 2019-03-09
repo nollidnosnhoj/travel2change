@@ -181,10 +181,12 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_SIGNUP_FORM_CLASS = 'users.forms.SignupForm'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = "/"
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.SignupForm',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

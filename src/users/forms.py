@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (
     UserCreationForm, UserChangeForm,
 )
+from allauth.account.forms import SignupForm as BaseSignupForm
 
 User = get_user_model()
 
@@ -21,7 +22,7 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('email', 'first_name', 'last_name',)
 
 
-class SignupForm(forms.Form):
+class SignupForm(BaseSignupForm):
     first_name = forms.CharField(
         max_length=30,
         widget=forms.TextInput(attrs={'placeholder': 'First Name'})
@@ -31,7 +32,8 @@ class SignupForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 'Last Name'})
     )
 
-    def signup(self, request, user):
+    def save(self, request):
+        user = super().save(request)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.save()
+        return user
