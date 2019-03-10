@@ -1,12 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
-
-'''
-TODO: Create a Profile Model that has a one-to-one relationship with the User Model
-'''
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -17,6 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active       = models.BooleanField(default=True)
     is_staff        = models.BooleanField(default=False)
     is_superuser    = models.BooleanField(default=False)
+    is_host         = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -34,8 +31,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def __str__(self):
-        if self.first_name and self.last_name:
-            return self.get_full_name()
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -43,3 +38,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+
+"""
+from activities.models import Activity, Tag
+
+
+class UserSettings(models.Model):
+    user            = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+    interests       = models.ManyToManyField(
+                        Tag, related_name=_('interest'),
+                        help_text=_('What type(s) of activities are you interested in?'),
+                    )
+    bookmarks       = models.ManyToManyField(Activity, related_name=_('bookmarked'))
+
+    def __str__(self):
+        return self.user.email
+"""

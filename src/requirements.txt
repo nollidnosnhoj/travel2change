@@ -1,3 +1,4 @@
+Babel==2.6.0
 certifi==2018.11.29
 chardet==3.0.4
 defusedxml==0.5.0
@@ -8,10 +9,10 @@ django-cms==3.6.0
 django-crispy-forms==1.7.2
 django-filer==1.4.4
 django-formtools==2.1
-django-geojson==2.12.0
 django-js-asset==1.2.1
-django-leaflet==0.24.0
+django-model-utils==3.1.2
 django-mptt==0.9.1
+django-phonenumber-field==2.2.0
 django-polymorphic==2.0.3
 django-sekizai==0.10.0
 django-treebeard==4.3
@@ -32,10 +33,16 @@ djangocms-text-ckeditor==3.7.0
 djangocms-transfer==0.1.0
 djangocms-video==2.1.1
 easy-thumbnails==2.6
+entrypoints==0.3
+flake8==3.7.7
 html5lib==1.0.1
 idna==2.8
+mccabe==0.6.1
 oauthlib==3.0.1
+phonenumberslite==8.10.6
 Pillow==5.4.1
+pycodestyle==2.5.0
+pyflakes==2.1.1
 python3-openid==3.1.0
 pytz==2018.9
 requests==2.21.0
