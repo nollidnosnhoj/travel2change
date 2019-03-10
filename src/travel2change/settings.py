@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     # travel2change Apps
     'users',
     'activities',
+    'hosts',
 
     'djangocms_modules',
 
@@ -149,8 +150,6 @@ MIGRATION_MODULES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'users.User'
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -187,6 +186,8 @@ LOGIN_REDIRECT_URL = "/"
 ACCOUNT_FORMS = {
     'signup': 'users.forms.SignupForm',
 }
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
