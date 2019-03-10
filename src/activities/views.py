@@ -35,15 +35,10 @@ class ActivityWizard(LoginRequiredMixin, SessionWizardView):
         return [STEP_TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
-        # Get merged dictionary from all form entries
         form_dict = self.get_all_cleaned_data()
-        # Pop the m2m pair from dictionary
         activity_tags = form_dict.pop('tags')
-        # Create activity instance based on user and form dictionary
-        instance = Activity.objects.create(**form_dict, host=self.request.user)
-        # Set m2m fields
+        instance = Activity.objects.create(**form_dict, host=self.request.host)
         instance.tags.set(activity_tags)
-        # Save instance into database
         instance.save()
         
         return render(self.request, 'activity/activity_done.html', {
