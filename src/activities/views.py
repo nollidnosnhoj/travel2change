@@ -40,9 +40,10 @@ class ActivityWizard(SessionWizardView):
         return [STEP_TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
+        host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
         activity_tags = form_dict.pop('tags')
-        instance = Activity.objects.create(**form_dict, host=self.request.host)
+        instance = Activity.objects.create(**form_dict, host=host)
         instance.tags.set(activity_tags)
         instance.save()
         
