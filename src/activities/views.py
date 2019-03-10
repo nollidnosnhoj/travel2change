@@ -1,9 +1,9 @@
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.conf.global_settings import LOGIN_URL
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from formtools.wizard.views import SessionWizardView
 from .models import Activity
+from hosts.models import Host
 
 
 class ActivityDetailView(DetailView):
@@ -23,13 +23,18 @@ STEP_TEMPLATES = {
 }
 
 
-class ActivityWizard(LoginRequiredMixin, SessionWizardView):
+class ActivityWizard(SessionWizardView):
 
-    def dispatch(self, *args, **kwargs):
-        user = self.request.user
-        if not user.is_active:
-            raise PermissionDenied
-        return super().dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        """ Redirect anonymous users to login page """
+        if not request.user.is_authenticated:
+            return redirect(LOGIN_URL)
+        """ Block non-host users access to activity creation """
+        if not Host.objects.filter(user=request.user):
+            return render(request, 'activity/activity_access_denied.html', {
+                'user': request.user
+            })
+        return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         return [STEP_TEMPLATES[self.steps.current]]
