@@ -1,13 +1,11 @@
 import itertools
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from .managers import ActivityManager
-
-User = get_user_model()     # Get User Model Reference
+from hosts.models import Host
 
 
 class Region(models.Model):
@@ -31,7 +29,7 @@ class Tag(models.Model):
 
 class Activity(models.Model):
     host            = models.ForeignKey(
-                        User,
+                        Host,
                         related_name=_("host"),
                         on_delete=models.CASCADE
                     )
