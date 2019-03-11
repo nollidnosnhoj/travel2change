@@ -1,6 +1,29 @@
 from django import forms
 
-from .models import Activity
+from .models import Activity, ActivityImage
+
+
+class ActivityUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = [
+            'title',
+            'description',
+            'region',
+            'price',
+            'highlights',
+            'requirements',
+            'tags',
+            'address',
+            'latitutde',
+            'longitude',
+        ]
+
+
+class ActivityImagesUpload(forms.ModelForm):
+    class Meta:
+        model = ActivityImage
+        fields = ('image', 'caption')
 
 
 class RegionActivityForm(forms.ModelForm):
