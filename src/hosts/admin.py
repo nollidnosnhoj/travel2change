@@ -9,7 +9,7 @@ class HostAdmin(admin.ModelAdmin):
         }),
         ('Host Information', {
             'fields': (
-                'name', 'description',
+                '_name', 'description',
             )
         }),
         ('Contact Information', {
