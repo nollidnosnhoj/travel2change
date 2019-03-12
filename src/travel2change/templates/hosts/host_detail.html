@@ -1,0 +1,74 @@
+{% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
+{% block title %}{{ host.name }}{% endblock title %}
+{% block jumbo %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">{{ host.name }}</h1>
+        <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+    </div>
+</div>
+{% endblock jumbo %}
+{% block content %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endaddtoblock %}
+<article class="single-activity">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="activities-tab" data-toggle="tab" href="#activities" role="tab" aria-controls="activities" aria-selected="false">Activities</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            {% if host.description %}
+                {{ host.description }}
+            {% else %}
+                <span><em>Description is yet to be provided.</em></span>
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+            {% for activity in activities %}
+            <a href="{{activity.get_absolute_url}}" target="_blank">
+                <div class="card">
+                    <div class="card-body row">
+                        
+                        <div class="col">
+                            <span class="card-title">{{activity.title}}</span>
+                        </div>
+                        <div class="col text-right" style="font-size:small;">
+                            <em>{{activity.created}}</em>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+                <span><em>There is no activities yet.</em></span>
+            {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            {% if host.phone %}
+            <div class="card">
+                <div class="card-body">
+                    <strong>Phone: </strong>
+                    {{ host.phone }}
+                </div>
+            </div>
+            {% endif %}
+            {% if host.website %}
+            <div class="card">
+                <div class="card-body">
+                    <strong>Website: </strong>
+                    {{ host.website }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</article>
+{% endblock content %}

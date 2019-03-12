@@ -1,28 +1,35 @@
-from django.shortcuts import render
+# from django.shortcuts import render
+# from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-from django.views.generic.list import ListView
 from .models import Host
 from activities.models import Activity
 
 
+""" Show host's profile """
 class HostDetailView(DetailView):
     model = Host
     template_name = 'hosts/host_detail.html'
+    context_object_name = 'host'
 
+    """ Add activity list into context """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['activities'] = Activity.objects.filter(host=self.object)
+        # Display 5 activities of the host's, ordered by the creation time
+        context['activities'] = Activity.objects.filter(host=self.object)[:5]
         return context
 
 
+""" Show host's profile update """
 class HostUpdateView(UpdateView):
-    pass
+    model = Host
+    fields = ['_name', 'description', 'phone', 'website']
+    template_name_suffix = '_update'
 
-
-class HostActivitiesListView(ListView):
-    model = Activity
-    template_name = 'hosts/host_activities_list.html'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(host=)
+    """ Get the profile associated with the current user's host """
+    def get_object(self):
+        return Host.objects.get(user=self.request.user)
+    
+    """ Redirect user after successful update """
+    def get_success_url(self):
+        return self.get_object().get_absolute_url()

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}{{ host.name }}{% endblock title %}
+{% block content %}
+<div class="row justify-content-center m-2">
+    <div class="col-lg-4">
+        <form method="POST">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
