@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endaddtoblock %}
 <article class="single-activity">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
         </li>
@@ -23,6 +23,11 @@
         <li class="nav-item">
             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
         </li>
+        {% if request.user == host.user %}
+        <li class="nav-item">
+            <a class="nav-link" href="update/">Edit Profile</a>
+        </li>
+        {% endif %}
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -37,7 +42,6 @@
             <a href="{{activity.get_absolute_url}}" target="_blank">
                 <div class="card">
                     <div class="card-body row">
-                        
                         <div class="col">
                             <span class="card-title">{{activity.title}}</span>
                         </div>
