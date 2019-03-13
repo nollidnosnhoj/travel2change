@@ -72,9 +72,9 @@
         </div>
         {% render_block "js" %}
         {% addtoblock "js" %}
-            <script 
-                src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+            <script
+                src="http://code.jquery.com/jquery-3.3.1.min.js"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"
             ></script>
             <script 
@@ -87,6 +87,66 @@
                 integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" 
                 crossorigin="anonymous"
             ></script>
+            <script>
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+
+                var csrftoken = getCookie('csrftoken');
+
+                function csrfSafeMethod(method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                });
+
+                $(document).ready(function(){
+                    var $myForm = $('.ajax-form')
+                    $myForm.submit(function(event){
+                        event.preventDefault()
+                        var $formData = $(this).serialize()
+                        var $thisURL = $myForm.attr('data-url') || window.location.href
+                        $.ajax({
+                            method: "POST",
+                            url: $thisURL,
+                            data: $formData,
+                            success: handleFormSuccess,
+                            error: handleFormError,
+                        })
+                    })
+                
+                    function handleFormSuccess(data, textStatus, jqXHR){
+                        console.log(data)
+                        console.log(textStatus)
+                        console.log(jqXHR)
+                    }
+                
+                    function handleFormError(jqXHR, textStatus, errorThrown){
+                        console.log(jqXHR)
+                        console.log(textStatus)
+                        console.log(errorThrown)
+                    }
+                })
+            </script>
         {% endaddtoblock %}
+        {% block scripts %}{% endblock scripts %}
     </body>
 </html>

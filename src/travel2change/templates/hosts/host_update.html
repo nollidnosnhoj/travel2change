@@ -3,9 +3,14 @@
 {% block content %}
 <div class="row justify-content-center m-2">
     <div class="col-lg-4">
-        <form method="POST">
+        <form 
+            class="ajax-form" 
+            method="POST" 
+            action="." 
+            data-url='{{ request.build_absolute_uri|safe }}'
+        >
             {% csrf_token %}
-            {{form|crispy}}
+            {{form|crispy|safe}}
             <button type="submit" class="btn btn-success">Save</button>
         </form>
     </div>

@@ -2,6 +2,7 @@
 # from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from mixins import AjaxFormMixin
 from .models import Host
 from activities.models import Activity
 
@@ -21,7 +22,7 @@ class HostDetailView(DetailView):
 
 
 """ Show host's profile update """
-class HostUpdateView(UpdateView):
+class HostUpdateView(AjaxFormMixin, UpdateView):
     model = Host
     fields = ['_name', 'description', 'phone', 'website']
     template_name_suffix = '_update'
