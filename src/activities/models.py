@@ -80,14 +80,14 @@ class Activity(models.Model):
                     )
     latitude        = models.DecimalField(
                         verbose_name=_("latitude"),
-                        max_digits=9,
-                        decimal_places=6,
+                        max_digits=8,
+                        decimal_places=5,
                         blank=True, null=True,
                     )
     longitude       = models.DecimalField(
                         verbose_name=_("longitude"),
-                        max_digits=9,
-                        decimal_places=6,
+                        max_digits=8,
+                        decimal_places=5,
                         blank=True, null=True
                     )
     price           = models.DecimalField(
@@ -128,7 +128,7 @@ class Activity(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('activity_detail', kwargs={'slug': self.slug})
+        return reverse('activities:detail', kwargs={'slug': self.slug})
 
     # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
