@@ -108,9 +108,6 @@
 	<span id="place-address"></span>
 </div>
 <script>
-	// This example requires the Places library. Include the libraries=places
-	// parameter when you first load the API. For example:
-	// <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 	function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 	  center: {
@@ -150,9 +147,9 @@
 	});
 	
 	google.maps.event.addListener(marker, 'dragend', function(evt) {
-	lat.value = evt.latLng.lat()
-	long.value = evt.latLng.lng()
-	  console.log(lat, long);
+		document.getElementById('lat_field').value = evt.latLng.lat().toFixed(6)
+		document.getElementById('lng_field').value = evt.latLng.lng().toFixed(6)
+	  console.log(document.getElementById('lat_field').value, document.getElementById('lng_field').value);
 	});
 	
 	autocomplete.addListener('place_changed', function() {
@@ -175,11 +172,11 @@
 	  }
 	  marker.setPosition(place.geometry.location);
 	  marker.setVisible(true);
-	var placeMarker = {}
+		
 	  //gets position of marker when they type in a location
-	lat.value = marker.getPosition().lat().toFixed(5)
-	long.value = marker.getPosition().lat().toFixed(5)
-	  console.log(lat, long);
+		document.getElementById('lat_field').value = marker.getPosition().lat().toFixed(6)
+		document.getElementById('lng_field').value = marker.getPosition().lng().toFixed(6)
+	  console.log(document.getElementById('lat_field').value, document.getElementById('lng_field').value);
 	
 	  var address = '';
 	  if (place.address_components) {
@@ -222,7 +219,8 @@
 	//https://www.google.com/maps/dir//21.307,-157.858/@21.4297802,-158.1141956,10.83z
 	//last half is the zoom settings; first 2 numbs are lat long.
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjwfZHvAzrcCsD7NOXkvgMmQmzxDQPBU&libraries=places&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAavNkj0ATISmF7-qHDZ3oKRYO6TRa-7tI&libraries=places&callback=initMap"
+        async defer></script>
     {% if wizard.steps.prev %}
         <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
     {% endif %}

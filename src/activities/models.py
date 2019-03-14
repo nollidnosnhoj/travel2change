@@ -80,14 +80,14 @@ class Activity(models.Model):
                     )
     latitude        = models.DecimalField(
                         verbose_name=_("latitude"),
-                        max_digits=8,
-                        decimal_places=5,
+                        max_digits=9,
+                        decimal_places=6,
                         blank=True, null=True,
                     )
     longitude       = models.DecimalField(
                         verbose_name=_("longitude"),
-                        max_digits=8,
-                        decimal_places=5,
+                        max_digits=9,
+                        decimal_places=6,
                         blank=True, null=True
                     )
     price           = models.DecimalField(
