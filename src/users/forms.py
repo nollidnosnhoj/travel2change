@@ -13,7 +13,16 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = User
-        fields = ('email', 'first_name', 'last_name',)
+        fields = ('email', 'first_name', 'last_name', 'is_host')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if user.is_host:
+            host = Host.objects.create(user=user)
+            host.save()
+        if commit:
+            user.save()
+        return user
 
 
 class CustomUserChangeForm(UserChangeForm):
