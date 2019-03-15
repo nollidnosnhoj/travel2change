@@ -128,7 +128,7 @@ class Activity(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('activity_detail', kwargs={'slug': self.slug})
+        return reverse('activities:detail', kwargs={'slug': self.slug})
 
     # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):

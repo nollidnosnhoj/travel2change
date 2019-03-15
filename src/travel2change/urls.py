@@ -20,7 +20,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     url(r'^admin/', admin.site.urls),  # NOQA
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^activities/', include('activities.urls')),
+    # url(r'^activities/', include('activities.urls', app_name='activity_app')),
     url(r'^hosts/', include('hosts.urls')),
     url(r'^users/', include('users.urls')),
     url(r'^', include('cms.urls')),
