@@ -1,9 +1,9 @@
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from formtools.wizard.views import SessionWizardView
 from .models import Activity
+from hosts.models import Host
 
 
 class ActivityDetailView(DetailView):
@@ -18,32 +18,24 @@ STEP_TEMPLATES = {
     "0": "activity/create/default.html",
     "1": "activity/create/default.html",
     "2": "activity/create/default.html",
-    "3": "activity/create/default.html",
-    "4": "activity/create/default.html",
+    "3": "activity/create/location.html",
 }
 
 
-class ActivityWizard(LoginRequiredMixin, SessionWizardView):
+class ActivityWizard(UserPassesTestMixin, SessionWizardView):
 
-    def dispatch(self, *args, **kwargs):
-        user = self.request.user
-        if not user.is_active:
-            raise PermissionDenied
-        return super().dispatch(*args, **kwargs)
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_host
 
     def get_template_names(self):
         return [STEP_TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
-        # Get merged dictionary from all form entries
+        host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
-        # Pop the m2m pair from dictionary
         activity_tags = form_dict.pop('tags')
-        # Create activity instance based on user and form dictionary
-        instance = Activity.objects.create(**form_dict, host=self.request.user)
-        # Set m2m fields
+        instance = Activity.objects.create(**form_dict, host=host)
         instance.tags.set(activity_tags)
-        # Save instance into database
         instance.save()
         
         return render(self.request, 'activity/activity_done.html', {
