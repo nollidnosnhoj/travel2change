@@ -49,10 +49,12 @@ class SignupForm(BaseSignupForm):
     @transaction.atomic
     def save(self, request):
         user = super().save(request)
-        is_host = self.cleaned_data['is_host']
+        user.is_host = self.cleaned_data['is_host']
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+        """
         if is_host:
             host = Host.objects.create(user=user)
             host.save()
+        """
         return user
