@@ -1,10 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.db import transaction
 from django.utils.translation import ugettext as _
 from allauth.account.forms import SignupForm as BaseSignupForm
-from hosts.models import Host
 
 User = get_user_model()
 
@@ -43,4 +41,3 @@ class SignupForm(BaseSignupForm):
         user.last_name = self.cleaned_data['last_name']
         user.save()
         return user
-

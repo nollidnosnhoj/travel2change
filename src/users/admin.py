@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import Host
 
 User = get_user_model()
 
@@ -43,4 +44,26 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
+class HostAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('user',)
+        }),
+        ('Host Information', {
+            'fields': (
+                '_name', 'description',
+            )
+        }),
+        ('Contact Information', {
+            'fields': (
+                'phone', 'website',
+            )
+        })
+    )
+    list_display = (
+        'user', 'name', 'phone',
+    )
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Host, HostAdmin)

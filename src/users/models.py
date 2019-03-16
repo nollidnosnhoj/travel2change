@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 from .managers import CustomUserManager
 
 
@@ -40,19 +42,31 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return True
 
 
-"""
-from activities.models import Activity, Tag
-
-
-class UserSettings(models.Model):
+class Host(models.Model):
     user            = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-
-    interests       = models.ManyToManyField(
-                        Tag, related_name=_('interest'),
-                        help_text=_('What type(s) of activities are you interested in?'),
+    _name            = models.CharField(_('name'),
+                        max_length=60,
+                        blank=True,
+                        help_text=_('Your name or organization. Will be displayed on your profile and activities.'),
                     )
-    bookmarks       = models.ManyToManyField(Activity, related_name=_('bookmarked'))
+    description     = models.TextField(_('description'), max_length=400, blank=True,
+                        help_text=_('Tell us about you or your organization.'),
+                    )
+    phone           = PhoneNumberField(_('phone'), blank=True, help_text=_('Contact phone number'))
+    website         = models.URLField(_('website'), blank=True, help_text=_("Your or organization's website"))
 
     def __str__(self):
         return self.user.email
-"""
+
+    def get_absolute_url(self):
+        return reverse('host_detail', kwargs={'pk': self.pk})
+
+    """
+    If host has a host name, then the activities and profile will display the host name,
+    or else it will display the user's full name
+    """
+    @property
+    def name(self):
+        if self._name:
+            return self._name
+        return self.user.get_full_name()
