@@ -8,7 +8,6 @@ from activities.models import Activity
 """ Show host's profile """
 class HostDetailView(DetailView):
     model = Host
-    template_name = 'hosts/host_detail.html'
     context_object_name = 'host'
 
     """ Add activity list into context """
