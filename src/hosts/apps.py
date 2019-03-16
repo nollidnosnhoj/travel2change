@@ -6,4 +6,4 @@ class HostsConfig(AppConfig):
     name = 'hosts'
 
     def ready(self):
-        import .signals # noqa
+        import hosts.signals # noqa

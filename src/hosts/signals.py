@@ -21,4 +21,6 @@ before deleting Host profile database.
 """
 @receiver(pre_delete, sender=Host)
 def remove_host_status(sender, instance, using, **kwargs):
-    instance.user.is_host = False
+    user = instance.user
+    user.is_host = False
+    user.save()
