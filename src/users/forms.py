@@ -45,16 +45,11 @@ class SignupForm(BaseSignupForm):
         required=False,
         label=_('Will you be hosting activities?')
     )
-    
-    @transaction.atomic
-    def save(self, request):
-        user = super().save(request)
+
+    def signup(self, request, user):
         user.is_host = self.cleaned_data['is_host']
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        """
-        if is_host:
-            host = Host.objects.create(user=user)
-            host.save()
-        """
+        user.save()
         return user
+
