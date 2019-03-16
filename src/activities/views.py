@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from formtools.wizard.views import SessionWizardView
 from .models import Activity
-from hosts.models import Host
+from users.models import Host
 
 
 class ActivityDetailView(DetailView):
