@@ -1,15 +1,16 @@
-import itertools
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from django_extensions.db.fields import AutoSlugField
 from .managers import ActivityManager
 from users.models import Host
 
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
+    slug = models.SlugField(max_length=60, unique=True)
 
     objects = models.Manager()
     
@@ -40,7 +41,10 @@ class Activity(models.Model):
                         null=False,
                         help_text=_("Insert a name for your activity"),
                     )
-    slug            = models.SlugField(max_length=255, unique=True)
+    slug            = AutoSlugField(
+                        populate_from=['title'],
+                        overwrite=True,
+                    )
     description     = models.TextField(
                         verbose_name=_("description"),
                         max_length=400,
@@ -82,12 +86,14 @@ class Activity(models.Model):
                         verbose_name=_("latitude"),
                         max_digits=9,
                         decimal_places=6,
+                        default=21.307,
                         blank=True, null=True,
                     )
     longitude       = models.DecimalField(
                         verbose_name=_("longitude"),
                         max_digits=9,
                         decimal_places=6,
+                        default=-157.858,
                         blank=True, null=True
                     )
     price           = models.DecimalField(
@@ -118,17 +124,15 @@ class Activity(models.Model):
 
     # Slugify the title as slug
     def save(self, *args, **kwargs):
-        self.slug = init_slug = slugify(self.title)
-
-        for x in itertools.count(1):
-            if not Activity.objects.filter(slug=self.slug).exists():
-                break
-            self.slug = '{}-{}'.format(init_slug, x)
-
+        self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('activities:detail', kwargs={'slug': self.slug})
+        return reverse('activities:detail', kwargs={
+            'region': self.region.slug,
+            'slug': self.slug,
+            'pk': self.pk
+        })
 
     # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
