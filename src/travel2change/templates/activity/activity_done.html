@@ -1,7 +1,0 @@
-{% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
-{% block title %}You have successfully submitted your activity.{% endblock title %}
-{% block content %}
-<h1>You have successfully submitted your activity</h1>
-<p>However, your activity has not been published until it is approved by us.</p>
-<p>In the meantime, you can view your activity <a href="{{ activity.get_absolute_url }}">here</a>, or edit it.</p>
-{% endblock content %}
