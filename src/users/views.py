@@ -1,6 +1,6 @@
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-from mixins import AjaxFormMixin
 from .models import Host
 from activities.models import Activity
 
@@ -19,10 +19,11 @@ class HostDetailView(DetailView):
 
 
 """ Show host's profile update """
-class HostUpdateView(AjaxFormMixin, UpdateView):
+class HostUpdateView(SuccessMessageMixin, UpdateView):
     model = Host
     fields = ['_name', 'description', 'phone', 'website']
     template_name_suffix = '_update'
+    success_message = "Profile successfully updated."
 
     """ Get the profile associated with the current user's host """
     def get_object(self):
