@@ -101,10 +101,11 @@ INSTALLED_APPS = [
     'travel2change',
 
     # Third Party Apps
-    'crispy_forms',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    'django_extensions',
     'formtools',
 ]
 
