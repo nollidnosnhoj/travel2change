@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from .managers import ActivityManager
-from hosts.models import Host
+from users.models import Host
 
 
 class Region(models.Model):

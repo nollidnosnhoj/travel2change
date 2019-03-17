@@ -4,7 +4,7 @@ import json
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-gettext = lambda s: s
+gettext = lambda s: s # noqa
 
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     # travel2change Apps
     'users',
     'activities',
-    'hosts',
 
     'djangocms_modules',
 

@@ -1,16 +1,14 @@
 {% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}{{ host.name }}{% endblock title %}
 {% block content %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endaddtoblock %}
 <div class="row justify-content-center m-2">
-    <div class="col-lg-4">
-        <form 
-            class="ajax-form" 
-            method="POST" 
-            action="." 
-            data-url='{{ request.build_absolute_uri|safe }}'
-        >
+    <div class="col-lg">
+        <form method="POST">
             {% csrf_token %}
-            {{form|crispy|safe}}
+            {{form|crispy}}
             <button type="submit" class="btn btn-success">Save</button>
         </form>
     </div>
