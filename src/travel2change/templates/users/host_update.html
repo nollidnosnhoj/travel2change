@@ -6,44 +6,11 @@
 {% endaddtoblock %}
 <div class="row justify-content-center m-2">
     <div class="col-lg">
-        <div class="loading-icon">
-            <div></div><div></div><div></div>
-        </div>
-        <form 
-            class="host-update-form" 
-            method="POST" 
-            action="." 
-            data-url='{{ request.build_absolute_uri|safe }}'
-        >
+        <form method="POST">
             {% csrf_token %}
-            {{form|crispy|safe}}
+            {{form|crispy}}
             <button type="submit" class="btn btn-success">Save</button>
         </form>
     </div>
 </div>
 {% endblock content %}
-{% block scripts %}
-<script>
-$(document).ready(function(){
-    var $myForm = $('.host-update-form');
-    $('.loading-icon').hide()
-    $myForm.submit(function(event){
-        event.preventDefault();
-        var $formData = $(this).serialize();
-        var $thisURL = $myForm.attr('data-url') || window.location.href;
-        $('.loading-icon').show();
-        $.ajax({
-            method: "POST",
-            url: $thisURL,
-            data: $formData,
-            success: function(data) {
-                $('.loading-icon').hide();
-            },
-            error: function(response) {
-                // Handle errors
-            }
-        });
-    });
-})
-</script>
-{% endblock scripts %}

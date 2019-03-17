@@ -3,7 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+# from django_extensions.db.fields import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
+from django_extensions.db.fields import AutoSlugField
 from .managers import CustomUserManager
 
 
@@ -44,22 +46,33 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Host(models.Model):
     user            = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    _name            = models.CharField(_('name'),
+    _name           = models.CharField(
+                        _('name'),
                         max_length=60,
                         blank=True,
-                        help_text=_('Your name or organization. Will be displayed on your profile and activities.'),
+                        help_text=_("Provide a name of your organization. This will also be in your profile's URL.\n"
+                                    "Ex. travel2change.org/hosts/your-organization-name"),
                     )
-    description     = models.TextField(_('description'), max_length=400, blank=True,
+    slug           = AutoSlugField(
+                        populate_from=['name'],
+                        overwrite=True
+                    )
+    description     = models.TextField(
+                        _('description'),
+                        max_length=400,
+                        blank=True,
                         help_text=_('Tell us about you or your organization.'),
                     )
-    phone           = PhoneNumberField(_('phone'), blank=True, help_text=_('Contact phone number'))
-    website         = models.URLField(_('website'), blank=True, help_text=_("Your or organization's website"))
-
-    def __str__(self):
-        return self.user.email
-
-    def get_absolute_url(self):
-        return reverse('host_detail', kwargs={'pk': self.pk})
+    phone           = PhoneNumberField(
+                        _('phone'),
+                        blank=True,
+                        help_text=_('Provide a contact phone number in +12223334444.')
+                    )
+    website         = models.URLField(
+                        _('website'),
+                        blank=True,
+                        help_text=_("Provide a link to your website.")
+                    )
 
     """
     If host has a host name, then the activities and profile will display the host name,
@@ -70,3 +83,9 @@ class Host(models.Model):
         if self._name:
             return self._name
         return self.user.get_full_name()
+
+    def __str__(self):
+        return self.user.email
+
+    def get_absolute_url(self):
+        return reverse('host_detail', kwargs={'slug': self.slug})
