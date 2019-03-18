@@ -81,13 +81,14 @@ STEP_TEMPLATES = {
 """
     This is a multi-step form view for the activity creation.
     Each step will pass the data into the next step, until
-    the form is finished. It is passed through SESSIONS. 
+    the form is finished. It is passed through SESSIONS.
 """
 class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
 
     """ Only users that are host can access the activity creation form """
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.is_host
+        host = Host.objects.filter(user=self.request.user)
+        return self.request.user.is_authenticated and host
 
     def get_template_names(self):
         return [STEP_TEMPLATES[self.steps.current]]
