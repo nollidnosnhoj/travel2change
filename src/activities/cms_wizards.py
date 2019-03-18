@@ -1,6 +1,6 @@
 from cms.wizards.wizard_base import Wizard
 from cms.wizards.wizard_pool import wizard_pool
-from .forms import ActivityForm
+from .forms import ActivityWizardForm
 
 class ActivityWizard(Wizard):
     pass
@@ -9,7 +9,7 @@ class ActivityWizard(Wizard):
 activity_wizard = ActivityWizard(
     title='New Activity',
     weight=200,
-    form=ActivityForm,
+    form=ActivityWizardForm,
     description='Create a new activity',
 )
 
