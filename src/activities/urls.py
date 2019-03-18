@@ -1,9 +1,19 @@
 from django.conf.urls import url
 from .forms import ACTIVITY_CREATE_FORMS_LIST
-from .views import ActivityDetailView, ActivityCreationView, ActivityUpdateView
+from .views import (
+    ActivityDetailView,
+    ActivityCreationView,
+    ActivityUpdateView,
+    ActivityPhotoUploadView,
+)
 
 app_name = 'activities'
 urlpatterns = [
+    url(
+        r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/upload/',
+        ActivityPhotoUploadView.as_view(),
+        name='upload',
+    ),
     url(
         r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/edit/',
         ActivityUpdateView.as_view(),
