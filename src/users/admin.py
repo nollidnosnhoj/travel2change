@@ -20,11 +20,11 @@ class CustomUserAdmin(UserAdmin):
         'is_staff',
         'date_joined'
     )
-    list_filter = ('is_active', 'is_staff', 'is_host')
+    list_filter = ('is_active', 'is_staff', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Information', {'fields': ('first_name', 'last_name',)}),
-        ('Permissions', {'fields': ('is_host', 'is_active', 'is_staff',)})
+        ('Permissions', {'fields': ('is_active', 'is_staff',)})
     )
     add_fieldsets = (
         (None, {
@@ -35,7 +35,6 @@ class CustomUserAdmin(UserAdmin):
                 'last_name',
                 'password1',
                 'password2',
-                'is_host',
             )
         }),
     )

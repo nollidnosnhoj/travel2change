@@ -25,7 +25,8 @@ STEP_TEMPLATES = {
 class ActivityWizard(UserPassesTestMixin, SessionWizardView):
 
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.is_host
+        host = Host.objects.filter(user=self.request.user)
+        return self.request.user.is_authenticated and host
 
     def get_template_names(self):
         return [STEP_TEMPLATES[self.steps.current]]
