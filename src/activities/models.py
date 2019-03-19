@@ -145,8 +145,3 @@ class Activity(models.Model):
     # Checks if the activity is free or not
     def is_free(self):
         return self.price == 0.00 or self.price is None
-
-
-class ActivityPhoto(models.Model):
-    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='activity_images/')

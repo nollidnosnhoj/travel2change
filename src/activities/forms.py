@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Activity, ActivityPhoto
+from .models import Activity
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -45,12 +45,6 @@ class LocationForm(forms.ModelForm):
                 'id': 'lng_field'
             })
         }
-
-
-class PhotoForm(forms.ModelForm):
-    class Meta:
-        model = ActivityPhoto
-        fields = ('image', )
 
 
 """ Form that corresponds to each step of the activity creation """

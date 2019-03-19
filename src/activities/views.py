@@ -1,13 +1,11 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from formtools.wizard.views import SessionWizardView
-from .forms import ActivityUpdateForm, PhotoForm
-from .models import Activity, ActivityPhoto
+from .forms import ActivityUpdateForm
+from .models import Activity
 from users.models import Host
 
 
@@ -29,42 +27,6 @@ class ActivityUpdateView(SuccessMessageMixin, UpdateView):
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
-
-
-class ActivityPhotoUploadView(View):
-    """
-    def get_activity_object(self):
-        return Activity.objects.get(
-            slug=self.kwargs['slug']
-        )
-    """
-
-    def get(self, request, region, slug, pk):
-        activity = Activity.objects.get(pk=pk)
-        print(activity)
-        activity_photos = ActivityPhoto.objects.filter(activity=activity)
-        return render(
-            self.request,
-            'activities/activity_upload.html',
-            {
-                'photos': activity_photos,
-                'activity': activity,
-            },
-        )
-    
-    def post(self, request, region, slug, pk):
-        form = PhotoForm(self.request.POST, self.request.FILES)
-        print(form)
-        if form.is_valid():
-            photo = form.save(commit=False)
-            photo.activity = Activity.objects.get(pk=pk)
-            photo.save()
-            print(photo)
-            data = {'is_valid': True, 'name': photo.image.name, 'url': photo.image.url}
-        else:
-            data = {'is_valid': False}
-        print(data)
-        return JsonResponse(data)
 
 
 """ Template that corresponds to each step of the activity creation """
