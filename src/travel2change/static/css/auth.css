@@ -1,27 +1,10 @@
-
-@media only screen and (max-width: 768px) { 
-    a.forgot-pass {
-        float: left !important;
-    }
+.auth {
+    min-width: 450px;
+    margin-top: 2rem!important;
+    margin-bottom: 2rem!important;
+    padding: 2rem!important;
 }
-
-a.forgot-pass {
-    float: right;
-}
-
-.authform {
-    width: 100%;
-    max-width: 500px;
-    padding: 15px;
-    margin: auto;
-}
-
-.authform h1 {
-    text-align: center !important;
-    margin-bottom: 2rem;
-}
-
-/* hack */
-.input-group ~ .invalid-feedback{ 
-    display: block; 
+.auth h1 {
+    text-align: center!important;
+    margin-bottom: 2rem!important;
 }

@@ -1,18 +1,34 @@
-import os  # isort:skip
-from django.utils.translation import gettext_lazy as _
-gettext = lambda s: s
-DATA_DIR = os.path.dirname(os.path.dirname(__file__))
-
 import os
+import json
+
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
+
+gettext = lambda s: s # noqa
+
+DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Open Secrets JSON file and create function to get value of key.
+
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except ImproperlyConfigured:
+        print("Set the {0} settings".format(setting))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '275r(#c+_uh4k&nbdmt*)mq)_v^689lkq&mypgpk*8e11wboo6'
+SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,8 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
 
     # travel2change Apps
-    'accounts',
-    'activity',
+    'users',
+    'activities',
 
     'djangocms_modules',
 
@@ -85,10 +101,12 @@ INSTALLED_APPS = [
     'travel2change',
 
     # Third Party Apps
-    'crispy_forms',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    'django_extensions',
+    'formtools',
 ]
 
 MIDDLEWARE = [
@@ -132,8 +150,6 @@ MIGRATION_MODULES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -151,6 +167,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
+# AUTHENTICATION SETTINGS
+
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
@@ -158,16 +176,16 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# Django AllAuth Settings
-
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = "/"
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.SignupForm',
+}
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -198,7 +216,7 @@ STATICFILES_DIRS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'travel2change', 'templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'travel2change', 'templates'), ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
@@ -225,14 +243,12 @@ TEMPLATES = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LANGUAGES = (
-    ## Customize this
     ('en', gettext('en')),
 )
 
 # Django CMS Settings
 
 CMS_LANGUAGES = {
-    ## Customize this
     1: [
         {
             'code': 'en',
@@ -250,7 +266,6 @@ CMS_LANGUAGES = {
 }
 
 CMS_TEMPLATES = (
-    ## Customize this
     ('home.html', 'Homepage'),
     ('fullwidth.html', 'Fullwidth'),
     ('signup.html', 'Sign Up')
