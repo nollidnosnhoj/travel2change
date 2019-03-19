@@ -32,12 +32,6 @@ class ActivityUpdateView(SuccessMessageMixin, UpdateView):
 
 
 class ActivityPhotoUploadView(View):
-    """
-    def get_activity_object(self):
-        return Activity.objects.get(
-            slug=self.kwargs['slug']
-        )
-    """
 
     def get(self, request, region, slug, pk):
         activity = Activity.objects.get(pk=pk)
