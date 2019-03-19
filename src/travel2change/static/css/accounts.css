@@ -1,0 +1,18 @@
+body {
+    background-image: url( '/static/img/registrationImage1.jpg' );
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.auth {
+    background-color: white;
+    min-width: 450px;
+    margin-top: 2rem!important;
+    margin-bottom: 2rem!important;
+    padding: 2rem!important;
+}
+.auth h1 {
+    text-align: center!important;
+    margin-bottom: 2rem!important;
+}
