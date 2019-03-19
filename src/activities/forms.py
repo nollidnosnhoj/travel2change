@@ -1,29 +1,39 @@
 from django import forms
 
-from .models import Activity
+from .models import Activity, ActivityPhoto
 
 
-class RegionActivityForm(forms.ModelForm):
+class BasicInfoForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ['region', ]
+        fields = ['title', 'description', 'region', ]
 
 
-class TitleActivityForm(forms.ModelForm):
+class HighlightsForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ['title', 'description', 'price', ]
+        fields = ['highlights', ]
 
 
-# Step Two (Input Highlights, Requirements, and Tags)
-class AboutActivityForm(forms.ModelForm):
+class RequirementsForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ['highlights', 'requirements', 'tags', ]
+        fields = ['requirements', ]
 
 
-# Step Four (Confirm Location is Correct)
-class LocationActivityForm(forms.ModelForm):
+class TagsForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['tags', ]
+
+
+class PriceForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['price', ]
+
+
+class LocationForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['address', 'latitude', 'longitude', ]
@@ -37,15 +47,23 @@ class LocationActivityForm(forms.ModelForm):
         }
 
 
-# { "Step Name" : Form Class }
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = ActivityPhoto
+        fields = ('image', )
 
+
+""" Form that corresponds to each step of the activity creation """
 ACTIVITY_CREATE_FORMS_LIST = [
-    ("0", RegionActivityForm),
-    ("1", TitleActivityForm),
-    ("2", AboutActivityForm),
-    ("3", LocationActivityForm),
+    ("0", BasicInfoForm),
+    ("1", HighlightsForm),
+    ("2", RequirementsForm),
+    ("3", TagsForm),
+    ("4", PriceForm),
+    ("5", LocationForm),
 ]
 
+""" CMS Wizard Form """
 class ActivityWizardForm(forms.ModelForm):
     class Meta:
         model = Activity
@@ -54,7 +72,7 @@ class ActivityWizardForm(forms.ModelForm):
         ]
 
 
-class ActivityForm(forms.ModelForm):
+class ActivityUpdateForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = (

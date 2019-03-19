@@ -147,9 +147,6 @@ class Activity(models.Model):
         return self.price == 0.00 or self.price is None
 
 
-class ActivityImage(models.Model):
-    activity = models.ForeignKey(Activity, related_name='images', on_delete=models.CASCADE)
-    caption = models.CharField(max_length=60)
-    image = models.ImageField(upload_to='activity_images/', blank=False, null=False)
-    created = models.DateTimeField(auto_now=True)
-    updated = models.DateTimeField(auto_now_add=True)
+class ActivityPhoto(models.Model):
+    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='activity_images/')
