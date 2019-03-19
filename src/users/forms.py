@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.db import transaction
 from django.utils.translation import ugettext as _
 from allauth.account.forms import SignupForm as BaseSignupForm
+from .models import Host
 
 User = get_user_model()
 
@@ -10,7 +12,16 @@ User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = User
-        fields = ('email', 'first_name', 'last_name', 'is_host')
+        fields = ('email', 'first_name', 'last_name', )
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if user.is_host:
+            host = Host.objects.create(user=user)
+            host.save()
+        if commit:
+            user.save()
+        return user
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -33,9 +44,13 @@ class SignupForm(BaseSignupForm):
         label=_('Will you be hosting activities?')
     )
 
-    def signup(self, request, user):
-        user.is_host = self.cleaned_data['is_host']
+    @transaction.atomic
+    def save(self, request):
+        user = super().save(request)
+        is_host = self.cleaned_data['is_host']
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.save()
+        if is_host:
+            host = Host.objects.create(user=user)
+            host.save()
         return user
