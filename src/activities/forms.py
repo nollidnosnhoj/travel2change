@@ -1,6 +1,6 @@
 from django import forms
 from multiupload.fields import MultiMediaField
-from .models import Activity
+from .models import Activity, ActivityPhoto
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -45,6 +45,12 @@ class LocationForm(forms.ModelForm):
                 'id': 'lng_field'
             })
         }
+
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = ActivityPhoto
+        fields = ('file', )
 
 
 """ Form that corresponds to each step of the activity creation """
