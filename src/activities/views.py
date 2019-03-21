@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.views import View
+from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import FormView, UpdateView
 from formtools.wizard.views import SessionWizardView
-from .forms import ActivityUpdateForm, PhotoForm
+from .forms import ActivityUpdateForm, PhotoUploadForm
 from .models import Activity, ActivityPhoto
 from users.models import Host
 
@@ -31,40 +32,32 @@ class ActivityUpdateView(SuccessMessageMixin, UpdateView):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(View):
-    """
-    def get_activity_object(self):
-        return Activity.objects.get(
-            slug=self.kwargs['slug']
-        )
-    """
+class ActivityPhotoUploadView(FormView):
+    template_name = 'activities/activity_upload.html'
+    form_class = PhotoUploadForm
 
-    def get(self, request, region, slug, pk):
-        activity = Activity.objects.get(pk=pk)
-        print(activity)
-        activity_photos = ActivityPhoto.objects.filter(activity=activity)
-        return render(
-            self.request,
-            'activities/activity_upload.html',
-            {
-                'photos': activity_photos,
-                'activity': activity,
-            },
-        )
+    def form_valid(self, form):
+        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        if (ActivityPhoto.objects.filter(activity=activity).count() <= 5):
+            for image in form.cleaned_data['attachments']:
+                ActivityPhoto.objects.create(file=image, activity=activity)
+            
+            return super().form_valid(form)
+        messages.error(self.request, _('Activity cannot have more than five images'))
+        return super().form_invalid(form)
     
-    def post(self, request, region, slug, pk):
-        form = PhotoForm(self.request.POST, self.request.FILES)
-        print(form)
-        if form.is_valid():
-            photo = form.save(commit=False)
-            photo.activity = Activity.objects.get(pk=pk)
-            photo.save()
-            print(photo)
-            data = {'is_valid': True, 'name': photo.image.name, 'url': photo.image.url}
-        else:
-            data = {'is_valid': False}
-        print(data)
-        return JsonResponse(data)
+    def get_success_url(self):
+        return reverse('activities:upload', kwargs={
+            'region': self.kwargs['region'],
+            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk']
+        })
+    
+    def get_context_data(self, **kwargs):
+        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+        context['activity_photos'] = ActivityPhoto.objects.filter(activity=activity)
+        return context
 
 
 """ Template that corresponds to each step of the activity creation """

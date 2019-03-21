@@ -149,4 +149,4 @@ class Activity(models.Model):
 
 class ActivityPhoto(models.Model):
     activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='activity_images/')
+    file = models.FileField(upload_to='activity_photos/')
