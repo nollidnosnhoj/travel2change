@@ -1,31 +1,21 @@
-
-    {% extends "account/base.html" %}
-    {% load staticfiles %}
-
-    {% load i18n %}{% load crispy_forms_tags %}
-
-    {% block title %}{% trans "Sign Up" %}{% endblock %}
-
-    {% block styles %}
-    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
-    {% endblock styles %}
-
-    {% block authblock %}
-
-        <div class="container" id="register">
-            <h1>Register to travel2change</h1>
-            <form method="POST" class="mb-3" action="{% url 'account_signup' %}">
-                {% csrf_token %}
-                {{ form|crispy }}
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-                <button type="submit" class="btn btn-success btn-lg btn-block">{% trans "Sign Up" %}</button>
-            </form>
-            <div class="text-center">
-                <hr>
-                <p>Already have an account? <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></p>
-            </div>
+{% extends "account/base.html" %}
+{% load staticfiles %}
+{% load i18n %}{% load crispy_forms_tags %}
+{% block title %}{% trans "Sign Up" %}{% endblock %}
+{% block authblock %}
+    <div class="container" id="register">
+        <h1>Register to travel2change</h1>
+        <form method="POST" class="mb-3" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button type="submit" class="btn btn-success btn-lg btn-block">{% trans "Sign Up" %}</button>
+        </form>
+        <div class="text-center">
+            <hr>
+            <p>Already have an account? <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></p>
         </div>
-
-    {% endblock authblock %}
+    </div>
+{% endblock authblock %}

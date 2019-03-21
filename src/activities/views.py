@@ -1,6 +1,6 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -18,27 +18,33 @@ class ActivityDetailView(DetailView):
     context_object_name = 'activity'
 
 
-class ActivityUpdateView(SuccessMessageMixin, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Activity
     form_class = ActivityUpdateForm
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
 
-    def get_object(self):
-        host = Host.objects.get(user=self.request.user)
-        return Activity.objects.get(host=host)
+    def test_func(self):
+        activity = self.get_object()
+        return activity.host.user == self.request.user
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(FormView):
+class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
 
+    def get_activity(self):
+        return Activity.objects.get(pk=self.kwargs['pk'])
+
+    def test_func(self):
+        return self.get_activity().host.user == self.request.user
+
     def form_valid(self, form):
         max_photos = 5
-        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        activity = self.get_activity()
         current_num_photos = ActivityPhoto.objects.filter(activity=activity).count()
         if (current_num_photos == max_photos):
             messages.error(self.request, _("You have reached your limit of 5 photos. \
@@ -62,7 +68,7 @@ class ActivityPhotoUploadView(FormView):
         })
     
     def get_context_data(self, **kwargs):
-        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        activity = self.get_activity()
         context = super().get_context_data(**kwargs)
         context['activity'] = activity
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
