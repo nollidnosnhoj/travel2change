@@ -37,25 +37,16 @@ class ActivityPhotoUploadView(FormView):
     form_class = PhotoUploadForm
 
     def form_valid(self, form):
-        # max number of photos per activity
         max_photos = 5
-        # get current activity
         activity = Activity.objects.get(pk=self.kwargs['pk'])
-        # get current number of photos in activity
         current_num_photos = ActivityPhoto.objects.filter(activity=activity).count()
-        # Initially check if the current photos reached its limit
         if (current_num_photos == max_photos):
-            # Throw form error
             messages.error(self.request, _("You have reached your limit of 5 photos. \
                 Please remove some to add photos."))
             return super().form_invalid(form)
-        # get all the images uploaded
         for image in form.cleaned_data['photos']:
-            # create activity photo object
             ActivityPhoto.objects.create(file=image, activity=activity)
-            # increment current number of photos
             current_num_photos += 1
-            # Check if the current photos reach its limit
             if (current_num_photos == max_photos):
                 messages.warning(self.request, _("Some photos were not uploaded because \
                     you have reached your photos limit."))
@@ -73,7 +64,8 @@ class ActivityPhotoUploadView(FormView):
     def get_context_data(self, **kwargs):
         activity = Activity.objects.get(pk=self.kwargs['pk'])
         context = super().get_context_data(**kwargs)
-        context['activity_photos'] = ActivityPhoto.objects.filter(activity=activity)
+        context['activity'] = activity
+        context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
 
 
