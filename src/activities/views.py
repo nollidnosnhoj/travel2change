@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.views import View
+from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import FormView, UpdateView
 from formtools.wizard.views import SessionWizardView
-from .forms import ActivityUpdateForm, PhotoForm
+from .forms import ActivityUpdateForm, PhotoUploadForm
 from .models import Activity, ActivityPhoto
 from users.models import Host
 
@@ -31,34 +32,49 @@ class ActivityUpdateView(SuccessMessageMixin, UpdateView):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(View):
+class ActivityPhotoUploadView(FormView):
+    template_name = 'activities/activity_upload.html'
+    form_class = PhotoUploadForm
 
-    def get(self, request, region, slug, pk):
-        activity = Activity.objects.get(pk=pk)
-        print(activity)
-        activity_photos = ActivityPhoto.objects.filter(activity=activity)
-        return render(
-            self.request,
-            'activities/activity_upload.html',
-            {
-                'photos': activity_photos,
-                'activity': activity,
-            },
-        )
+    def form_valid(self, form):
+        # max number of photos per activity
+        max_photos = 5
+        # get current activity
+        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        # get current number of photos in activity
+        current_num_photos = ActivityPhoto.objects.filter(activity=activity).count()
+        # Initially check if the current photos reached its limit
+        if (current_num_photos == max_photos):
+            # Throw form error
+            messages.error(self.request, _("You have reached your limit of 5 photos. \
+                Please remove some to add photos."))
+            return super().form_invalid(form)
+        # get all the images uploaded
+        for image in form.cleaned_data['photos']:
+            # create activity photo object
+            ActivityPhoto.objects.create(file=image, activity=activity)
+            # increment current number of photos
+            current_num_photos += 1
+            # Check if the current photos reach its limit
+            if (current_num_photos == max_photos):
+                messages.warning(self.request, _("Some photos were not uploaded because \
+                    you have reached your photos limit."))
+                break
+        messages.success(self.request, _('Photo(s) successfully uploaded.'))
+        return super().form_valid(form)
     
-    def post(self, request, region, slug, pk):
-        form = PhotoForm(self.request.POST, self.request.FILES)
-        print(form)
-        if form.is_valid():
-            photo = form.save(commit=False)
-            photo.activity = Activity.objects.get(pk=pk)
-            photo.save()
-            print(photo)
-            data = {'is_valid': True, 'name': photo.image.name, 'url': photo.image.url}
-        else:
-            data = {'is_valid': False}
-        print(data)
-        return JsonResponse(data)
+    def get_success_url(self):
+        return reverse('activities:upload', kwargs={
+            'region': self.kwargs['region'],
+            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk']
+        })
+    
+    def get_context_data(self, **kwargs):
+        activity = Activity.objects.get(pk=self.kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+        context['activity_photos'] = ActivityPhoto.objects.filter(activity=activity)
+        return context
 
 
 """ Template that corresponds to each step of the activity creation """

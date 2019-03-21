@@ -147,6 +147,10 @@ class Activity(models.Model):
         return self.price == 0.00 or self.price is None
 
 
+def get_image_filename(instance, filename):
+    return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
+
+
 class ActivityPhoto(models.Model):
     activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='activity_images/')
+    file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))

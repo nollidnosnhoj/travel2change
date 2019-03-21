@@ -4,20 +4,6 @@
 {% addtoblock "css" %}
     <link rel="stylesheet" href="{% static 'css/activity.css' %}">
 {% endaddtoblock %}
-<div class="modal fade" id="modal-progress" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Uploading...</h4>
-            </div>
-            <div class="modal-body">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
@@ -28,22 +14,23 @@
         </div>
     </aside>
     <article class="single-activity col-sm-8">
-        <button type="button" class="btn btn-primary upload-activity-photos">
-            Upload photos
-        </button>
-        <input id="fileupload" type="file" name="photo" multiple
-            style="display: none;"
-            data-url="{% url 'activities:upload' activity.slug activity.region activity.pk %}"
-            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'
-        >   
-        <table id="gallery" class="table table-bordered">
-            <thead><tr><th>Photo</th></tr></thead>
-            <tbody>
-                {% for photo in photos %}
-                <tr><td><a href="{{ photo.image.url }}">{{ photo.image.name }}</a></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% for photo in activity_photos %}
+            <a href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name }}</a><br />
+        {% empty %}
+            Nothing to see here :D
+        {% endfor %}
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit images" />
+        </form>
     </article>
 </div>
 {% endblock content %}
