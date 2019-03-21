@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
@@ -15,15 +15,15 @@ class ActivityDetailView(DetailView):
     context_object_name = 'activity'
 
 
-class ActivityUpdateView(SuccessMessageMixin, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Activity
     form_class = ActivityUpdateForm
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
 
-    def get_object(self):
-        host = Host.objects.get(user=self.request.user)
-        return Activity.objects.get(host=host)
+    def test_func(self):
+        activity = self.get_object()
+        return activity.host.user == self.request.user
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
