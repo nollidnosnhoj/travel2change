@@ -47,6 +47,12 @@ class LocationForm(forms.ModelForm):
         }
 
 
+class FeaturedPhotoForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['featured_photo', ]
+
+
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = ActivityPhoto
@@ -61,6 +67,7 @@ ACTIVITY_CREATE_FORMS_LIST = [
     ("3", TagsForm),
     ("4", PriceForm),
     ("5", LocationForm),
+    ("6", FeaturedPhotoForm),
 ]
 
 """ CMS Wizard Form """
@@ -82,6 +89,7 @@ class ActivityUpdateForm(forms.ModelForm):
             'highlights',
             'requirements',
             'tags',
+            'featured_photo',
             'price',
             'address',
             'latitude',

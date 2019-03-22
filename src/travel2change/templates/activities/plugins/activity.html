@@ -1,0 +1,19 @@
+<div class="latest_activity card" style="width: 18rem;">
+    {% if activity.featured_photo %}
+    <a href="{{ activity.get_absolute_url }}">
+        <img 
+            src="{{ activity.featured_photo.url }}" 
+            class="card-img-top" 
+            alt="{{ activity.title }}'s Featured Photo'"
+        >
+    </a>
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{ activity.title }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ activity.region }}</h6>
+        <p class="card-text">{{ activity.description|truncatechars:50}}</p>
+        {% for tag in activity.tags.all %}
+        <a href="#" class="card-link">{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+</div>

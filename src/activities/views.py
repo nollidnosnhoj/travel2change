@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -83,6 +86,7 @@ STEP_TEMPLATES = {
     "3": "activities/create/default.html",
     "4": "activities/create/default.html",
     "5": "activities/create/location.html",
+    "6": "activities/create/default.html",
 }
 
 
@@ -92,6 +96,7 @@ STEP_TEMPLATES = {
     the form is finished. It is passed through SESSIONS.
 """
 class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
 
     """ Only users that are host can access the activity creation form """
     def test_func(self):
@@ -104,8 +109,10 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
     def done(self, form_list, **kwargs):
         host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
+        print(form_dict)
         activity_tags = form_dict.pop('tags')
         instance = Activity.objects.create(**form_dict, host=host)
+        instance.featured_photo = self.request.FILES
         instance.tags.set(activity_tags)
         instance.save()
         
