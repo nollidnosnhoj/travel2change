@@ -4,10 +4,16 @@ from .views import (
     ActivityDetailView,
     ActivityCreationView,
     ActivityUpdateView,
+    ActivityPhotoUploadView,
 )
 
 app_name = 'activities'
 urlpatterns = [
+    url(
+        r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/photos/',
+        ActivityPhotoUploadView.as_view(),
+        name='photos',
+    ),
     url(
         r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/edit/',
         ActivityUpdateView.as_view(),

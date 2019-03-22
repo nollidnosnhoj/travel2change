@@ -20,6 +20,12 @@ class ActivityDetailView(DetailView):
     model = Activity
     context_object_name = 'activity'
 
+    def get_context_data(self, **kwargs):
+        activity = self.get_object()
+        context = super().get_context_data(**kwargs)
+        context['photos'] = ActivityPhoto.objects.filter(activity=activity)
+        return context
+
 
 class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Activity
@@ -64,7 +70,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse('activities:upload', kwargs={
+        return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
             'pk': self.kwargs['pk']
@@ -80,21 +86,16 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
 
 """ Template that corresponds to each step of the activity creation """
 STEP_TEMPLATES = {
-    "0": "activities/create/default.html",
-    "1": "activities/create/default.html",
-    "2": "activities/create/default.html",
-    "3": "activities/create/default.html",
-    "4": "activities/create/default.html",
-    "5": "activities/create/location.html",
-    "6": "activities/create/default.html",
+    "0": "activities/wizard_templates/default.html",
+    "1": "activities/wizard_templates/default.html",
+    "2": "activities/wizard_templates/default.html",
+    "3": "activities/wizard_templates/default.html",
+    "4": "activities/wizard_templates/default.html",
+    "5": "activities/wizard_templates/location.html",
+    "6": "activities/wizard_templates/featured_photo.html",
 }
 
 
-"""
-    This is a multi-step form view for the activity creation.
-    Each step will pass the data into the next step, until
-    the form is finished. It is passed through SESSIONS.
-"""
 class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
 
@@ -112,7 +113,6 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
         print(form_dict)
         activity_tags = form_dict.pop('tags')
         instance = Activity.objects.create(**form_dict, host=host)
-        instance.featured_photo = self.request.FILES
         instance.tags.set(activity_tags)
         instance.save()
         

@@ -5,5 +5,7 @@
     {% if forloop.counter|divisibleby:"4" and not forloop.last %}
     </div><div class="row">
     {% endif %}
+    {% empty %}
+    <p>No activities yet.</p>
     {% endfor %}
 </div>
