@@ -5,10 +5,12 @@ from .views import (
     ActivityCreationView,
     ActivityUpdateView,
     ActivityPhotoUploadView,
+    photo_delete,
 )
 
 app_name = 'activities'
 urlpatterns = [
+    url(r'photos/delete/(?P<pk>[0-9]+)/', photo_delete, name="photo_delete"),
     url(
         r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/photos/',
         ActivityPhotoUploadView.as_view(),

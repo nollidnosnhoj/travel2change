@@ -4,7 +4,8 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
@@ -82,6 +83,12 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         context['activity'] = activity
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
+
+
+def photo_delete(request, pk):
+    photo = get_object_or_404(ActivityPhoto, pk=pk)
+    photo.delete()
+    return JsonResponse({'message': 'Successful!'})
 
 
 """ Template that corresponds to each step of the activity creation """

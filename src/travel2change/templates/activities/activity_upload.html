@@ -12,6 +12,13 @@
             <a href="#" class="list-group-item list-group-item-action">FareHarbor Dashboard</a>
             <a href="{{ activity.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
+        <br />
+        <h3>Upload Photos</h3>
+        <form action="" method="post" enctype="multipart/form-data" class="mb-3">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit images" />
+        </form>
     </aside>
     <article class="single-activity col-sm-8">
         {% if messages %}
@@ -21,33 +28,58 @@
             {% endfor %}
         </ul>
         {% endif %}
-        <table class="table">
-            <thead>
-                <tr><td>Photos</td></tr>
-            </thead>
-            <tbody>
-                {% for photo in photos %}
-                <tr>
-                    <td><a href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name }}</a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td>No photos</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <form action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" value="Submit images" />
-        </form>
+        <div class="alert alert-info" role="alert">
+            Each activity can have up to five photos (not including the featured photo)
+        </div>
+        <h3>Photos</h3>
+        {% for photo in photos %}
+        <div class="photo-row row mb-3">
+            <div class="col-sm-8">
+                <a href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button class="delete_photo btn btn-danger" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
+            </div>
+        </div>
+        {% empty %}
+        <p>You have not uploaded any photos yet.</p>
+        {% endfor %}
     </article>
 </div>
 {% endblock content %}
 {% block scripts %}
-<script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
-<script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
-<script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
-<script src="{% static 'js/image-upload.js' %}"></script>
+<script>
+$(".delete_photo").click(function() {
+    console.log("CLICKED!")
+    var button = $(this);
+    if (confirm("Are you sure you want to delete this photo?")) {
+        $.ajax({
+            type: "DELETE",
+            url: $(this).data('url'),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+            },
+            success: function() {
+                button.parent().parent().fadeOut(1000);
+            },
+        });
+    }
+});
+// using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock scripts %}
