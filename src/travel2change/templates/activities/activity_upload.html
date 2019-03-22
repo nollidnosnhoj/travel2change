@@ -3,6 +3,7 @@
 {% block content %}
 {% addtoblock "css" %}
     <link rel="stylesheet" href="{% static 'css/activity.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 {% endaddtoblock %}
 <div class="row">
     <aside class="col-sm-4">
@@ -21,13 +22,7 @@
         </form>
     </aside>
     <article class="single-activity col-sm-8">
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+        {% include 'partials/messages.html' %}
         <div class="alert alert-info" role="alert">
             Each activity can have up to five photos (not including the featured photo)
         </div>
@@ -35,7 +30,7 @@
         {% for photo in photos %}
         <div class="photo-row row mb-3">
             <div class="col-sm-8">
-                <a href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
+                <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
             </div>
             <div class="col-sm-4 text-right">
                 <button class="delete_photo btn btn-danger" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
@@ -48,38 +43,7 @@
 </div>
 {% endblock content %}
 {% block scripts %}
-<script>
-$(".delete_photo").click(function() {
-    console.log("CLICKED!")
-    var button = $(this);
-    if (confirm("Are you sure you want to delete this photo?")) {
-        $.ajax({
-            type: "DELETE",
-            url: $(this).data('url'),
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-            },
-            success: function() {
-                button.parent().parent().fadeOut(1000);
-            },
-        });
-    }
-});
-// using jQuery
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-</script>
+<script src="{% static 'js/photo_delete.js' %}"></script>
+<script src="{% static 'js/ajax_cookie.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 {% endblock scripts %}
