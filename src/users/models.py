@@ -51,9 +51,15 @@ class Host(models.Model):
                         help_text=_("Provide a name of your organization. This will also be in your profile's URL.\n"
                                     "Ex. travel2change.org/hosts/your-organization-name"),
                     )
-    slug           = AutoSlugField(
-                        populate_from=['name'],
+    slug            = AutoSlugField(
+                        populate_from=['profile_slug'],
                         overwrite=True
+                    )
+    custom_slug     = models.SlugField(
+                        _('custom slug'),
+                        max_length=50,
+                        blank=True,
+                        help_text=_('Create a custom slug for your profile. Example: travel2change.org/hosts/your-custom-slug'),
                     )
     description     = models.TextField(
                         _('description'),
@@ -78,9 +84,11 @@ class Host(models.Model):
     """
     @property
     def name(self):
-        if self._name:
-            return self._name
-        return self.user.get_full_name()
+        return self._name if self._name else self.user.get_full_name()
+    
+    @property
+    def profile_slug(self):
+        return self.custom_slug if self.custom_slug else self.name
 
     def __str__(self):
         return self.user.email
