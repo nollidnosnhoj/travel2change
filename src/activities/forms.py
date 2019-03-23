@@ -1,5 +1,5 @@
 from django import forms
-
+from multiupload.fields import MultiMediaField
 from .models import Activity
 
 
@@ -47,6 +47,12 @@ class LocationForm(forms.ModelForm):
         }
 
 
+class FeaturedPhotoForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['featured_photo', ]
+
+
 """ Form that corresponds to each step of the activity creation """
 ACTIVITY_CREATE_FORMS_LIST = [
     ("0", BasicInfoForm),
@@ -55,15 +61,8 @@ ACTIVITY_CREATE_FORMS_LIST = [
     ("3", TagsForm),
     ("4", PriceForm),
     ("5", LocationForm),
+    ("6", FeaturedPhotoForm),
 ]
-
-""" CMS Wizard Form """
-class ActivityWizardForm(forms.ModelForm):
-    class Meta:
-        model = Activity
-        exclude = [
-            'slug', 'review_count', 'created', 'modified',
-        ]
 
 
 class ActivityUpdateForm(forms.ModelForm):
@@ -76,6 +75,7 @@ class ActivityUpdateForm(forms.ModelForm):
             'highlights',
             'requirements',
             'tags',
+            'featured_photo',
             'price',
             'address',
             'latitude',
@@ -89,3 +89,21 @@ class ActivityUpdateForm(forms.ModelForm):
                 'id': 'lng_field',
             })
         }
+
+
+class PhotoUploadForm(forms.Form):
+    photos = MultiMediaField(
+        min_num=1,
+        max_num=5,
+        max_file_size=1920 * 1080 * 5,
+        media_type='image',
+    )
+
+
+""" CMS Wizard Form """
+class ActivityWizardForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        exclude = [
+            'slug', 'review_count', 'created', 'modified',
+        ]

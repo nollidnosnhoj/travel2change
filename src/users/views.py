@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from .models import Host
@@ -32,4 +33,4 @@ class HostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     
     """ Redirect user after successful update """
     def get_success_url(self):
-        return self.get_object().get_absolute_url()
+        return reverse('host_detail', kwargs={'slug': self.object.slug})
