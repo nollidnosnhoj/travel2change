@@ -7,21 +7,22 @@
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active">Edit Basic Info</a>
-            <a href="#" class="list-group-item list-group-item-action">Edit Highlights</a>
-            <a href="#" class="list-group-item list-group-item-action">Edit Requirements</a>
-            <a href="#" class="list-group-item list-group-item-action">Edit Location</a>
+            <a href="#div_id_title" class="list-group-item list-group-item-action">Edit Basic Info</a>
+            <a href="#div_id_highlights" class="list-group-item list-group-item-action">Edit Highlights</a>
+            <a href="#div_id_requirements" class="list-group-item list-group-item-action">Edit Requirements</a>
+            <a href="#div_id_featured_photo" class="list-group-item list-group-item-action">Edit Featured Photo</a>
+            <a href="#div_id_address" class="list-group-item list-group-item-action">Edit Location</a>
             <a href="#" class="list-group-item list-group-item-action">Edit Additional Info</a>
         </div>
         <br />
         <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action">Edit Images</a>
+            <a href="{% url 'activities:photos' object.region.slug object.slug object.pk %}" class="list-group-item list-group-item-action">Edit Images</a>
             <a href="#" class="list-group-item list-group-item-action">FareHarbor Dashboard</a>
-            <a href="#" class="list-group-item list-group-item-action">View Activity</a>
+            <a href="{{ object.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
     </aside>
     <article class="single-activity col-sm-8">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data" data-spy="scroll" data-offset="-15">
             {% csrf_token %}
             {{form|crispy}}
             <button type="submit" class="btn btn-success">Submit</button>

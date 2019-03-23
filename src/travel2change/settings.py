@@ -1,6 +1,7 @@
 import os
 import json
 
+from django.contrib.messages import constants as messages
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
@@ -106,6 +107,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'django_extensions',
+    'django_social_share',
+    'multiupload',
     'formtools',
 ]
 
@@ -342,4 +345,12 @@ CRISPY_CLASS_CONVERTERS = {
     'textarea': "form-control cst__radius",
     'passwordinput': "form-control cst__radius",
     'select': "form-control cst__radius",
+}
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
 }
