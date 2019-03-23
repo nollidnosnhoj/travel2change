@@ -1,10 +1,8 @@
-{% extends "base.html" %}{% load sekizai_tags cache staticfiles social_share %}
+{% extends "base.html" %}{% load sekizai_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
-{% endaddtoblock %}
 {% block styles %}
+<link rel="stylesheet" href="{% static 'css/activity.css' %}" />
 <style>
     #map {
         height: 300px;
@@ -23,10 +21,16 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="block">
+                <div class="social_share">
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item">{% post_to_facebook activity.get_absolute_url "Facebook" %}</li>
+                        <li class="list-group-item">{% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url "Twitter" %}</li>
+                    </ul>
+                </div>
+                <div class="description block">
                     <p>{{ activity.description }}</p>
                 </div>
-                <div class="block">
+                <div class="highlights block">
                     <h2>Highlights</h2>
                     <ul>
                         {% for highlight in activity.highlights_as_list %}
@@ -35,7 +39,7 @@
                     </ul>
                 </div>
                 {% if activity.requirements %}
-                <div class="block">
+                <div class="requirements block">
                     <h2>Requirements</h2>
                     <ul>
                     {% for requirement in activity.requirements_as_list %}
@@ -44,7 +48,7 @@
                     </ul>
                 </div>
                 {% endif %}
-                <div class="block">
+                <div class="location block">
                     <h2>Address</h2>
                     <p>{{ activity.address }}</p>
                     <div id="map"></div>
@@ -76,19 +80,19 @@
     </article>
     <aside class="col-sm-4">
         {% if request.user == activity.host.user %}
-        <div class="mb-2">
+        <div class="edit-profile">
             <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}">
-                <button type="button" class="btn btn-primary btn-lg btn-block">Edit Profile</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block">Edit</button>
             </a>
         </div>
         {% endif %}
-        <div class="card fareharbor-placeholder mb-3">
+        <div class="fareharbor-widget card">
             <div class="card-body">
                 <p class="card-text">FareHarbor Placeholder</p>
             </div>
         </div>
         {% if photos %}
-        <div id="photo-gallery-{{ activity.pk }}" class="carousel slide" data-ride="carousel">
+        <div id="photo-gallery-{{ activity.pk }}" class="photo-gallery carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 {% for photo in photos %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -106,10 +110,6 @@
             </a>
         </div>
         {% endif %}
-        <div class="social_share_icons">
-            {% post_to_facebook %}
-            {% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url %}
-        </div>
     </aside>
 </div>
 {% endblock content %}
