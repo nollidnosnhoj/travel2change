@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
+{% extends "base.html" %}{% load sekizai_tags cache staticfiles social_share %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% addtoblock "css" %}
@@ -106,6 +106,10 @@
             </a>
         </div>
         {% endif %}
+        <div class="social_share_icons">
+            {% post_to_facebook %}
+            {% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url %}
+        </div>
     </aside>
 </div>
 {% endblock content %}

@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'django_extensions',
+    'django_social_share',
     'multiupload',
     'formtools',
 ]
