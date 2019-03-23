@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from .forms import ActivityUpdateForm, PhotoUploadForm
 from .models import Activity, ActivityPhoto
@@ -29,6 +29,28 @@ class ActivityDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
+
+
+class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+    template_name = "activities/activity_delete.html"
+    success_message = "Activity successfully deleted."
+
+    def test_func(self):
+        """ Validate if the user is the host of the activity """
+        return self.get_object().host.user == self.request.user
+
+    def get_object(self):
+        activity_id = self.kwargs['pk']
+        return get_object_or_404(Activity, pk=activity_id)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse('host_detail', kwargs={
+            'slug': self.get_object().host.slug,
+        })
 
 
 class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
