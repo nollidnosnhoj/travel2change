@@ -46,30 +46,40 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
 
+    """ Get Activity object """
     def get_activity(self):
         return Activity.objects.get(pk=self.kwargs['pk'])
 
+    """ Permission Testing """
     def test_func(self):
         return self.get_activity().host.user == self.request.user
 
+    """ Form processing after form valid """
     def form_valid(self, form):
+        # Maximum number of photos per activity
         max_photos = 5
         activity = self.get_activity()
+        # Cache the current number of photos for the activity
         current_num_photos = ActivityPhoto.objects.filter(activity=activity).count()
+        # Initially check if the current number of photos reached its max
         if (current_num_photos == max_photos):
             messages.error(self.request, _("You have reached your limit of 5 photos. \
                 Please remove some to add photos."))
             return super().form_invalid(form)
+        # Loop through each uploaded image, and create an object for each
         for image in form.cleaned_data['photos']:
             ActivityPhoto.objects.create(file=image, activity=activity)
-            current_num_photos += 1
+            current_num_photos += 1  # Increment current number of photos
+            # After creating photo object, check again.
+            # If it's full, then stop uploading.
             if (current_num_photos == max_photos):
                 messages.warning(self.request, _("Some photos were not uploaded because \
                     you have reached your photos limit."))
-                break
+                return super().form_valid(form)
         messages.success(self.request, _('Photo(s) successfully uploaded.'))
         return super().form_valid(form)
-    
+
+    # Once photos are uploaded, redirect to the same page.
     def get_success_url(self):
         return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
@@ -77,6 +87,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
             'pk': self.kwargs['pk']
         })
     
+    # Display activity's photos
     def get_context_data(self, **kwargs):
         activity = self.get_activity()
         context = super().get_context_data(**kwargs)
@@ -84,7 +95,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
 
-
+# Delete photo
 def photo_delete(request, pk):
     photo = get_object_or_404(ActivityPhoto, pk=pk)
     photo.delete()
@@ -117,7 +128,6 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
     def done(self, form_list, **kwargs):
         host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
-        print(form_dict)
         activity_tags = form_dict.pop('tags')
         instance = Activity.objects.create(**form_dict, host=host)
         instance.tags.set(activity_tags)

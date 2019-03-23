@@ -33,6 +33,10 @@ class Tag(models.Model):
         return self.name
 
 
+def get_featured_image_filename(instance, filename):
+    return 'activity_photos/featured/{0}/{1}'.format(instance.pk, filename)
+
+
 class Activity(models.Model):
     host            = models.ForeignKey(
                         Host,
@@ -112,6 +116,7 @@ class Activity(models.Model):
                                     "\nIf it's free, then leave it as 0.00 or blank")
                     )
     featured_photo  = models.ImageField(
+                        upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
                         null=True,
                         blank=True,
@@ -156,9 +161,6 @@ class Activity(models.Model):
 
 def get_image_filename(instance, filename):
     return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
-
-def get_featured_image_filename(instance, filename):
-    return 'activity_photos/featured/{0}/{1}'.format(instance.id, filename)
 
 
 class ActivityPhoto(models.Model):
