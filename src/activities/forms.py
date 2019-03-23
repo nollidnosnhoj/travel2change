@@ -64,14 +64,6 @@ ACTIVITY_CREATE_FORMS_LIST = [
     ("6", FeaturedPhotoForm),
 ]
 
-""" CMS Wizard Form """
-class ActivityWizardForm(forms.ModelForm):
-    class Meta:
-        model = Activity
-        exclude = [
-            'slug', 'review_count', 'created', 'modified',
-        ]
-
 
 class ActivityUpdateForm(forms.ModelForm):
     class Meta:
@@ -106,3 +98,12 @@ class PhotoUploadForm(forms.Form):
         max_file_size=1920 * 1080 * 5,
         media_type='image',
     )
+
+
+""" CMS Wizard Form """
+class ActivityWizardForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        exclude = [
+            'slug', 'review_count', 'created', 'modified',
+        ]

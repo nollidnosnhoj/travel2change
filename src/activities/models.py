@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
-from django.utils.text import slugify
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
@@ -11,21 +10,18 @@ from users.models import Host
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = models.SlugField(max_length=60, unique=True)
+    slug = AutoSlugField(populate_from=['name'])
 
     objects = models.Manager()
     
     def __str__(self):
         return self.name
-    
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    font_awesome = models.CharField(max_length=60, blank=False)
+    font_awesome = models.CharField(max_length=60, blank=False,
+        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
 
@@ -34,6 +30,7 @@ class Tag(models.Model):
 
 
 def get_featured_image_filename(instance, filename):
+    """ Path to store activity's featured photo """
     return 'activity_photos/featured/{0}/{1}'.format(instance.pk, filename)
 
 
@@ -146,20 +143,21 @@ class Activity(models.Model):
             'pk': self.pk
         })
 
-    # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
+        # Returns the Requirements Value as a List by splitting the commas
         return self.requirements.split('\n')
 
-    # Returns the Highlights Value as a List by splitting the commas
     def highlights_as_list(self):
+        # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
-    # Checks if the activity is free or not
     def is_free(self):
+        # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
 
 
 def get_image_filename(instance, filename):
+    """ Path where activity's photos are stored """
     return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
 
 
@@ -168,9 +166,7 @@ class ActivityPhoto(models.Model):
     file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
 
 
-"""
-        ACTIVITY CMS PLUGINS
-"""
+"""                         ACTIVITY CMS PLUGINS                            """
 
 class LatestActivities(CMSPlugin):
     latest_activities = models.IntegerField(
@@ -183,5 +179,4 @@ class LatestActivities(CMSPlugin):
         return queryset[:self.latest_activities]
 
     def __str__(self):
-        print('test')
         return ugettext('Latest activities: {0}'.format(self.latest_activities))
