@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}Edit Photos - {{ activity.title }}{% endblock title %}
+{% block content %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+{% endaddtoblock %}
+<div class="row">
+    <aside class="col-sm-4">
+        <div class="list-group">
+            <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action">Edit Activity</a>
+            <a href="{% url 'activities:photos' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action active">Edit Images</a>
+            <a href="#" class="list-group-item list-group-item-action">FareHarbor Dashboard</a>
+            <a href="{{ activity.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
+        </div>
+        <br />
+        <h3>Upload Photos</h3>
+        <form action="" method="post" enctype="multipart/form-data" class="mb-3">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit images" />
+        </form>
+    </aside>
+    <article class="single-activity col-sm-8">
+        <div class="alert alert-info" role="alert">
+            Each activity can have up to five photos (not including the featured photo)
+        </div>
+        <h3>Photos</h3>
+        {% for photo in photos %}
+        <div class="photo-row row mb-3">
+            <div class="col-sm-8">
+                <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button class="delete_photo btn btn-danger" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
+            </div>
+        </div>
+        {% empty %}
+        <p>You have not uploaded any photos yet.</p>
+        {% endfor %}
+    </article>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script src="{% static 'js/photo_delete.js' %}"></script>
+<script src="{% static 'js/ajax_cookie.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+{% endblock scripts %}

@@ -1,16 +1,8 @@
 {% extends "account/base.html" %}
 {% load staticfiles %}
-
 {% load i18n %}{% load crispy_forms_tags %}
-
 {% block title %}{% trans "Sign Up" %}{% endblock %}
-
-{% block styles %}
-<link rel="stylesheet" href="{% static 'css/registration.css' %}">
-{% endblock styles %}
-
 {% block authblock %}
-
     <div class="container" id="register">
         <h1>Register to travel2change</h1>
         <form method="POST" class="mb-3" action="{% url 'account_signup' %}">
@@ -26,5 +18,4 @@
             <p>Already have an account? <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></p>
         </div>
     </div>
-
 {% endblock authblock %}

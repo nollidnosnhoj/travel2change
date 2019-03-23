@@ -1,16 +1,16 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
-from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
+from cms.models.pluginmodel import CMSPlugin
 from .managers import ActivityManager
 from users.models import Host
 
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = models.SlugField(max_length=60, unique=True)
+    slug = AutoSlugField(populate_from=['name'])
 
     objects = models.Manager()
     
@@ -20,12 +20,18 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    font_awesome = models.CharField(max_length=60, blank=False)
+    font_awesome = models.CharField(max_length=60, blank=False,
+        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
 
     def __str__(self):
         return self.name
+
+
+def get_featured_image_filename(instance, filename):
+    """ Path to store activity's featured photo """
+    return 'activity_photos/featured/{0}/{1}'.format(instance.pk, filename)
 
 
 class Activity(models.Model):
@@ -106,6 +112,14 @@ class Activity(models.Model):
                         help_text=_("Cost of participation."
                                     "\nIf it's free, then leave it as 0.00 or blank")
                     )
+    featured_photo  = models.ImageField(
+                        upload_to=get_featured_image_filename,
+                        verbose_name=_('featured photo'),
+                        null=True,
+                        blank=True,
+                        help_text=_('This photo will be featured on listings and the top'
+                                    'of your activity page.')
+                    )
 
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
@@ -122,11 +136,6 @@ class Activity(models.Model):
     def __str__(self):
         return self.title
 
-    # Slugify the title as slug
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
     def get_absolute_url(self):
         return reverse('activities:detail', kwargs={
             'region': self.region.slug,
@@ -134,14 +143,40 @@ class Activity(models.Model):
             'pk': self.pk
         })
 
-    # Returns the Requirements Value as a List by splitting the commas
     def requirements_as_list(self):
+        # Returns the Requirements Value as a List by splitting the commas
         return self.requirements.split('\n')
 
-    # Returns the Highlights Value as a List by splitting the commas
     def highlights_as_list(self):
+        # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
-    # Checks if the activity is free or not
     def is_free(self):
+        # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
+
+
+def get_image_filename(instance, filename):
+    """ Path where activity's photos are stored """
+    return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
+
+
+class ActivityPhoto(models.Model):
+    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
+    file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
+
+
+"""                         ACTIVITY CMS PLUGINS                            """
+
+class LatestActivities(CMSPlugin):
+    latest_activities = models.IntegerField(
+        default=5,
+        help_text=_('The maximum number of latest activities to display')
+    )
+
+    def get_activities(self, request):
+        queryset = Activity.objects.all().filter(approved=True)
+        return queryset[:self.latest_activities]
+
+    def __str__(self):
+        return ugettext('Latest activities: {0}'.format(self.latest_activities))

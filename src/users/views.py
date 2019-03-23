@@ -1,4 +1,6 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from .models import Host
@@ -19,16 +21,16 @@ class HostDetailView(DetailView):
 
 
 """ Show host's profile update """
-class HostUpdateView(SuccessMessageMixin, UpdateView):
+class HostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Host
-    fields = ['_name', 'description', 'phone', 'website']
+    fields = ['_name', 'custom_slug', 'description', 'phone', 'website']
     template_name_suffix = '_update'
     success_message = "Profile successfully updated."
 
-    """ Get the profile associated with the current user's host """
-    def get_object(self):
-        return Host.objects.get(user=self.request.user)
+    def test_func(self):
+        host = self.get_object()
+        return host.user == self.request.user
     
     """ Redirect user after successful update """
     def get_success_url(self):
-        return self.get_object().get_absolute_url()
+        return reverse('host_detail', kwargs={'slug': self.object.slug})

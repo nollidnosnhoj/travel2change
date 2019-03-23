@@ -39,8 +39,8 @@
         </div>
         <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
             {% for activity in activities %}
-            <a href="{{activity.get_absolute_url}}" target="_blank">
-                <div class="card">
+            <a href="{{activity.get_absolute_url}}">
+                <div class="card mb-1">
                     <div class="card-body row">
                         <div class="col">
                             <span class="card-title">{{activity.title}}</span>
