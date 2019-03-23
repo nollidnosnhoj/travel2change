@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from .forms import ActivityUpdateForm, PhotoUploadForm
 from .models import Activity, ActivityPhoto
@@ -40,6 +40,16 @@ class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
+
+
+class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+
+    def test_func(self):
+        return self.get_activity().host.user == self.request.user
+
+    model = Activity
+    success_message = 'Activity has successfully been deleted.'
+    success_url = '/'
 
 
 class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView):
