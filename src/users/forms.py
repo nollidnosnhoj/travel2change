@@ -32,7 +32,7 @@ class SignupForm(BaseSignupForm):
     )
     is_host = forms.BooleanField(
         required=False,
-        label=_('Will you be hosting activities?')
+        label=_('Create a Host Profile?')
     )
 
     @transaction.atomic
