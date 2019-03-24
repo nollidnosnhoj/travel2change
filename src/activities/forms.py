@@ -1,5 +1,4 @@
 from django import forms
-from multiupload.fields import MultiMediaField
 from .models import Activity
 
 
@@ -92,12 +91,9 @@ class ActivityUpdateForm(forms.ModelForm):
 
 
 class PhotoUploadForm(forms.Form):
-    photos = MultiMediaField(
-        min_num=1,
-        max_num=5,
-        max_file_size=1920 * 1080 * 5,
-        media_type='image',
-    )
+    photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={
+        'multiple': True
+    }))
 
 
 """ CMS Wizard Form """
