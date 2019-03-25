@@ -2,6 +2,10 @@ import os
 from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
 from decouple import config
+import environ
+
+env = environ.Env()
+env.read_env(str(environ.Path(__file__).path('.env')))
 
 gettext = lambda s: s # noqa
 
@@ -11,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en'
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -110,15 +114,9 @@ WSGI_APPLICATION = 'travel2change.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 # ------------------------------------------------------------------------------
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': '',
-    }
+    'default': env.db('DATABASE_URL'),
 }
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # MIGRATIONS
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
@@ -158,6 +156,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 # ------------------------------------------------------------------------------
+ACCOUNT_ALLOW_REGISTRATION = env.bool('ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
