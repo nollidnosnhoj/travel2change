@@ -8,8 +8,7 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.static import serve
+from django.urls import path
 
 admin.autodiscover()
 
@@ -21,13 +20,18 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     url(r'^admin/', admin.site.urls),  # NOQA
     url(r'^accounts/', include('allauth.urls')),
-    # url(r'^activities/', include('activities.urls', app_name='activity_app')),
     url(r'^', include('users.urls')),
     url(r'^', include('cms.urls')),
 )
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 
 # This is only needed when using runserver.
 """
