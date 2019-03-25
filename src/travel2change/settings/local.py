@@ -3,7 +3,7 @@ from .base import env
 
 # GENERAL
 DEBUG = env.bool('DEBUG', True)
-SECRET_KEY = env('SECRET_KEY', default='mz*oz_2d#sl-@&!ytl=vuhvi#qo*9hy+qrr6$4*or)u!ynqrfl')
+SECRET_KEY = env('SECRET_KEY', default='ysevxx@=t#8v4=&!&yqf*iv^=&$%wxapyh1shdm7skx8k4d!bc')
 ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
 
 # CACHES
