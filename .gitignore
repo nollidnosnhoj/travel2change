@@ -4,10 +4,6 @@
 
 # Mac Junk Stuff
 .DS_Store/
-# Secret JSON File
-src/secrets.json
-# SQL DB
-project.db
 
 ### Django ###
 *.log
