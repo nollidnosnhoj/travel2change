@@ -3,8 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from autoslug import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
-from django_extensions.db.fields import AutoSlugField
 from .managers import CustomUserManager
 
 
@@ -53,7 +53,8 @@ class Host(models.Model):
                     )
     slug            = AutoSlugField(
                         populate_from=['profile_slug'],
-                        overwrite=True
+                        always_update=True,
+                        unique=True,
                     )
     custom_slug     = models.SlugField(
                         _('custom slug'),
