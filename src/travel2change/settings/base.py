@@ -90,8 +90,8 @@ THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'autoslug',
     'crispy_forms',
-    'django_extensions',
     'django_social_share',
     'formtools',
 ]
@@ -121,7 +121,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    
+
 }
 
 # AUTHENTICATION
