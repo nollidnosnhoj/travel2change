@@ -247,6 +247,13 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+# MANAGER CONFIGURATION
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#admins
+ADMINS = [x.split(':') for x in env.list('DJANGO_ADMINS')]
+# https://docs.djangoproject.com/en/dev/ref/settings/#managers
+MANAGERS = ADMINS
+
 # DJANGO CMS
 # ------------------------------------------------------------------------------
 # http://docs.django-cms.org/en/latest/reference/configuration.html#std:setting-CM
