@@ -6,6 +6,7 @@ chardet==3.0.4
 defusedxml==0.5.0
 Django==2.1.7
 django-allauth==0.38.0
+django-autoslug==1.9.4
 django-classy-tags==0.8.0
 django-cms==3.6.0
 django-crispy-forms==1.7.2
