@@ -1,19 +1,18 @@
 import os
 from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
-from decouple import config
 import environ
 
+# DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = environ.Path(__file__) - 4
+DATA_DIR = BASE_DIR.path('src')
+
 env = environ.Env()
-env.read_env(str(environ.Path(__file__).path('.env')))
+env.read_env()
 
 gettext = lambda s: s # noqa
 
-DATA_DIR = os.path.dirname(os.path.dirname(__file__))
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
@@ -101,7 +100,7 @@ LOCAL_APPS = [
     'activities',
     'travel2change',
 ]
-INSTALLED_APPS = DJANGO_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -188,17 +187,17 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'travel2change', 'static'),
+    os.path.join(DATA_DIR, 'static'),
 )
 # MEDIA
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -206,7 +205,7 @@ MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'travel2change', 'templates'), ],
+        'DIRS': [os.path.join(DATA_DIR, 'templates'), ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
