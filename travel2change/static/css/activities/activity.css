@@ -1,0 +1,21 @@
+.photo-row, .edit-profile, .fareharbor-widget, .social_share {
+    margin-bottom: 2rem !important;
+}
+.single-activity .jumbotron {
+    background-color: transparent;
+}
+.single-activity .block {
+    margin-bottom: 3rem !important;
+}
+.single-activity div li {
+    margin-bottom: 1rem !important;
+}
+.social_share i {
+    font-size: 20px;
+}
+.social_share a {
+    text-decoration: none;
+}
+.delete-photo {
+    text-align: center;
+}

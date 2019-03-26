@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}Update - {{ activity.title }}{% endblock title %}
+{% block content %}
+<div class="row">
+    <aside class="col-sm-4">
+        <div class="list-group">
+            <a href="{% url 'activities:photos' object.region.slug object.slug object.pk %}" class="list-group-item list-group-item-action">Edit Images</a>
+            <a href="#" class="list-group-item list-group-item-action">FareHarbor Dashboard</a>
+            <a href="{{ object.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
+            <a href="{% url 'activities:delete' object.region.slug object.slug object.pk %}" class="list-group-item list-group-item-action list-group-item-danger">Delete Activity</a>
+        </div>
+    </aside>
+    <article class="col-sm-8">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </article>
+</div>
+{% endblock content %}
