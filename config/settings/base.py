@@ -1,10 +1,7 @@
-import os
 from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
 import environ
 
-# DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_DIR = environ.Path(__file__) - 3
 DATA_DIR = BASE_DIR.path('travel2change')
 
@@ -187,17 +184,17 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = str(BASE_DIR('staticfiles'))
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
-    os.path.join(DATA_DIR, 'static'),
+    str(DATA_DIR.path('static')),
 )
 # MEDIA
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = str(DATA_DIR.path('media'))
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -205,7 +202,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(DATA_DIR, 'templates'), ],
+        'DIRS': [
+            str(DATA_DIR.path('templates')),
+        ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
