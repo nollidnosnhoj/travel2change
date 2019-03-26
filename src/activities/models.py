@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django_extensions.db.fields import AutoSlugField
+from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from .managers import ActivityManager
 from users.models import Host
@@ -10,7 +10,7 @@ from users.models import Host
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = AutoSlugField(populate_from=['name'])
+    slug = AutoSlugField(populate_from='name')
 
     objects = models.Manager()
     
@@ -48,8 +48,8 @@ class Activity(models.Model):
                         help_text=_("Insert a name for your activity"),
                     )
     slug            = AutoSlugField(
-                        populate_from=['title'],
-                        overwrite=True,
+                        populate_from='title',
+                        always_update=True,
                     )
     description     = models.TextField(
                         verbose_name=_("description"),

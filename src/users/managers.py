@@ -1,11 +1,9 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
-"""
-Custom Manager for User. Used to create users
-"""
 class CustomUserManager(BaseUserManager):
     def _create_user(self, email, first_name, last_name, password, **extra_fields):
+        """ This will create the user object """
         if not email:
             raise ValueError(_('Email Address is required'))
         email = self.normalize_email(email)
@@ -17,7 +15,6 @@ class CustomUserManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
-        # Create Profile Object
         return user
 
     def create_user(self, email, first_name, last_name, password, **extra_fields):
