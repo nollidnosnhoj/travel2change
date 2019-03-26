@@ -5,8 +5,8 @@ import environ
 
 # DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BASE_DIR = environ.Path(__file__) - 4
-DATA_DIR = BASE_DIR.path('src')
+BASE_DIR = environ.Path(__file__) - 3
+DATA_DIR = BASE_DIR.path('travel2change')
 
 env = environ.Env()
 env.read_env()
@@ -105,9 +105,9 @@ INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTR
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = 'travel2change.urls'
+ROOT_URLCONF = 'config.urls'
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'travel2change.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # DATABASE
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
