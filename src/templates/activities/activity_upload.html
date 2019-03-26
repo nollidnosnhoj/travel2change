@@ -2,7 +2,7 @@
 {% block title %}Edit Photos - {{ activity.title }}{% endblock title %}
 {% block content %}
 {% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
+    <link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 {% endaddtoblock %}
 <div class="row">
@@ -21,17 +21,17 @@
             <input type="submit" value="Submit images" />
         </form>
     </aside>
-    <article class="single-activity col-sm-8">
+    <article class="col-sm-8">
         <div class="alert alert-info" role="alert">
             Each activity can have up to five photos (not including the featured photo)
         </div>
         <h3>Photos</h3>
         {% for photo in photos %}
-        <div class="photo-row row mb-3">
+        <div class="row photo-row">
             <div class="col-sm-8">
                 <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
             </div>
-            <div class="col-sm-4 text-right">
+            <div class="col-sm-4 delete-photo">
                 <button class="delete_photo btn btn-danger" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
             </div>
         </div>

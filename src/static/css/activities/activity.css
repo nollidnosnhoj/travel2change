@@ -1,3 +1,6 @@
+.photo-row, .edit-profile, .fareharbor-widget, .social_share {
+    margin-bottom: 2rem !important;
+}
 .single-activity .jumbotron {
     background-color: transparent;
 }
@@ -7,18 +10,12 @@
 .single-activity div li {
     margin-bottom: 1rem !important;
 }
-.social_share {
-    margin-bottom: 2rem;
-}
 .social_share i {
     font-size: 20px;
 }
-.social_share a{
+.social_share a {
     text-decoration: none;
 }
-.edit-profile {
-    margin-bottom: 2rem;
-}
-.fareharbor-widget {
-    margin-bottom: 2rem;
+.delete-photo {
+    text-align: center;
 }

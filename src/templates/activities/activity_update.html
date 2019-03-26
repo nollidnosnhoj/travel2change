@@ -1,9 +1,6 @@
 {% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Update - {{ activity.title }}{% endblock title %}
 {% block content %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
-{% endaddtoblock %}
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
@@ -13,7 +10,7 @@
             <a href="{% url 'activities:delete' object.region.slug object.slug object.pk %}" class="list-group-item list-group-item-action list-group-item-danger">Delete Activity</a>
         </div>
     </aside>
-    <article class="single-activity col-sm-8">
+    <article class="col-sm-8">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{form|crispy}}

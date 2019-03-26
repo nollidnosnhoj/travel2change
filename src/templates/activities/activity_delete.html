@@ -1,9 +1,6 @@
 {% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Delete Activity{% endblock title %}
 {% block content %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
-{% endaddtoblock %}
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
@@ -12,7 +9,7 @@
             <a href="{{ object.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
     </aside>
-    <article class="single-activity col-sm-8">
+    <article class="scol-sm-8">
         <form 
             method="post" 
             onsubmit="return confirm('THIS IS YOUR LAST CHANCE TO GO BACK. Once your confirm deletion, you CANNOT restore your activity back.')"
