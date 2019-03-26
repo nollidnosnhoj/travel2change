@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
-from autoslug import AutoSlugField
+from django_extensions.db.fields import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from .managers import ActivityManager
 from users.models import Host
@@ -49,7 +49,7 @@ class Activity(models.Model):
                     )
     slug            = AutoSlugField(
                         populate_from=['title'],
-                        always_update=True,
+                        overwrite=True,
                     )
     description     = models.TextField(
                         verbose_name=_("description"),
