@@ -3,7 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from autoslug import AutoSlugField
+# from autoslug import AutoSlugField
+from django_extensions.db.fields import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
 from .managers import CustomUserManager
 
@@ -52,8 +53,8 @@ class Host(models.Model):
                                     "Ex. travel2change.org/hosts/your-organization-name"),
                     )
     slug            = AutoSlugField(
-                        populate_from=['profile_slug'],
-                        always_update=True,
+                        populate_from=['name'],
+                        overwrite=True,
                         unique=True,
                     )
     custom_slug     = models.SlugField(
@@ -86,10 +87,6 @@ class Host(models.Model):
     @property
     def name(self):
         return self._name if self._name else self.user.get_full_name()
-    
-    @property
-    def profile_slug(self):
-        return self.custom_slug if self.custom_slug else self.name
 
     def __str__(self):
         return self.user.email
