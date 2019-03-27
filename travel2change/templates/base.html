@@ -47,20 +47,30 @@
                     <ul class="navbar-nav mr-auto">
                         {% show_menu 0 100 100 100 %}
                     </ul>
-                    <div class="navbar-nav">
+                    <ul class="navbar-nav">
                         {% if user.is_authenticated %}
-                            <span class="navbar-text">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} </span>
-                            <a href="{% url 'account_logout' %}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                Welcome, {{ user.first_name }} {{ user.last_name }}
+                            </a>
+                            <div class="dropdown-menu">
+                                {% if user.host %}<a href="{% url 'host_detail' user.host.slug %}" class="nav-link ml-1">{% trans "View Host Profile" %}</a>{% endif %}
+                                <a href="{% url 'account_logout' %}" class="nav-link ml-1">{% trans "Logout" %}</a>
+                            </div>
+                        </li>
                         {% else %}
+                        <li class="nav-item">
                             <a class="nav-link ml-1" href="{% url 'account_login' %}">
-                                <strong>{% trans "Login" %}</strong>
+                                {% trans "Login" %}
                             </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link ml-1" href="{% url 'account_signup' %}">          
-                                <strong>{% trans "Register" %}</strong>
+                                {% trans "Register" %}
                             </a>
-                            </form>
+                        </li>
                         {% endif %}
-                    </div>
+                    </ul>
                 </div>
             </div>
         </nav>
