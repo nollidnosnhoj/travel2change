@@ -2,7 +2,7 @@ from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
 import environ
 
-BASE_DIR = environ.Path(__file__) - 3
+BASE_DIR = environ.Path(__file__) - 3  # /config/settings/base.py - 3 = /
 DATA_DIR = BASE_DIR.path('travel2change')
 
 env = environ.Env()
@@ -194,7 +194,7 @@ STATICFILES_DIRS = (
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(DATA_DIR.path('media'))
+MEDIA_ROOT = str(DATA_DIR('media'))
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
