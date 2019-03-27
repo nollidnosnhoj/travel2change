@@ -166,10 +166,10 @@ class ActivityPhoto(models.Model):
     file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
 
 class Comment(models.Model):
-    post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey('activities', on_delete=models.CASCADE, related_name='comments')
     author = models.CharField(max_length=200)
     text = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
+    #created_date = models.DateTimeField(default=timezone.now)
     approved_comment = models.BooleanField(default=False)
 
     def approve(self):
