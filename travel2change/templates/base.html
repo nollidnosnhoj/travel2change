@@ -51,7 +51,7 @@
                         {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                Welcome, {{ request.user.first_name }} {{ request.user.last_name }}
+                                Welcome, {{ user.first_name }} {{ user.last_name }}
                             </a>
                             <div class="dropdown-menu">
                                 {% if user.host %}<a href="{% url 'host_detail' user.host.slug %}" class="nav-link ml-1">{% trans "View Host Profile" %}</a>{% endif %}
