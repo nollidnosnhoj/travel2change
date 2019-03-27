@@ -2,11 +2,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>
-            {% block title %}
-                This is my new project home page
-            {% endblock title %}
-        </title>
+        <title>{% block title %}{% endblock title %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         {% render_block "css" %}
         {% block styles %}{% endblock styles %}
@@ -29,41 +25,7 @@
     </head>
     <body>
         {% cms_toolbar %}
-        <nav class="navbar navbar-expand-lg navbar-light bg-light t2c-navbar">
-            <div class="container">
-                <a class="navbar-brand" href="/">travel2change</a>
-                <button
-                    class="navbar-toggler navbar-toggler-right"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav mr-auto">
-                        {% show_menu 0 100 100 100 %}
-                    </ul>
-                    <div class="navbar-nav">
-                        {% if user.is_authenticated %}
-                            <span class="navbar-text">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} </span>
-                            <a href="{% url 'account_logout' %}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
-                        {% else %}
-                            <a class="nav-link ml-1" href="{% url 'account_login' %}">
-                                <strong>{% trans "Login" %}</strong>
-                            </a>
-                            <a class="nav-link ml-1" href="{% url 'account_signup' %}">          
-                                <strong>{% trans "Register" %}</strong>
-                            </a>
-                            </form>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </nav>
+        {% include 'partials/navigation.html' %}
         {% include 'partials/messages.html' %}
         {% block jumbo %}
         {% endblock jumbo %}
