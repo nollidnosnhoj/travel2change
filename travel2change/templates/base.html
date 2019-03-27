@@ -54,21 +54,22 @@
                                 Welcome, {{ request.user.first_name }} {{ request.user.last_name }}
                             </a>
                             <div class="dropdown-menu">
-                                {% if host %}<a href="{% url 'host_detail' host.slug %}" class="nav-link ml-1"><strong>{% trans "View Host Profile" %}</strong></a>{% endif %}
-                                <a href="{% url 'account_logout' %}" class="nav-link ml-1"><strong>{% trans "Logout" %}</strong></a>
+                                {% if user.host %}<a href="{% url 'host_detail' user.host.slug %}" class="nav-link ml-1">{% trans "View Host Profile" %}</a>{% endif %}
+                                <a href="{% url 'account_logout' %}" class="nav-link ml-1">{% trans "Logout" %}</a>
                             </div>
                         </li>
                         {% else %}
                         <li class="nav-item">
                             <a class="nav-link ml-1" href="{% url 'account_login' %}">
-                                <strong>{% trans "Login" %}</strong>
+                                {% trans "Login" %}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link ml-1" href="{% url 'account_signup' %}">          
-                                <strong>{% trans "Register" %}</strong>
+                                {% trans "Register" %}
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
