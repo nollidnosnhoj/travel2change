@@ -3,7 +3,7 @@ from .base import env
 
 # GENERAL
 SECRET_KEY = env('SECRET_KEY')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.nollidnosnhoj.django.group']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.nollidnosnhoj.django.group'])
 
 INSTALLED_APPS += ('gunicorn', )  # noqa F405
 
