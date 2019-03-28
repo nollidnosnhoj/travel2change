@@ -164,6 +164,7 @@ ACCOUNT_FORMS = {'signup': 'users.forms.SignupForm'}
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -175,7 +176,8 @@ MIDDLEWARE = [
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware'
+    'cms.middleware.language.LanguageCookieMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # Static files (CSS, JavaScript, Images)
