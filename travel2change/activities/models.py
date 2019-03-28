@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
@@ -8,9 +9,11 @@ from .managers import ActivityManager
 from users.models import Host
 
 
+User = get_user_model()
+
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = AutoSlugField(populate_from=['name'])
+    slug = AutoSlugField(populate_from='name')
 
     objects = models.Manager()
     
@@ -48,7 +51,7 @@ class Activity(models.Model):
                         help_text=_("Insert a name for your activity"),
                     )
     slug            = AutoSlugField(
-                        populate_from=['title'],
+                        populate_from='title',
                         always_update=True,
                     )
     description     = models.TextField(
@@ -160,24 +163,30 @@ def get_image_filename(instance, filename):
     """ Path where activity's photos are stored """
     return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
 
+def get_review_image_filename(instance, filename):
+    return 'review_photos/{0}/{1}/{2}'.format(instance.user.id, instance.activity.id, filename)
+
 
 class ActivityPhoto(models.Model):
-    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
+    activity        = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
+    file            = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
 
-class Comment(models.Model):
-    post = models.ForeignKey('activities', on_delete=models.CASCADE, related_name='comments')
-    author = models.CharField(max_length=200)
-    text = models.TextField()
-    # created_date = models.DateTimeField(default=timezone.now)
-    approved_comment = models.BooleanField(default=False)
 
-    def approve(self):
-        self.approved_comment = True
-        self.save()
+class ActivityReview(models.Model):
+    RATING_CHOICES  = (
+        (1, 'Terrible'), (2, 'Poor'), (3, 'Average'), (4, 'Very Good'), (5, 'Exceptional'),
+    )
+    user            = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity        = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name=_('reviews'))
+    content         = models.TextField(_('content'), blank=False)
+    rating          = models.IntegerField(choices=RATING_CHOICES)
+    photo           = models.ImageField(_('review photo'), upload_to=get_review_image_filename)
 
-    def __str__(self):
-        return self.text
+    show_name       = models.BooleanField(default=False)
+    show_email      = models.BooleanField(default=False)
+
+    created         = models.DateTimeField(auto_now_add=True)
+    modified        = models.DateTimeField(auto_now=True)
 
 
 """                         ACTIVITY CMS PLUGINS                            """
