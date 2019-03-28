@@ -1,5 +1,5 @@
-from .base import *  # noqa
-from .base import env
+from config.settings.base import *  # noqa
+from config.settings.base import env
 
 # GENERAL
 DEBUG = env.bool('DEBUG', True)
@@ -23,7 +23,7 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
 # django-debug-toolbar
-INSTALLED_APPS += ['debug_toolbar', ]  # noqa F405
+INSTALLED_APPS += ('debug_toolbar', )  # noqa F405
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]  # noqa F405
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
