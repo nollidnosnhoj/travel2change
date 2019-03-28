@@ -4,6 +4,8 @@
 
 # Mac Junk Stuff
 .DS_Store/
+node_modules/
+sass/
 
 ### Django ###
 *.log
