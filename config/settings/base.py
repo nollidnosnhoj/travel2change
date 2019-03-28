@@ -33,7 +33,7 @@ LANGUAGES = (
 
 # APPS
 # ------------------------------------------------------------------------------
-DJANGO_APPS = [
+DJANGO_APPS = (
     'djangocms_admin_style',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +43,8 @@ DJANGO_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
-]
-DJANGO_CMS_APPS = [
+)
+DJANGO_CMS_APPS = (
     'djangocms_modules',
     'cms',
     'menus',
@@ -65,8 +65,8 @@ DJANGO_CMS_APPS = [
     'djangocms_transfer',
     'djangocms_history',
     'djangocms_attributes_field',
-]
-DJANGO_CMS_BOOTSTRAP_APPS = [
+)
+DJANGO_CMS_BOOTSTRAP_APPS = (
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
     'djangocms_bootstrap4.contrib.bootstrap4_badge',
@@ -82,8 +82,8 @@ DJANGO_CMS_BOOTSTRAP_APPS = [
     'djangocms_bootstrap4.contrib.bootstrap4_picture',
     'djangocms_bootstrap4.contrib.bootstrap4_tabs',
     'djangocms_bootstrap4.contrib.bootstrap4_utilities',
-]
-THIRD_PARTY_APPS = [
+)
+THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -91,12 +91,12 @@ THIRD_PARTY_APPS = [
     'crispy_forms',
     'django_social_share',
     'formtools',
-]
-LOCAL_APPS = [
+)
+LOCAL_APPS = (
     'users',
     'activities',
     'travel2change',
-]
+)
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS
 
 # URLS

@@ -5,7 +5,7 @@ from .base import env
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.nollidnosnhoj.django.group']
 
-INSTALLED_APPS += ['gunicorn', ]  # noqa
+INSTALLED_APPS += ('gunicorn', )  # noqa
 
 # DATABASES
 DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
