@@ -10,8 +10,8 @@ from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
-from .forms import ActivityUpdateForm, PhotoUploadForm
-from .models import Activity, ActivityPhoto
+from activities.forms import ActivityUpdateForm, PhotoUploadForm
+from activities.models import Activity, ActivityPhoto
 from users.models import Host
 
 

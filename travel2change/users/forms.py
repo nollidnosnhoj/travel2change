@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from allauth.account.forms import SignupForm as BaseSignupForm
-from .models import Host
+from users.models import Host
 
 User = get_user_model()
 

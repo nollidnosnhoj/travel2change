@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
-from .managers import ActivityManager
+from activities.managers import ActivityManager
 from users.models import Host
 
 

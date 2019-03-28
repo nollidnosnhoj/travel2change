@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from autoslug import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
-from .managers import CustomUserManager
+from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
