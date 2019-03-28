@@ -188,6 +188,12 @@ class ActivityReview(models.Model):
     created         = models.DateTimeField(auto_now_add=True)
     modified        = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('created', )
+    
+    def __str__(self):
+        return 'Review by {0} on {1}'.format(self.user, self.activity)
+
 
 """                         ACTIVITY CMS PLUGINS                            """
 

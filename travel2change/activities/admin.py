@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Tag, Region
+from .models import Activity, ActivityReview, Tag, Region
 
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -33,6 +33,13 @@ class ActivityAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', 'review_count', 'created',)
 
 
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'activity', 'created', )
+    list_filter = ('created', 'modified', )
+    search_fields = ('user', 'content')
+
+
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Tag)
 admin.site.register(Region)
+admin.site.register(ActivityReview, ReviewAdmin)

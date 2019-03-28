@@ -1,5 +1,5 @@
 from django import forms
-from .models import Activity
+from .models import Activity, ActivityReview
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -94,6 +94,12 @@ class PhotoUploadForm(forms.Form):
     photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={
         'multiple': True
     }))
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = ActivityReview
+        fields = ('rating', 'content', )
 
 
 """ CMS Wizard Form """
