@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Step {{ wizard.steps.step1 }} - Activity Creation Wizard{% endblock title %}
-{% block styles %}
-<link rel="stylesheet" href="{% static 'css/activities/googlemaps.css' %}">
-{% endblock styles %}
 {% block content %}
+{% block styles %}
+{% addtoblock 'css' %}
+<link rel="stylesheet" href="{% static 'css/activities/googlemaps.css' %}">
+{% endaddtoblock %}
+{% endblock styles %}
 <div class="row justify-content-center">
     <form action="" method="POST" class="col-lg" novalidate>
         {% csrf_token %}

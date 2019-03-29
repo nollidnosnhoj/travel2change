@@ -9,7 +9,7 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         {% render_block "css" %}
-        {% block styles %}
+        {% block styles %}{% endblock styles %}
         {% addtoblock "css" %}
         <link 
             rel="stylesheet" 
@@ -26,7 +26,6 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap_custom.css' %}">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
         {% endaddtoblock %}
-        {% endblock styles %}
     </head>
     <body>
         {% cms_toolbar %}
