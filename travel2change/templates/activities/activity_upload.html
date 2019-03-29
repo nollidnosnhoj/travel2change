@@ -17,6 +17,10 @@
         <h3>Upload Photos</h3>
         <form action="" method="post" enctype="multipart/form-data" class="mb-3">
             {% csrf_token %}
+            <script type="text/javascript">
+                // using jQuery
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            </script>
             {{ form|crispy }}
             <input type="submit" value="Submit images" />
         </form>
@@ -43,7 +47,6 @@
 {% endblock content %}
 {% block scripts %}
 <script src="{% static 'js/ajax_cookie.js' %}"></script>
-<script>var csrftoken = getCookie('csrftoken');</script>
 <script src="{% static 'js/photo_delete.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 {% endblock scripts %}
