@@ -5,11 +5,6 @@ $(".delete_photo").click(function() {
         $.ajax({
             type: "DELETE",
             url: $(this).data('url'),
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            },
             success: function() {
                 button.parent().parent().fadeOut(1000);
             },
