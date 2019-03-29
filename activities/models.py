@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
@@ -10,11 +9,11 @@ from users.models import Host
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return '{0}/{1}/featured/{2}'.format(settings.MEDIA_ROOT, instance.id, filename)
+    return 'uploads/{0}/featured/{1}'.format(instance.id, filename)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return '{0}/{1}/photos/{2}'.format(settings.MEDIA_ROOT, instance.activity.id, filename)
+    return 'uploads/{0}/photos/{1}'.format(instance.activity.id, filename)
 
 
 class Region(models.Model):
