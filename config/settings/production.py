@@ -26,7 +26,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-ssl-redirect
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
 SESSION_COOKIE_HTTPONLY = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
