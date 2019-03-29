@@ -11,6 +11,9 @@ $(".delete_photo").click(function() {
             success: function() {
                 button.parent().parent().fadeOut(1000);
             },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+            }
         });
     }
 });
