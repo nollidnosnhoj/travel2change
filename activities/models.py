@@ -1,11 +1,20 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
-from activities.managers import ActivityManager
+from .managers import ActivityManager
 from users.models import Host
+
+def get_featured_image_filename(instance, filename):
+    """ Path to store activity's featured photo """
+    return '{0}/{1}/featured/{2}'.format(settings.MEDIA_ROOT, instance.activity.id, filename)
+
+def get_photo_image_filename(instance, filename):
+    """ Path where activity's photos are stored """
+    return '{0}/{1}/photos/{2}'.format(settings.MEDIA_ROOT, instance.activity.id, filename)
 
 
 class Region(models.Model):
@@ -27,11 +36,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-
-
-def get_featured_image_filename(instance, filename):
-    """ Path to store activity's featured photo """
-    return 'activity_photos/featured/{0}/{1}'.format(instance.pk, filename)
 
 
 class Activity(models.Model):
@@ -156,14 +160,9 @@ class Activity(models.Model):
         return self.price == 0.00 or self.price is None
 
 
-def get_image_filename(instance, filename):
-    """ Path where activity's photos are stored """
-    return 'activity_photos/{0}/{1}'.format(instance.activity.id, filename)
-
-
 class ActivityPhoto(models.Model):
     activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    file = models.ImageField(upload_to=get_image_filename, verbose_name=_('Photo'))
+    file = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
 
 
 """                         ACTIVITY CMS PLUGINS                            """

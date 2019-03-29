@@ -197,7 +197,7 @@ STATICFILES_DIRS = (
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(DATA_DIR('media'))
+MEDIA_ROOT = str(BASE_DIR('media'))
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
