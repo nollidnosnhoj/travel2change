@@ -10,7 +10,7 @@ from users.models import Host
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return '{0}/{1}/featured/{2}'.format(settings.MEDIA_ROOT, instance.activity.id, filename)
+    return '{0}/{1}/featured/{2}'.format(settings.MEDIA_ROOT, instance.id, filename)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
