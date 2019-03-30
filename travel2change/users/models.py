@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from autoslug import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
+from activities.models import Activity
 from users.managers import CustomUserManager
 
 
@@ -40,6 +41,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name=_('bookmarks'))
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{0} bookmarked {1}".format(self.user.get_full_name(), self.activity.title)
 
 
 class Host(models.Model):
