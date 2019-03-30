@@ -9,19 +9,16 @@ class ActivityAdmin(admin.ModelAdmin):
             )
         }),
         ('Activity Information', {
-            'classes': ('collapse',),
             'fields': (
                 'highlights', 'requirements', 'tags', 'price',
             )
         }),
         ('Location', {
-            'classes': ('collapse',),
             'fields': (
                 'address', 'latitude', 'longitude'
             )
         }),
         ('Status', {
-            'classes': ('collapse',),
             'fields': (
                 'approved',
             )
