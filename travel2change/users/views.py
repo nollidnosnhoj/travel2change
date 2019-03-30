@@ -3,7 +3,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-from .models import Host
+from users.models import Host
 from activities.models import Activity
 
 
