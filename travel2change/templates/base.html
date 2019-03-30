@@ -1,12 +1,8 @@
-{% load i18n cms_tags menu_tags sekizai_tags cache staticfiles %}
+{% load i18n cms_tags menu_tags sekizai_tags staticfiles %}
 <!doctype html>
 <html lang="en">
     <head>
-        <title>
-            {% block title %}
-                This is my new project home page
-            {% endblock title %}
-        </title>
+        <title>{% block title %}{% endblock title %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         {% render_block "css" %}
         {% block styles %}{% endblock styles %}
@@ -29,6 +25,7 @@
     </head>
     <body>
         {% cms_toolbar %}
+<<<<<<< HEAD
         <nav class="navbar navbar-expand-lg navbar-light bg-light t2c-navbar">
             <div class="container">
                 <a class="navbar-brand" href="/">travel2change</a>
@@ -74,6 +71,9 @@
                 </div>
             </div>
         </nav>
+=======
+        {% include 'partials/navigation.html' %}
+>>>>>>> 3ca9a92dc81e11bad547630d964fbb83df85e9b3
         {% include 'partials/messages.html' %}
         {% block jumbo %}
         {% endblock jumbo %}
@@ -84,9 +84,10 @@
             </main>
         </div>
         {% render_block "js" %}
+        {% block scripts %}{% endblock scripts %}
         {% addtoblock "js" %}
             <script
-                src="http://code.jquery.com/jquery-3.3.1.min.js"
+                src="https://code.jquery.com/jquery-3.3.1.min.js"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"
             ></script>
@@ -101,6 +102,5 @@
                 crossorigin="anonymous"
             ></script>
         {% endaddtoblock %}
-        {% block scripts %}{% endblock scripts %}
     </body>
 </html>

@@ -5,12 +5,12 @@ $(".delete_photo").click(function() {
         $.ajax({
             type: "DELETE",
             url: $(this).data('url'),
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-            },
             success: function() {
                 button.parent().parent().fadeOut(1000);
             },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+            }
         });
     }
 });

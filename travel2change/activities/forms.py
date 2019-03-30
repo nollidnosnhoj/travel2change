@@ -1,5 +1,5 @@
 from django import forms
-from .models import Activity
+from activities.models import Activity
 
 
 class BasicInfoForm(forms.ModelForm):
