@@ -25,55 +25,7 @@
     </head>
     <body>
         {% cms_toolbar %}
-<<<<<<< HEAD
-        <nav class="navbar navbar-expand-lg navbar-light bg-light t2c-navbar">
-            <div class="container">
-                <a class="navbar-brand" href="/">travel2change</a>
-                <button
-                    class="navbar-toggler navbar-toggler-right"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav mr-auto">
-                        {% show_menu 0 100 100 100 %}
-                    </ul>
-                    <ul class="navbar-nav">
-                        {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                Welcome, {{ user.first_name }} {{ user.last_name }}
-                            </a>
-                            <div class="dropdown-menu">
-                                {% if user.host %}<a href="{% url 'host_detail' user.host.slug %}" class="nav-link ml-1">{% trans "View Host Profile" %}</a>{% endif %}
-                                <a href="{% url 'account_logout' %}" class="nav-link ml-1">{% trans "Logout" %}</a>
-                            </div>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link ml-1" href="{% url 'account_login' %}">
-                                {% trans "Login" %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link ml-1" href="{% url 'account_signup' %}">          
-                                {% trans "Register" %}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-=======
         {% include 'partials/navigation.html' %}
->>>>>>> 3ca9a92dc81e11bad547630d964fbb83df85e9b3
         {% include 'partials/messages.html' %}
         {% block jumbo %}
         {% endblock jumbo %}
