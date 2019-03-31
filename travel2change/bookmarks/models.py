@@ -7,8 +7,8 @@ from activities.models import Activity
 User = get_user_model()
 
 class Bookmark(models.Model):
-    user        = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_('bookmarks'))
-    activity    = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    user        = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_('bookmarks'), blank=False)
+    activity    = models.ForeignKey(Activity, on_delete=models.CASCADE, blank=False)
     created     = models.DateTimeField(auto_now_add=True)
 
     objects     = models.Manager()

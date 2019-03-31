@@ -154,6 +154,9 @@ class Activity(models.Model):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
+    def get_bookmark_count(self):
+        self.bookmark_set.all().count()
+
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
