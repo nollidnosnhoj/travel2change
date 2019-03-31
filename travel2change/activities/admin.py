@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Tag, Region
+from .models import Activity, Tag, Region, Comment
 
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -36,3 +36,5 @@ class ActivityAdmin(admin.ModelAdmin):
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Tag)
 admin.site.register(Region)
+
+admin.site.register(Comment)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Activity
+from .models import Activity, Comment
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -94,6 +94,13 @@ class PhotoUploadForm(forms.Form):
     photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={
         'multiple': True
     }))
+
+class CommentForm(forms.ModelForm):
+
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'text')
 
 
 """ CMS Wizard Form """
