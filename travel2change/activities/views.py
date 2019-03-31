@@ -7,11 +7,11 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView, DeleteView
+from django.views.generic import DetailView, FormView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
 from formtools.wizard.views import SessionWizardView
-from .forms import ActivityUpdateForm, PhotoUploadForm, CommentForm
-from .models import Activity, ActivityPhoto
+from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm
+from activities.models import Activity, ActivityPhoto
 from users.models import Host
 
 
@@ -26,8 +26,13 @@ class ActivityDetailView(DetailView):
         """ Show activity's photo """
         activity = self.get_object()
         context = super().get_context_data(**kwargs)
+        context['form'] = ReviewForm()
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
+
+# Add Review View
+class ActivityReviewView(SingleObjectMixin, FormView):
+    pass
 
 
 class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
@@ -164,18 +169,3 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
         return render(self.request, 'activities/activity_done.html', {
             'activity': instance,
         })
-
-def add_comment_to_post(request):
-    post = get_object_or_404(Activity)
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return redirect('detail', pk)
-    else:
-        form = CommentForm()
-    return render(request, 'activities/add_comment_to_post.html', {'form': form})
-
-    

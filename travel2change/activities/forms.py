@@ -1,9 +1,5 @@
 from django import forms
-<<<<<<< HEAD
-from .models import Activity, Comment
-=======
 from .models import Activity, ActivityReview
->>>>>>> 48259afc69556fcb98a5430b2854dd3e13ce04bf
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -98,13 +94,6 @@ class PhotoUploadForm(forms.Form):
     photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={
         'multiple': True
     }))
-
-class CommentForm(forms.ModelForm):
-
-
-    class Meta:
-        model = Comment
-        fields = ('author', 'text')
 
 
 class ReviewForm(forms.ModelForm):

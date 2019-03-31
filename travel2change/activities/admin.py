@@ -1,9 +1,5 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Activity, Tag, Region, Comment
-=======
 from .models import Activity, ActivityReview, Tag, Region
->>>>>>> 48259afc69556fcb98a5430b2854dd3e13ce04bf
 
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -46,9 +42,4 @@ class ReviewAdmin(admin.ModelAdmin):
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Tag)
 admin.site.register(Region)
-<<<<<<< HEAD
-
-admin.site.register(Comment)
-=======
 admin.site.register(ActivityReview, ReviewAdmin)
->>>>>>> 48259afc69556fcb98a5430b2854dd3e13ce04bf
