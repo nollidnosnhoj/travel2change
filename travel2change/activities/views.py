@@ -10,9 +10,10 @@ from django.urls import reverse
 from django.views.generic import DetailView, FormView, UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm
+from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm, CommentForm
 from activities.models import Activity, ActivityPhoto
 from users.models import Host
+from django.shortcuts import redirect
 
 
 class ActivityDetailView(DetailView):
@@ -169,3 +170,16 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
         return render(self.request, 'activities/activity_done.html', {
             'activity': instance,
         })
+
+def add_comment_to_post(request):
+    post = get_object_or_404(Activity)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', pk)
+    else:
+        form = CommentForm()
+    return render(request, 'activities/add_comment_to_post.html', {'form': form})
