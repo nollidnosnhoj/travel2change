@@ -89,6 +89,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'autoslug',
     'crispy_forms',
+    'django_filters',
     'django_social_share',
     'formtools',
 )

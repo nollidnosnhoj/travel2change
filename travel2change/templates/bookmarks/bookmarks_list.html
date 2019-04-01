@@ -1,17 +1,37 @@
-{% extends "base.html" %}{% load sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load sekizai_tags thumbnail cache staticfiles %}
 {% block title %}Bookmarks - {{ user.get_full_name }}{% endblock title %}
 {% block styles %}
 {% endblock styles %}
 {% block content %}
+<div class="card-deck">
 {% for bookmark in bookmarks %}
-<div class="card">
-    <div class="card-body">
-        <a href="{{ bookmark.activity.get_absolute_url }}"><h2>{{ bookmark.activity.title }}</h2></a><br />
-        <p>Bookmarked at {{ bookmark.created }}</p>
+    <div class="card">
+        {% if bookmark.activity.featured_photo %}
+        <img src="{{ bookmark.activity.featured_photo.url }}" class="card-img-top" alt="{{ bookmark.activity.title }}">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">
+                <a href="{{ bookmark.activity.get_absolute_url }}">
+                        {{ bookmark.activity.title }}
+                </a>
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ bookmark.activity.region }}</h6>
+            <p class="card-text">{{ bookmark.activity.description|truncatechars:50 }}</p>
+            {% for tag in bookmark.activity.tags.all %}
+                <a href="#" class="card-link">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                Bookmarked at <!-- {{ bookmark.created }}  -->
+            </small>
+        </div>
     </div>
-</div>
+{% if forloop.counter|divisibleby:"4" and not forloop.last %}
+</div><br /><div class="card-deck">
+{% endif %}
 {% empty %}
-<p>You haven't bookmarked anything.</p>
+    <p>You haven't bookmarked anything.</p>
 {% endfor %}
 {% endblock content %}
 {% block scripts %}

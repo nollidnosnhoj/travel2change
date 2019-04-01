@@ -9,11 +9,11 @@ from users.models import Host
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return 'uploads/{0}/featured/{1}'.format(instance.id, filename)
+    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return 'uploads/{0}/photos/{1}'.format(instance.activity.id, filename)
+    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
 
 
 class Region(models.Model):

@@ -12,10 +12,11 @@ class BookmarkListView(LoginRequiredMixin, ListView):
     template_name = "bookmarks/bookmarks_list.html"
     context_object_name = 'bookmarks'
     paginate_by = 10
-    ordering = ['-created']
 
     def get_queryset(self):
-        return Bookmark.objects.filter(user=self.request.user)
+        bookmarks = Bookmark.objects.filter(user=self.request.user)
+        return bookmarks.select_related('activity').all()
+        # return Bookmark.objects.filter(user=self.request.user).order_by('-created')
 
 
 class SetBookmarkView(LoginRequiredMixin, View):
