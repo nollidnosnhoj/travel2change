@@ -3393,8 +3393,6 @@ input[type="button"].btn-block {
 
 .card-img-top {
   width: 100%;
-  max-height: 15vw;
-  object-fit: cover;
   border-top-left-radius: calc(0.25rem - 1px);
   border-top-right-radius: calc(0.25rem - 1px);
 }
@@ -3427,6 +3425,13 @@ input[type="button"].btn-block {
     margin-right: 15px;
     margin-bottom: 15px;
     margin-left: 15px;
+  }
+  .card-img-top {
+    width: 100%;
+    max-height: 15vw;
+    object-fit: cover;
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
   }
 }
 
