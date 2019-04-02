@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -46,6 +45,10 @@ class Category(models.Model):
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
+
+    class Meta:
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.name
@@ -145,15 +148,18 @@ class Activity(models.Model):
                                     'of your activity page.')
                     )
 
-    review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
-
+    # Non Editable Fields (at least for users)
     status          = StatusField()
     approved_time   = MonitorField(monitor='status', when=['approved'])
+    created         = models.DateTimeField(auto_now_add=True)
     modified        = models.DateTimeField(auto_now=True)
-    featured        = models.BooleanField(verbose_name=_("is featured"), default=False)
+    is_featured     = models.BooleanField(verbose_name=_("is featured"), default=False)
+    review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
-    objects = models.Manager()
-    public = QueryManager(status=STATUS.approved).order_by('-approved_time')
+    # Model Managers
+    objects         = models.Manager()
+    approved        = QueryManager(status=STATUS.approved).order_by('-approved_time')
+    unapproved      = QueryManager(status=STATUS.unapproved).order_by('-created')
 
     class Meta:
         verbose_name = _("activity")
@@ -196,7 +202,7 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.filter(approved=True).order_by('-created')
+        queryset = Activity.approved.all()
         return queryset[:self.latest_activities]
 
     def __str__(self):
@@ -210,9 +216,7 @@ class FeaturedActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.filter(
-            Q(approved=True) & Q(featured=True)
-        )
+        queryset = Activity.approved.filter(is_featured=True)
         return queryset[:self.number_of_activities]
     
     def __str__(self):

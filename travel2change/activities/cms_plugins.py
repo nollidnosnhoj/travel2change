@@ -21,7 +21,7 @@ class LatestActivitiesPlugin(CMSPluginBase):
 class FeaturedActivitiesPlugin(CMSPluginBase):
     model = FeaturedActivities
     name = _('Featured Activities')
-    render_template = 'activities/plugin/latest.html'
+    render_template = 'activities/plugins/latest.html'
     cache = False
 
     def render(self, context, instance, placeholder):
