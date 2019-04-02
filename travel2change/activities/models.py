@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -180,8 +181,24 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.all().filter(approved=True).order_by('-created')
+        queryset = Activity.objects.filter(approved=True).order_by('-created')
         return queryset[:self.latest_activities]
 
     def __str__(self):
         return ugettext('Latest activities: {0}'.format(self.latest_activities))
+
+
+class FeaturedActivities(CMSPlugin):
+    number_of_activities = models.IntegerField(
+        default=5,
+        help_text=_('The maximum number of featured activities to display')
+    )
+
+    def get_activities(self, request):
+        queryset = Activity.objects.filter(
+            Q(approved=True) & Q(featured=True)
+        )
+        return queryset[:self.number_of_activities]
+    
+    def __str__(self):
+        return ugettext('Featured activities: {0}'.format(self.latest_activities))
