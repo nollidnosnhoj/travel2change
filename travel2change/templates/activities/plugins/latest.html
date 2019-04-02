@@ -1,9 +1,9 @@
 {% load i18n %}
-<div class="row">
+<div class="card-deck">
     {% for activity in activities %}
-    <div class="col-md-3">{% include "activities/plugins/activity.html" %}</div>
+    {% include "activities/plugins/activity.html" %}
     {% if forloop.counter|divisibleby:"4" and not forloop.last %}
-    </div><div class="row">
+    </div><br /><div class="card-deck">
     {% endif %}
     {% empty %}
     <p>No activities yet.</p>

@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse
@@ -5,6 +6,18 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from users.models import Host
 from activities.models import Activity
+
+User = get_user_model()
+
+
+class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = User
+    fields = ['first_name', 'last_name', ]
+    template_name_suffix = '_update'
+    success_message = 'User Information Successfully Updated'
+
+    def get_success_url(self):
+        return reverse('user_update')
 
 
 """ Show host's profile """

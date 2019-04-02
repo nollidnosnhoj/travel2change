@@ -11,11 +11,11 @@ from users.models import Host
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return 'uploads/{0}/featured/{1}'.format(instance.id, filename)
+    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return 'uploads/{0}/photos/{1}'.format(instance.activity.id, filename)
+    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
 
 
 class Region(models.Model):
@@ -182,6 +182,9 @@ class Activity(models.Model):
     def highlights_as_list(self):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
+
+    def get_bookmark_count(self):
+        self.bookmark_set.all().count()
 
     @property
     def is_free(self):
