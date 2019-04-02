@@ -5,7 +5,9 @@ from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
-from .managers import ActivityManager
+from model_utils import Choices
+from model_utils.fields import MonitorField, StatusField
+from model_utils.managers import QueryManager
 from users.models import Host
 
 def get_featured_image_filename(instance, filename):
@@ -43,8 +45,14 @@ class Category(models.Model):
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
+    objects = models.Manager()
+
+    def __str__(self):
+        return self.name
+
 
 class Activity(models.Model):
+    STATUS          = Choices('unapproved', 'approved')
     host            = models.ForeignKey(
                         Host,
                         related_name=_("host"),
@@ -86,6 +94,12 @@ class Activity(models.Model):
                         related_query_name=_("activity"),
                         help_text=_("Choose a region where you activity will be held."),
                         on_delete=models.CASCADE
+                    )
+    categories      = models.ManyToManyField(
+                        Category,
+                        verbose_name=_('categories'),
+                        blank=False,
+                        help_text=_("Select categories the best fits your activity.")
                     )
     tags            = models.ManyToManyField(
                         Tag,
@@ -133,12 +147,13 @@ class Activity(models.Model):
 
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
-    created         = models.DateTimeField(auto_now_add=True, verbose_name=_("activity created date"))
+    status          = StatusField()
+    approved_time   = MonitorField(monitor='status', when=['approved'])
     modified        = models.DateTimeField(auto_now=True)
     featured        = models.BooleanField(verbose_name=_("is featured"), default=False)
-    approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
 
-    objects = ActivityManager()
+    objects = models.Manager()
+    public = QueryManager(status=STATUS.approved).order_by('-approved_time')
 
     class Meta:
         verbose_name = _("activity")
