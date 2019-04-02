@@ -149,7 +149,7 @@ class Activity(models.Model):
                     )
 
     # Non Editable Fields (at least for users)
-    status          = StatusField()
+    status          = StatusField(default=STATUS.unapproved)
     approved_time   = MonitorField(monitor='status', when=['approved'])
     created         = models.DateTimeField(auto_now_add=True)
     modified        = models.DateTimeField(auto_now=True)
@@ -183,6 +183,7 @@ class Activity(models.Model):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
+    @property
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
