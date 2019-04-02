@@ -173,7 +173,7 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.all().filter(approved=True)
+        queryset = Activity.objects.all().filter(approved=True).order_by('-created')
         return queryset[:self.latest_activities]
 
     def __str__(self):
