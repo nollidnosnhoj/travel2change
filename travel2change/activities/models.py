@@ -28,13 +28,19 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    font_awesome = models.CharField(max_length=60, blank=False,
+    font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
 
     def __str__(self):
         return self.name
+    
+
+class Category(models.Model):
+    name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
+    font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
+        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
 
 class Activity(models.Model):
@@ -128,6 +134,7 @@ class Activity(models.Model):
 
     created         = models.DateTimeField(auto_now_add=True, verbose_name=_("activity created date"))
     modified        = models.DateTimeField(auto_now=True)
+    featured        = models.BooleanField(verbose_name=_("is featured"), default=False)
     approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
 
     objects = ActivityManager()
