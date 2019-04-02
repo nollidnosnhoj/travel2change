@@ -162,7 +162,9 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
         host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
         activity_tags = form_dict.pop('tags')
+        activity_categories = form_dict.pop('categories')
         instance = Activity.objects.create(**form_dict, host=host)
+        instance.categories.set(activity_categories)
         instance.tags.set(activity_tags)
         instance.save()
         

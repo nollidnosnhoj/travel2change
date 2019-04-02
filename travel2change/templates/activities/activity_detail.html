@@ -14,7 +14,9 @@
         <div class="jumbotron">
             <h1 class="display-4">
                 {{ activity.title }}
-                {% if not activity.approved %}<span class="badge badge-warning">Unapproved</span>{% endif %}
+                {% if activity.status == activity.STATUS.unapproved %}
+                    <span class="badge badge-warning">Unapproved</span>
+                {% endif %}
             </h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>

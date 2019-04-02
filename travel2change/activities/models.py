@@ -4,7 +4,9 @@ from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
-from .managers import ActivityManager
+from model_utils import Choices
+from model_utils.fields import MonitorField, StatusField
+from model_utils.managers import QueryManager
 from users.models import Host
 
 def get_featured_image_filename(instance, filename):
@@ -28,16 +30,32 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    font_awesome = models.CharField(max_length=60, blank=False,
+    font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
 
     def __str__(self):
         return self.name
+    
+
+class Category(models.Model):
+    name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
+    font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
+        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
+
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
+
+    def __str__(self):
+        return self.name
 
 
 class Activity(models.Model):
+    STATUS          = Choices('unapproved', 'approved')
     host            = models.ForeignKey(
                         Host,
                         related_name=_("host"),
@@ -79,6 +97,12 @@ class Activity(models.Model):
                         related_query_name=_("activity"),
                         help_text=_("Choose a region where you activity will be held."),
                         on_delete=models.CASCADE
+                    )
+    categories      = models.ManyToManyField(
+                        Category,
+                        verbose_name=_('categories'),
+                        blank=False,
+                        help_text=_("Select categories the best fits your activity.")
                     )
     tags            = models.ManyToManyField(
                         Tag,
@@ -124,13 +148,18 @@ class Activity(models.Model):
                                     'of your activity page.')
                     )
 
+    # Non Editable Fields (at least for users)
+    status          = StatusField(default=STATUS.unapproved)
+    approved_time   = MonitorField(monitor='status', when=['approved'])
+    created         = models.DateTimeField(auto_now_add=True)
+    modified        = models.DateTimeField(auto_now=True)
+    is_featured     = models.BooleanField(verbose_name=_("is featured"), default=False)
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
-    created         = models.DateTimeField(auto_now_add=True, verbose_name=_("activity created date"))
-    modified        = models.DateTimeField(auto_now=True)
-    approved        = models.BooleanField(verbose_name=_("is approved"), default=False)
-
-    objects = ActivityManager()
+    # Model Managers
+    objects         = models.Manager()
+    approved        = QueryManager(status=STATUS.approved).order_by('-approved_time')
+    unapproved      = QueryManager(status=STATUS.unapproved).order_by('-created')
 
     class Meta:
         verbose_name = _("activity")
@@ -157,6 +186,7 @@ class Activity(models.Model):
     def get_bookmark_count(self):
         self.bookmark_set.all().count()
 
+    @property
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
@@ -176,8 +206,22 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.all().filter(approved=True)
+        queryset = Activity.approved.all()
         return queryset[:self.latest_activities]
 
     def __str__(self):
         return ugettext('Latest activities: {0}'.format(self.latest_activities))
+
+
+class FeaturedActivities(CMSPlugin):
+    number_of_activities = models.IntegerField(
+        default=5,
+        help_text=_('The maximum number of featured activities to display')
+    )
+
+    def get_activities(self, request):
+        queryset = Activity.approved.filter(is_featured=True)
+        return queryset[:self.number_of_activities]
+    
+    def __str__(self):
+        return ugettext('Featured activities: {0}'.format(self.latest_activities))
