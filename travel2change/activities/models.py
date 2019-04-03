@@ -147,6 +147,11 @@ class Activity(models.Model):
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
                     )
+    fh_item_id      = models.PositiveIntegerField(
+                        verbose_name=_('fareharbor item id'),
+                        blank=True,
+                        help_text=_('This is the FareHarbor item for your activity')
+                    )
 
     # Non Editable Fields (at least for users)
     status          = StatusField(default=STATUS.unapproved)
