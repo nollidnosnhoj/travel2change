@@ -204,7 +204,7 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.approved.all()
+        queryset = Activity.objects.approved()
         return queryset[:self.latest_activities]
 
     def __str__(self):
@@ -218,7 +218,7 @@ class FeaturedActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.approved.filter(is_featured=True)
+        queryset = Activity.objects.approved().filter(is_featured=True)
         return queryset[:self.number_of_activities]
     
     def __str__(self):

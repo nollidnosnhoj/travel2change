@@ -17,20 +17,27 @@ from bookmarks.models import Bookmark
 from users.models import Host
 
 
-class ActivityDetailView(DetailView):
+class ActivityDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     """ View for showing the details of the activity """
 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
 
+    def test_func(self):
+        # Check if the activity is not approved
+        if self.get_object().status == Activity.STATUS.unapproved:
+            # Only the owner, staff, and superuser can view the activity
+            return self.request.user.is_staff or \
+                self.request.user.is_superuser or \
+                self.request.user == self.get_object().host.user
+        return True
+
     def get_context_data(self, **kwargs):
-        """ Show activity's photo """
         current_user = get_user(self.request)
-        activity = self.get_object()
         context = super().get_context_data(**kwargs)
-        context['photos'] = ActivityPhoto.objects.filter(activity=activity)
-        context['bookmarked'] = Bookmark.objects.filter(user=current_user, activity=activity).exists()
+        context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
+        context['bookmarked'] = Bookmark.objects.filter(user=current_user, activity=self.get_object()).exists()
         return context
 
 
@@ -39,7 +46,7 @@ class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
     success_message = "Activity successfully deleted."
 
     def test_func(self):
-        """ Validate if the user is the host of the activity """
+        
         return self.get_object().host.user == self.request.user
 
     def get_object(self):
@@ -122,6 +129,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         context['activity'] = activity
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
         return context
+
 
 def photo_delete(request, pk):
     """ Function for deleting an activity's photo """
