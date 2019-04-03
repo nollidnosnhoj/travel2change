@@ -46,11 +46,12 @@ class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
     success_message = "Activity successfully deleted."
 
     def test_func(self):
-        
+        # Only user that hosted the activity can view
         return self.get_object().host.user == self.request.user
 
     def get_object(self):
-        activity_id = self.kwargs['pk']
+        # Get the object that corresponds to the primary key
+        activity_id = self.kwargs.get('pk')
         return get_object_or_404(Activity, pk=activity_id)
 
     def delete(self, request, *args, **kwargs):
@@ -72,7 +73,7 @@ class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
     success_message = "Activity successfully updated."
 
     def test_func(self):
-        """ Validate if the user is the host of the activity """
+        # Only the user that hosted the activity can view
         return self.get_object().host.user == self.request.user
     
     def get_success_url(self):
@@ -80,20 +81,18 @@ class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
 
 
 class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    """ View for uploading photos for a specific activity """
-
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
-    max_photos = 5
+    max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
 
     def get_activity(self):
-        """ Get activity from url """
+        # Get the activity
         return Activity.objects.get(pk=self.kwargs['pk'])
 
     def test_func(self):
-        """ Validate if current user is the host of the activity """
         return self.get_activity().host.user == self.request.user
 
+    # Upload the photos for the activities
     def post(self, request, *args, **kwargs):
         activity = self.get_activity()
         form_class = self.get_form_class()
@@ -128,6 +127,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         context = super().get_context_data(**kwargs)
         context['activity'] = activity
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
+        context['max_photos'] = self.max_photos
         return context
 
 
