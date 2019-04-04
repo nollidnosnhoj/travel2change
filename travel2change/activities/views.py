@@ -16,6 +16,37 @@ from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
 
+from django.views.generic import ListView
+
+class ActivityBrowseView(ListView):
+    model = Activity
+    template_name = 'activities/activity_browse.html'
+    paginate_by = 10
+    def get_queryset(self):
+        # query all activities
+        qs = Activity.approved.all()
+        
+        # Get value from the filter form
+        title = self.request.GET.get('title')
+        region = self.request.GET.getlist('region')
+        categories = self.request.GET.getlist('categories')
+        tags = self.request.GET.getlist('tags')
+        sort_by = self.request.GET.get('sortby')
+        
+        # filter activities if the query is present
+        if not region:
+            qs = qs.filter(region__in=region)
+        if not categories:
+            qs = qs.filter(categories__in=categories)
+        if not tags:
+            qs = qs.filter(tags__in=tags)
+        if title != '':
+            qs = qs.filter(title__icontains=title)
+            
+        # sort the query by the sortby value
+        qs = qs.order_by(sort_by)
+        
+        return qs
 
 class ActivityDetailView(DetailView):
     """ View for showing the details of the activity """
