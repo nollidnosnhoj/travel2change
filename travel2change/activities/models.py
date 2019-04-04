@@ -6,7 +6,7 @@ from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
-from activities.models import ActivityManager
+from .managers import ActivityManager
 from users.models import Host
 
 def get_featured_image_filename(instance, filename):
@@ -146,6 +146,11 @@ class Activity(models.Model):
                         blank=True,
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
+                    )
+    fh_item_id      = models.PositiveIntegerField(
+                        verbose_name=_('fareharbor item id'),
+                        blank=True,
+                        help_text=_('This is the FareHarbor item for your activity')
                     )
 
     # Non Editable Fields (at least for users)
