@@ -2,7 +2,11 @@ from django.db import models
 
 
 class ActivityQuerySet(models.QuerySet):
-    pass
+    def approved(self):
+        return self.filter(status="approved")
+    
+    def unapproved(self):
+        return self.filter(status="unapproved")
 
 
 class ActivityManager(models.Manager):
