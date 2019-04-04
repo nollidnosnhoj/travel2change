@@ -2,14 +2,14 @@
 {% block title %}Activity Browse{% endblock title %}
 {% block content %}
 
-<form method="GET" action=".">
+ <form method="GET" action=".">
 	<div class="form-row">
 		<div class="form-group col-md-12">
 			<label for="activitybrowse_title">Title</label>
 			<input type="text" class="form-control" name="title" id="activitybrowse_title" placeholder="Title contains.." />
 		</div>
 	</div>
-	<div class="form-row">
+	 <div class="form-row">
 		<div class="form-group col-md-6">
 			<label for="activitybrowse_region">Region</label>
 			<select name="region">
@@ -19,7 +19,7 @@
 				{% endfor %}
 			</select>
 		</div>
-    </div>
+    </div> 
     <div class="form-row">
 		<div class="form-group col-md-6">
 			<label for="activitybrowse_cat">Categories</label>
@@ -31,12 +31,21 @@
 			{% endfor %}
 		</div>
 	</div>
-    {% comment %} <div class="form-row">
+     {% comment %} <div class="form-row">
         <div class="form-group col-md-6">
 
         </div>
-    </div> {% endcomment %}
+    </div>  {% endcomment %}
+    <input type="submit" value="Browse">
 </form>
+
+<ul>
+{% for activity in activityBrowse %}
+    <li>  {{ activity.title }} </li>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>
 
 
 {% endblock content %}

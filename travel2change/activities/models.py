@@ -6,8 +6,26 @@ from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
-from activities.models import ActivityManager
 from users.models import Host
+
+class ActivityQuerySet(models.QuerySet):
+    def approved(self):
+        return self.filter(status="approved")
+    
+    def unapproved(self):
+        return self.filter(status="unapproved")
+
+
+class ActivityManager(models.Manager):
+    def get_queryset(self):
+        return ActivityQuerySet(self.model, using=self._db)
+
+    def approved(self):
+        return self.get_queryset().approved()
+
+    def unapproved(self):
+        return self.get_queryset().unapproved()
+
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
