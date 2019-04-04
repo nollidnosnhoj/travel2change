@@ -6,7 +6,7 @@ from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
-from model_utils.managers import QueryManager
+from activities.models import ActivityManager
 from users.models import Host
 
 def get_featured_image_filename(instance, filename):
@@ -157,9 +157,7 @@ class Activity(models.Model):
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
     # Model Managers
-    objects         = models.Manager()
-    approved        = QueryManager(status=STATUS.approved).order_by('-approved_time')
-    unapproved      = QueryManager(status=STATUS.unapproved).order_by('-created')
+    objects         = ActivityManager()
 
     class Meta:
         verbose_name = _("activity")
