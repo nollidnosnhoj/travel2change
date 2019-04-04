@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm
-from activities.models import Activity, ActivityPhoto
+from activities.models import Activity, Region, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
 
@@ -21,32 +21,45 @@ from django.views.generic import ListView
 class ActivityBrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 10
+    queryset = Activity.objects.all()
+    # paginate_by = 10
+    context_object_name = 'activityBrowse'
+    print("0")
+
     def get_queryset(self):
         # query all activities
-        qs = Activity.approved.all()
-        
+        qs = Activity.objects.all()
+
         # Get value from the filter form
         title = self.request.GET.get('title')
-        region = self.request.GET.getlist('region')
-        categories = self.request.GET.getlist('categories')
-        tags = self.request.GET.getlist('tags')
-        sort_by = self.request.GET.get('sortby')
+        region = self.request.GET.get('region')
+        categories = self.request.GET.get('categories')
+        tags = self.request.GET.get('tags')
+        # sort_by = self.request.GET.get('sortby')
         
         # filter activities if the query is present
-        if not region:
-            qs = qs.filter(region__in=region)
-        if not categories:
-            qs = qs.filter(categories__in=categories)
-        if not tags:
-            qs = qs.filter(tags__in=tags)
-        if title != '':
-            qs = qs.filter(title__icontains=title)
+        if region or region is not None:
+            qs = Activity.objects.filter(region__name=region)
+            print("1")
+        if categories or categories is not None:
+            qs = Activity.objects.filter(categories__name=categories)
+            print("2")
+        if tags or tags is not None:
+            qs = Activity.objects.filter(tags__name=tags)
+            print("3")
+        if title or title is not None:
+            qs = Activity.objects.filter(title__icontains=title)
+            print("4")
             
         # sort the query by the sortby value
-        qs = qs.order_by(sort_by)
+        # qs = qs.order_by(sort_by)
         
         return qs
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['regions'] = Region.objects.all()
+        return context
 
 class ActivityDetailView(DetailView):
     """ View for showing the details of the activity """
