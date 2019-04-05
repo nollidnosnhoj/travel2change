@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}Approve {{ activity.title }}{% endblock title %}
+{% block content %}
+<div class="row">
+    <article class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+                <p>After reviewing the activity, you will need to add the FareHarbor item ID for the activity.</p>
+                <p>If the user has a FareHarbor item for his/her activity, please contact him/her.</p>
+            </div>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </article>
+</div>
+{% endblock content %}

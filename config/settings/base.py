@@ -96,6 +96,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'users',
     'activities',
+    'moderations',
     'bookmarks',
     'travel2change',
 )
