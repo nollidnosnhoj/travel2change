@@ -36,14 +36,6 @@ def get_photo_image_filename(instance, filename):
     return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
 
 
-class ActivityQuerySet(models.QuerySet):
-    def approved(self):
-        return self.filter(status="approved")
-    
-    def unapproved(self):
-        return self.filter(status="unapproved")
-
-
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
     slug = AutoSlugField(populate_from='name')
@@ -183,7 +175,7 @@ class Activity(models.Model):
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
     # Model Managers
-    objects         = ActivityQuerySet.as_manager()
+    objects         = ActivityManager()
 
     class Meta:
         verbose_name = _("activity")
@@ -230,7 +222,7 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.approved().order_by('-approved_time')
+        queryset = Activity.approved.all()
         return queryset[:self.latest_activities]
 
     def __str__(self):
@@ -244,7 +236,7 @@ class FeaturedActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.approved().filter(is_featured=True).order_by('-approved_time')
+        queryset = Activity.approved.filter(is_featured=True)
         return queryset[:self.number_of_activities]
     
     def __str__(self):
