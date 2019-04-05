@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
@@ -251,6 +252,8 @@ class FeaturedActivities(CMSPlugin):
     def __str__(self):
         return ugettext('Featured activities: {0}'.format(self.latest_activities))
 =======
+=======
+>>>>>>> 391e84d1781558896a1925de512fced146d496b9
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
@@ -494,4 +497,7 @@ class FeaturedActivities(CMSPlugin):
     
     def __str__(self):
         return ugettext('Featured activities: {0}'.format(self.latest_activities))
+<<<<<<< HEAD
 >>>>>>> Got the functionality of the filter and browse activities working
+=======
+>>>>>>> 391e84d1781558896a1925de512fced146d496b9
