@@ -1,6 +1,7 @@
 from django.conf import settings
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, reverse
 from django.template.loader import render_to_string
 from django.views.generic import DeleteView, ListView, UpdateView
 
@@ -13,21 +14,23 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
     paginate_by = 10
+    ordering = ['created']
 
     def get_queryset(self):
         # Order Unapproved Activities by Created Time Ascending
-        return self.model.objects.unapproved().all().order_by('+created')
+        return self.model.objects.unapproved().all()
 
 
-class ActivityApprovalView(StaffUserOnlyMixin, UpdateView):
+class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
+    model = Activity
     form_class = ApproveForm
     template_name = 'moderations/moderation_approval.html'
+    success_message = 'Activity has successfully been approved! Email sent.'
 
     def form_valid(self, form):
         # Change status to approve, and send email to host
         instance = form.save(commit=False)
         instance.status = Activity.STATUS.approved
-        self.send_mail(instance)
         send_notification(
             instance,
             "Your activity was approved!",
@@ -48,13 +51,16 @@ class ActivityApprovalView(StaffUserOnlyMixin, UpdateView):
         )
 
 
-class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
+class ActivityDisapprovalView(StaffUserOnlyMixin, SuccessMessageMixin, DeleteView):
+    success_message = "Activity has been successfully disapproved. Email sent."
+    template_name = "moderations/moderation_disapproval.html"
+
     def get_object(self):
         return get_object_or_404(Activity, pk=self.kwargs['pk'])
     
     def delete(self, request, *args, **kwargs):
         # Notify users about disapproval, then delete object
-        reasons = request.POST.get('reason', '')
+        reasons = request.POST.get('reason', 'N/A')
         send_notification(
             self.get_object(),
             "Your activity was disapproved.",
@@ -62,6 +68,9 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
             reasons=reasons,
         )
         return super().delete(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse('moderations:queue')
 
 def send_notification(instance, subject, template_prefix, **kwargs):
     # Send email notification to the host about approval/disapproval.
@@ -69,7 +78,7 @@ def send_notification(instance, subject, template_prefix, **kwargs):
 
     msg = render_to_string(template, {
         'activity': instance,
-        **kwargs,
+        'reasons': kwargs['reasons'],
     })
 
     send_mail(
