@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}Disapprove {{ activity.title }}{% endblock title %}
+{% block content %}
+<div class="row">
+    <article class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+                <p>You are about to disapprove this activity, meaning the activity will be deleted.</p>
+                <p>It is recommended to provide reasons for the disapproval so the host can adjust his/her activity.</p>
+            </div>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="reasonsfordisapproval">Reasons for disapproval:</label>
+                <textarea name="reasons" class="form-control" id="reasonsfordisapproval" rows="3">
+
+                </textarea>
+            </div>
+            <button type="submit" class="btn btn-danger">Disapprove and Delete</button>
+        </form>
+    </article>
+</div>
+{% endblock content %}

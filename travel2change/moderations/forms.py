@@ -9,12 +9,8 @@ class DisapproveForm(forms.Form):
         help_text=_('Insert reasons why this activity was not approved.'),
     )
 
-    def send_email(self):
-        # send email about disapproval with reason
-        pass
-
 
 class ApproveForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ('fb_item_id', )
+        fields = ('fh_item_id', )
