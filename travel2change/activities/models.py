@@ -6,7 +6,6 @@ from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
-from .managers import ActivityManager
 from users.models import Host
 
 def get_featured_image_filename(instance, filename):
@@ -16,6 +15,14 @@ def get_featured_image_filename(instance, filename):
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
     return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
+
+
+class ActivityQuerySet(models.QuerySet):
+    def approved(self):
+        return self.filter(status="approved")
+    
+    def unapproved(self):
+        return self.filter(status="unapproved")
 
 
 class Region(models.Model):
@@ -163,7 +170,7 @@ class Activity(models.Model):
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
     # Model Managers
-    objects         = ActivityManager()
+    objects         = ActivityQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("activity")
@@ -210,7 +217,7 @@ class LatestActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.approved()
+        queryset = Activity.objects.approved().order_by('-approved_time')
         return queryset[:self.latest_activities]
 
     def __str__(self):
@@ -224,7 +231,7 @@ class FeaturedActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.approved().filter(is_featured=True)
+        queryset = Activity.objects.approved().filter(is_featured=True).order_by('-approved_time')
         return queryset[:self.number_of_activities]
     
     def __str__(self):
