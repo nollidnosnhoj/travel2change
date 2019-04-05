@@ -3,19 +3,40 @@
 {% block styles %}
 {% endblock styles %}
 {% block content %}
-<div class="card-deck">
-{% for activity in activities %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">
-                <a href="{{ activity.get_absolute_url }}">
-                    {{ activity.title }}
-                </a>
-        </div>
-    </div>
-{% empty %}
-    <p>Nothing in queue.</p>
-{% endfor %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Activity</th>
+                <th scope="col">Host</th>
+                <th scope="col">Submitted Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+                <tr>
+                    <td scope="row">{{ activity.pk }}</td>
+                    <td><a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a></td>
+                    <td>{{ activity.host.name }}</td>
+                    <td>{{ activity.created }}</td>
+                    <td>
+                        <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                            <i class="fas fa-check"></i>
+                        </a>
+                        <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+            <tr>
+                <td scope="row" colspan="5">No activites in moderation queue.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 <br />
 {% if is_paginated %}

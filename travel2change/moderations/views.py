@@ -1,4 +1,6 @@
 from django.conf import settings
+
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, reverse
@@ -51,7 +53,7 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
         )
 
 
-class ActivityDisapprovalView(StaffUserOnlyMixin, SuccessMessageMixin, DeleteView):
+class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
     success_message = "Activity has been successfully disapproved. Email sent."
     template_name = "moderations/moderation_disapproval.html"
 
@@ -60,13 +62,14 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, SuccessMessageMixin, DeleteVie
     
     def delete(self, request, *args, **kwargs):
         # Notify users about disapproval, then delete object
-        reasons = request.POST.get('reason', 'N/A')
+        reasons = request.POST.get('reasons', 'N/A')
         send_notification(
             self.get_object(),
             "Your activity was disapproved.",
             "disapproval",
             reasons=reasons,
         )
+        messages.success(request, self.success_message)
         return super().delete(request, *args, **kwargs)
     
     def get_success_url(self):
@@ -74,11 +77,11 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, SuccessMessageMixin, DeleteVie
 
 def send_notification(instance, subject, template_prefix, **kwargs):
     # Send email notification to the host about approval/disapproval.
-    template = "moderations/templates/{0}.txt".format(template_prefix)
+    template = "moderations/templates/{0}_email.txt".format(template_prefix)
 
     msg = render_to_string(template, {
         'activity': instance,
-        'reasons': kwargs['reasons'],
+        **kwargs
     })
 
     send_mail(

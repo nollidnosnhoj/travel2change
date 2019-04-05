@@ -20,6 +20,9 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a href="#" class="dropdown-item">{% trans "Account" %}</a>
+            {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'moderations:queue' %}" class="dropdown-item">{% trans "Moderation" %}</a>
+            {% endif %}
             <a href="{% url 'bookmarks:list' %}" class="dropdown-item">{% trans "Bookmarks" %}</a>
             {% if user.host %}
               <a href="{% url 'host_detail' user.host.slug %}" class="dropdown-item">{% trans "Profile" %}</a>

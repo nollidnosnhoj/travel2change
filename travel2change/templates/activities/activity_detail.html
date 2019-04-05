@@ -9,14 +9,19 @@
     }
 </style>
 {% endblock styles %}
+{% if activity.status == activity.STATUS.unapproved %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    This activity is not approved yet, and is only visible to the host and staff users.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
 <div class="row">
     <article class="single-activity col-sm-8">
         <div class="jumbotron">
             <h1 class="display-4">
                 {{ activity.title }}
-                {% if activity.status == activity.STATUS.unapproved %}
-                    <span class="badge badge-warning">Unapproved</span>
-                {% endif %}
             </h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
@@ -118,6 +123,22 @@
                 <span class="sr-only">Next</span>
             </a>
         </div>
+        {% endif %}
+        {% if request.user.is_staff or request.user.is_superuser %}
+            {% if activity.status == 'unapproved' %}
+            <div class="row">
+                <div class="col-sm-6">
+                    <a class="btn btn-success btn-block" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                        Approve
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a class="btn btn-danger btn-block" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                        Disapprove
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         {% endif %}
     </aside>
 </div>
