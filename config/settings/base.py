@@ -328,3 +328,5 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('dark', _('Dark')),
     ('custom', _('Custom')),
 )
+
+MAX_PHOTOS_PER_ACTIVITY = 5
