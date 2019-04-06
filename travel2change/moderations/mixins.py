@@ -1,5 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
+from django.http import (
+    HttpResponseRedirect
+)
 
-class StaffUserOnlyMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_superuser
+class StaffUserOnlyMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(settings.LOGIN_URL)
+        if not request.user.is_staff or not request.user.is_superuser:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)

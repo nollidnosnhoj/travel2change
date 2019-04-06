@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import get_user
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import JsonResponse
@@ -12,26 +12,18 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm
+from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
 from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
 
 
-class ActivityDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ActivityDetailView(LoginRequiredMixin, CanViewUnapproved, DetailView):
     """ View for showing the details of the activity """
 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
-
-    def test_func(self):
-        # Check if the activity is not approved
-        if self.get_object().status == Activity.STATUS.unapproved:
-            # Only the owner, staff, and superuser can view the activity
-            return self.request.user.is_staff or \
-                self.request.user.is_superuser or \
-                self.request.user == self.get_object().host.user
-        return True
 
     def get_context_data(self, **kwargs):
         current_user = get_user(self.request)
@@ -41,18 +33,13 @@ class ActivityDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
     template_name = "activities/activity_delete.html"
     success_message = "Activity successfully deleted."
 
-    def test_func(self):
-        # Only user that hosted the activity can view
-        return self.get_object().host.user == self.request.user
-
     def get_object(self):
         # Get the object that corresponds to the primary key
-        activity_id = self.kwargs.get('pk')
-        return get_object_or_404(Activity, pk=activity_id)
+        return get_object_or_404(Activity, pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -64,37 +51,26 @@ class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
         })
 
 
-class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, OwnershipViewOnly, UpdateView):
     """ View for updating activity """
 
     model = Activity
     form_class = ActivityUpdateForm
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
-
-    def test_func(self):
-        # Only the user that hosted the activity can view
-        return self.get_object().host.user == self.request.user
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(LoginRequiredMixin, UserPassesTestMixin, FormView):
+class ActivityPhotoUploadView(LoginRequiredMixin, OwnershipViewOnly, FormView):
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
     max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
 
-    def get_activity(self):
-        # Get the activity
-        return Activity.objects.get(pk=self.kwargs['pk'])
-
-    def test_func(self):
-        return self.get_activity().host.user == self.request.user
-
     # Upload the photos for the activities
     def post(self, request, *args, **kwargs):
-        activity = self.get_activity()
+        activity = get_object_or_404(Activity, pk=kwargs['pk'])
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('photos')
@@ -151,15 +127,10 @@ STEP_TEMPLATES = {
 }
 
 
-class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, HostOnlyView, SessionWizardView):
     """ View for activity creation wizard """
 
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
-
-    def test_func(self):
-        """ Check if user is a host """
-        host = Host.objects.filter(user=self.request.user)
-        return self.request.user.is_authenticated and host
 
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """
