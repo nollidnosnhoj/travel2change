@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -12,6 +13,7 @@ from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm
 from activities.models import Activity, ActivityPhoto
+from bookmarks.models import Bookmark
 from users.models import Host
 
 
@@ -24,9 +26,11 @@ class ActivityDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         """ Show activity's photo """
+        current_user = get_user(self.request)
         activity = self.get_object()
         context = super().get_context_data(**kwargs)
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
+        context['bookmarked'] = Bookmark.objects.filter(user=current_user, activity=activity).exists()
         return context
 
 
@@ -158,7 +162,9 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
         host = Host.objects.get(user=self.request.user)
         form_dict = self.get_all_cleaned_data()
         activity_tags = form_dict.pop('tags')
+        activity_categories = form_dict.pop('categories')
         instance = Activity.objects.create(**form_dict, host=host)
+        instance.categories.set(activity_categories)
         instance.tags.set(activity_tags)
         instance.save()
         

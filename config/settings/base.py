@@ -89,12 +89,14 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'autoslug',
     'crispy_forms',
+    'django_filters',
     'django_social_share',
     'formtools',
 )
 LOCAL_APPS = (
     'users',
     'activities',
+    'bookmarks',
     'travel2change',
 )
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS

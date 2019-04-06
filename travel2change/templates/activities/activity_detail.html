@@ -14,22 +14,33 @@
         <div class="jumbotron">
             <h1 class="display-4">
                 {{ activity.title }}
-                {% if not activity.approved %}<span class="badge badge-warning">Unapproved</span>{% endif %}
+                {% if activity.status == activity.STATUS.unapproved %}
+                    <span class="badge badge-warning">Unapproved</span>
+                {% endif %}
             </h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="social_share">
-                    <ul class="list-group list-group-horizontal">
-                        <li class="list-group-item">{% post_to_facebook activity.get_absolute_url "Facebook" %}</li>
-                        <li class="list-group-item">{% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url "Twitter" %}</li>
-                    </ul>
+                <div class="clearfix">
+                    {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-light" data-url="{% url 'bookmarks:set' activity.pk %}" data-action="bookmark" title="Bookmark">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
+                        <span class="bookmarkText">{% if bookmarked %}Remove{% else %}Bookmark{% endif %}</span>
+                    </button>
+                    {% endif %}
+                    <div class="social_share dropdown float-right">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">Share
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% post_to_facebook activity.get_absolute_url "Facebook" %}
+                            {% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url "Twitter" %}
+                        </div>
+                    </div>
                 </div>
-                <div class="description block">
-                    <p>{{ activity.description }}</p>
-                </div>
+                <div class="description block"><p>{{ activity.description }}</p></div>
                 <div class="highlights block">
                     <h2>Highlights</h2>
                     <ul>
@@ -60,7 +71,7 @@
                         };
 
                         var map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 17,
+                        zoom: 15,
                         center: myLatLng
                         });
 
@@ -111,3 +122,22 @@
     </aside>
 </div>
 {% endblock content %}
+{% block scripts %}
+<script src="{% static 'js/csrf_ajax.js' %}"></script>
+<script>
+$('[data-action="bookmark"]').click(function() {
+    var current = $(this);
+    var url = current.data('url');
+    $('.spinner-border').show();
+    $.ajax({
+        url: url,
+        type: 'POST',
+        success: function(data) {
+            $('.spinner-border').hide();
+            document.querySelector(".bookmarkText").textContent = data.message;
+            current.prop("disabled", true);
+        }
+    });
+});
+</script>
+{% endblock scripts %}

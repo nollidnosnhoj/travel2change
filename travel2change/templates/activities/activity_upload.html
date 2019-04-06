@@ -43,6 +43,20 @@
 {% endblock content %}
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
-<script src="{% static 'js/photo_delete.js' %}"></script>
+<script>
+$(".delete_photo").click(function() {
+    console.log("CLICKED!")
+    var button = $(this);
+    if (confirm("Are you sure you want to delete this photo?")) {
+        $.ajax({
+            type: "DELETE",
+            url: $(this).data('url'),
+            success: function() {
+                button.parent().parent().fadeOut(1000);
+            },
+        });
+    }
+});
+</script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 {% endblock scripts %}

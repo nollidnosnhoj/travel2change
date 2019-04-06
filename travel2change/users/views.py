@@ -15,7 +15,9 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     fields = ['first_name', 'last_name', ]
     template_name_suffix = '_update'
     success_message = 'User Information Successfully Updated'
-    success_url = reverse('user_update')
+
+    def get_success_url(self):
+        return reverse('user_update')
 
 
 """ Show host's profile """
