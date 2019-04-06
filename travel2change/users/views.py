@@ -9,7 +9,6 @@ from activities.models import Activity
 
 User = get_user_model()
 
-
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     fields = ['first_name', 'last_name', ]
@@ -23,13 +22,11 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('user_update')
 
 
-""" Show host's profile """
 class HostDetailView(DetailView):
     model = Host
     context_object_name = 'host'
-    number_of_activites_in_profile = 5
+    number_of_activites_in_profile = 8
 
-    """ Add activity list into context """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         activities = Activity.objects.filter(host=self.object)
@@ -39,7 +36,6 @@ class HostDetailView(DetailView):
         return context
 
 
-""" Show host's profile update """
 class HostUpdateView(LoginRequiredMixin, UserIsHostViewMixin, SuccessMessageMixin, UpdateView):
     model = Host
     fields = ['_name', 'custom_slug', 'description', 'phone', 'website']
@@ -49,7 +45,6 @@ class HostUpdateView(LoginRequiredMixin, UserIsHostViewMixin, SuccessMessageMixi
     def get_object(self):
         return get_object_or_404(Host, user=self.request.user)
     
-    """ Redirect user after successful update """
     def get_success_url(self):
         return reverse('host_detail', kwargs={'slug': self.object.slug})
 
@@ -59,11 +54,14 @@ class HostActivitiesListView(LoginRequiredMixin, ListView):
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.host = get_object_or_404(Host, user=request.user)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
-        host = get_object_or_404(Host, user=self.request.user)
-        return Activity.objects.approved().filter(host=host).order_by("-approved_time")
+        return Activity.objects.approved().filter(host=self.host).order_by("-approved_time")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['host'] = get_object_or_404(Host, user=self.request.user)
+        context['host'] = self.host
         return context

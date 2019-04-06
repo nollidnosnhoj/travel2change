@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
+{% extends "base.html" %}{% load thumbnail sekizai_tags cache staticfiles %}
 {% block title %}{{ host.name }}{% endblock title %}
 {% block jumbo %}
 <div class="jumbotron jumbotron-fluid">
@@ -37,22 +37,45 @@
             {% endif %}
         </div>
         <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
-            {% for activity in activities %}
-            <a href="{{activity.get_absolute_url}}">
-                <div class="card mb-1">
-                    <div class="card-body row">
-                        <div class="col">
-                            <span class="card-title">{{activity.title}}</span>
+            <div class="row">
+                {% for activity in activities %}
+                <div class="col-md-3">
+                    <div class="card">
+                        {% if bookmark.activity.featured_photo %}
+                        <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ activity.get_absolute_url }}">
+                                    {{ activity.title }}
+                                </a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ activity.region }}</h6>
+                            <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
+                            {% for tag in activity.tags.all %}
+                            <a href="#" class="card-link">{{ tag.name }}</a>
+                            {% endfor %}
                         </div>
-                        <div class="col text-right" style="font-size:small;">
-                            <em>{{activity.created}}</em>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                Created by {{ activity.approved_time }}
+                            </small>
                         </div>
                     </div>
                 </div>
-            </a>
-            {% empty %}
-                <span><em>There is no activities yet.</em></span>
-            {% endfor %}
+                {% if forloop.counter|divisibleby:"4" and not forloop.last %}
+                    </div><br />
+                    <div class="row">
+                {% endif %}
+                {% empty %}
+                    <p>Host have not created an activity yet.</p>
+                {% endfor %}
+                <p class="text-center">
+                    {% if show_more_activities %}
+                    <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
+                    {% endif %}
+                </p>
+            </div>
         </div>
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             {% if host.phone %}
