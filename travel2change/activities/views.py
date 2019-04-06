@@ -8,8 +8,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView, DeleteView
+from django.views.generic import DeleteView, DetailView, FormView, ListView, UpdateView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm
 from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
