@@ -98,7 +98,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, OwnershipViewOnly, FormView):
     
     def get_context_data(self, **kwargs):
         """ Display activity's photos """
-        activity = self.get_activity()
+        activity = get_object_or_404(Activity, pk=self.kwargs['pk'])
         context = super().get_context_data(**kwargs)
         context['activity'] = activity
         context['photos'] = ActivityPhoto.objects.filter(activity=activity)
