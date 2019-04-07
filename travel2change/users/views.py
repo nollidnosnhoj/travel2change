@@ -29,7 +29,7 @@ class HostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        activities = Activity.objects.filter(host=self.object)
+        activities = Activity.objects.approved().filter(host=self.object).order_by('-approved_time')
         # Display 5 activities of the host's, ordered by the creation time
         context['activities'] = activities[:self.number_of_activites_in_profile]
         context['show_more_activities'] = activities.count() > self.number_of_activites_in_profile
