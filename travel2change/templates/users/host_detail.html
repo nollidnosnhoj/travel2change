@@ -33,6 +33,10 @@
             <table class="table table-hover table-responsive-lg">
                 <tbody>
                     <tr>
+                        <th scope="row">Contact Email:</th>
+                        <td>{% if host.contact_email %}{{ host.contact_email }}{% else %}N/A{% endif %}</td>
+                    </tr>
+                    <tr>
                         <th scope="row">Phone Number:</th>
                         <td>{% if host.phone %}{{ host.phone }}{% else %}N/A{% endif %}</td>
                     </tr>

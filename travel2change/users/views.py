@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
+from users.forms import HostUpdateForm
 from users.models import Host
 from users.mixins import UserIsHostViewMixin
 from activities.models import Activity
@@ -38,12 +39,17 @@ class HostDetailView(DetailView):
 
 class HostUpdateView(LoginRequiredMixin, UserIsHostViewMixin, SuccessMessageMixin, UpdateView):
     model = Host
-    fields = ['_name', 'custom_slug', 'description', 'phone', 'website']
+    form_class = HostUpdateForm
     template_name_suffix = '_update'
     success_message = "Profile successfully updated."
 
     def get_object(self):
         return get_object_or_404(Host, user=self.request.user)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
     
     def get_success_url(self):
         return reverse('host_detail', kwargs={'slug': self.object.slug})
