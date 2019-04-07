@@ -19,9 +19,6 @@
         <li class="nav-item">
             <a class="nav-link" id="activities-tab" data-toggle="tab" href="#activities" role="tab" aria-controls="activities" aria-selected="false">Activities</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-        </li>
         {% if request.user == host.user %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'host_update' host.slug %}">Edit Profile</a>
@@ -31,17 +28,27 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             {% if host.description %}
-                {{ host.description }}
-            {% else %}
-                <span><em>Description is yet to be provided.</em></span>
+                <p>{{ host.description }}</p>
             {% endif %}
+            <table class="table table-hover table-responsive-lg">
+                <tbody>
+                    <tr>
+                        <th scope="row">Phone Number:</th>
+                        <td>{% if host.phone %}{{ host.phone }}{% else %}N/A{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Website</th>
+                        <td>{% if host.website %}{{ host.website }}{% else %}N/A{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
             <div class="row">
                 {% for activity in activities %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card">
-                        {% if bookmark.activity.featured_photo %}
+                        {% if activity.featured_photo %}
                         <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
                         {% endif %}
                         <div class="card-body">
@@ -63,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:"4" and not forloop.last %}
+                {% if forloop.counter|divisibleby:"3" and not forloop.last %}
                     </div><br />
                     <div class="row">
                 {% endif %}
@@ -76,24 +83,6 @@
                 <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
                 {% endif %}
             </p>
-        </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            {% if host.phone %}
-            <div class="card">
-                <div class="card-body">
-                    <strong>Phone: </strong>
-                    {{ host.phone }}
-                </div>
-            </div>
-            {% endif %}
-            {% if host.website %}
-            <div class="card">
-                <div class="card-body">
-                    <strong>Website: </strong>
-                    {{ host.website }}
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
 </article>
