@@ -1,0 +1,33 @@
+{% extends "account/base.html" %}
+{% load i18n crispy_forms_tags %}
+{% block title %}{% trans "Modify Account" %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="list-group">
+            <a href="{% url 'user_update' %}" class="list-group-item list-group-item-action active">
+                Edit Account
+            </a>
+            <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
+                Email Management
+            </a>
+            <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action">
+                Change Password
+            </a>
+        </div>
+        <br />
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <h5 class="card-header">{% trans "Modify Full Name" %}</h5>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <button type="submit" class="btn btn-success">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
