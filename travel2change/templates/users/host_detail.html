@@ -21,7 +21,7 @@
         </li>
         {% if request.user == host.user %}
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'host_update' host.slug %}">Edit Profile</a>
+            <a class="nav-link" href="{% url 'host_update' %}">Edit Profile</a>
         </li>
         {% endif %}
     </ul>

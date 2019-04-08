@@ -14,6 +14,7 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     fields = ['first_name', 'last_name', ]
     template_name = "users/user_update.html"
+    context_object_name = "user"
     success_message = 'User Information Successfully Updated'
 
     def get_object(self):
