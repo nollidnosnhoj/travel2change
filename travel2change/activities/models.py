@@ -157,8 +157,9 @@ class Activity(models.Model):
     fh_item_id      = models.PositiveIntegerField(
                         verbose_name=_('fareharbor item id'),
                         blank=True,
-                        default=0,
-                        help_text=_('This is the FareHarbor item for your activity')
+                        null=True,
+                        default=None,
+                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
                     )
 
     # Non Editable Fields (at least for users)
