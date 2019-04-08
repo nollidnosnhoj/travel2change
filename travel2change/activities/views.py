@@ -68,20 +68,23 @@ class ActivityPhotoUploadView(LoginRequiredMixin, OwnershipViewOnly, FormView):
     form_class = PhotoUploadForm
     max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
 
+    def dispatch(self, request, *args, **kwargs):
+        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
     # Upload the photos for the activities
     def post(self, request, *args, **kwargs):
-        activity = get_object_or_404(Activity, pk=kwargs['pk'])
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('photos')
-        current_num = ActivityPhoto.objects.filter(activity=activity).count()
+        current_num = ActivityPhoto.objects.filter(activity=self.activity).count()
         if form.is_valid():
             for f in files:
                 if (current_num == self.max_photos):
                     messages.error(self.request, "You have reached your photos limit.")
                     return self.form_invalid(form)
                 else:
-                    instance = ActivityPhoto(file=f, activity=activity)
+                    instance = ActivityPhoto(file=f, activity=self.activity)
                     instance.save()
                     current_num += 1
             messages.success(self.request, "Photo(s) successfully uploaded.")
@@ -99,10 +102,9 @@ class ActivityPhotoUploadView(LoginRequiredMixin, OwnershipViewOnly, FormView):
     
     def get_context_data(self, **kwargs):
         """ Display activity's photos """
-        activity = self.get_activity()
         context = super().get_context_data(**kwargs)
-        context['activity'] = activity
-        context['photos'] = ActivityPhoto.objects.filter(activity=activity)
+        context['activity'] = self.activity
+        context['photos'] = ActivityPhoto.objects.filter(activity=self.activity)
         context['max_photos'] = self.max_photos
         return context
 
