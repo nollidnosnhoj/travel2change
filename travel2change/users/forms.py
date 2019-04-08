@@ -4,7 +4,6 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from allauth.account.forms import SignupForm as BaseSignupForm
-from allauth.account.models import EmailAddress
 from users.models import Host
 
 User = get_user_model()
@@ -20,20 +19,6 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name',)
-
-
-class HostUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Host
-        fields = ('_name', 'custom_slug', 'description', 'phone', 'website')
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
-        super().__init__(*args, **kwargs)
-        self.fields['contact_email'] = forms.ModelChoiceField(
-            queryset=EmailAddress.objects.filter(user=self.user).all(),
-            required=False,
-        )
 
 
 class SignupForm(BaseSignupForm):

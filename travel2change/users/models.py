@@ -3,7 +3,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from allauth.account.models import EmailAddress
 from autoslug import AutoSlugField
 from phonenumber_field.modelfields import PhoneNumberField
 from users.managers import CustomUserManager
