@@ -1,7 +1,6 @@
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -17,18 +16,19 @@ from bookmarks.models import Bookmark
 from users.models import Host
 
 
-class ActivityDetailView(LoginRequiredMixin, CanViewUnapproved, DetailView):
+class ActivityDetailView(CanViewUnapproved, DetailView):
+    """ View for showing the details of the activity """
+
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
 
     def get_context_data(self, **kwargs):
-        current_user = get_user(self.request)
         context = super().get_context_data(**kwargs)
         # Query activity photos
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
-        # Check if the activity have been bookmarked by the user
-        context['bookmarked'] = Bookmark.objects.filter(user=current_user, activity=self.get_object()).exists()
+        if self.request.user.is_authenticated:
+            context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.get_object()).exists()
         return context
 
 
@@ -117,20 +117,19 @@ def photo_delete(request, pk):
 
 class ActivityCreationView(LoginRequiredMixin, HostOnlyView, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
-    # Templates for the activity creation wizard
-    # { "step #": "template path" }
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",
         "1": "activities/wizard_templates/default.html",
         "2": "activities/wizard_templates/default.html",
         "3": "activities/wizard_templates/default.html",
-        "4": "activities/wizard_templates/default.html",
+        "4": "activities/wizard_templates/price_fh.html",
         "5": "activities/wizard_templates/location.html",
         "6": "activities/wizard_templates/featured_photo.html",
+        "7": "activities/wizard_templates/confirmation.html",
     }
 
     def get_template_names(self):
-        # Get the template for the current step
+        """ Grab dictionary of templates for wizard """
         return [self.STEP_TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):

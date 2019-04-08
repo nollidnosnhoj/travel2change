@@ -29,7 +29,7 @@ class CategoriesTagsForm(forms.ModelForm):
 class PriceForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ['price', ]
+        fields = ['price', 'fh_item_id', ]
 
 
 class LocationForm(forms.ModelForm):
@@ -52,6 +52,10 @@ class FeaturedPhotoForm(forms.ModelForm):
         fields = ['featured_photo', ]
 
 
+class ConfirmationForm(forms.Form):
+    pass
+
+
 """ Form that corresponds to each step of the activity creation """
 ACTIVITY_CREATE_FORMS_LIST = [
     ("0", BasicInfoForm),
@@ -61,6 +65,7 @@ ACTIVITY_CREATE_FORMS_LIST = [
     ("4", PriceForm),
     ("5", LocationForm),
     ("6", FeaturedPhotoForm),
+    ("7", ConfirmationForm),
 ]
 
 
@@ -80,6 +85,7 @@ class ActivityUpdateForm(forms.ModelForm):
             'address',
             'latitude',
             'longitude',
+            'fh_item_id',
         )
         widgets = {
             'latitude': forms.TextInput(attrs={

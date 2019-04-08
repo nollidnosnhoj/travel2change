@@ -21,6 +21,9 @@ class ActivityAdmin(admin.ModelAdmin):
                 'address', 'latitude', 'longitude'
             )
         }),
+        ('FareHarbor Item', {
+            'fields': ('fh_item_id', )
+        }),
         ('Status', {
             'fields': (
                 'status',

@@ -165,6 +165,13 @@ class Activity(models.Model):
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
                     )
+    fh_item_id      = models.PositiveIntegerField(
+                        verbose_name=_('fareharbor item id'),
+                        blank=True,
+                        null=True,
+                        default=None,
+                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
+                    )
 
     """ Private fields """
 
