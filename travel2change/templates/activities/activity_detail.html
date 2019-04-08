@@ -103,7 +103,21 @@
         {% if activity.fh_item_id %}
         <div class="card fareharbor-widget">
             <div class="card-body">
-                <p class="card-text">FareHarbor Placeholder</p>
+                {% if activity.is_free %}
+                    {% if activity.fh_item_id %}
+                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
+                        <script src="https://fareharbor.com/embeds/script/calendar/travel2change/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
+                    {% else %}
+                        <p class="card-text">Please insert FareHarbor Item ID</p>
+                    {% endif %}
+                {% else %}
+                    {% if activity.fh_item_id and activity.host.fh_username %}
+                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
+                        <script src="https://fareharbor.com/embeds/script/calendar/{{ activity.host.fh_username }}/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
+                    {% else %}
+                        <p class="card-text">Please insert FareHarbor Item ID and/or FareHarbor Username</p>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
         {% endif %}
