@@ -36,7 +36,7 @@ class HostDetailView(DetailView):
 """ Show host's profile update """
 class HostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Host
-    fields = ['_name', 'custom_slug', 'description', 'phone', 'website']
+    fields = ['_name', 'custom_slug', 'description', 'phone', 'website', 'fh_username', ]
     template_name_suffix = '_update'
     success_message = "Profile successfully updated."
 
