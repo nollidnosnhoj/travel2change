@@ -116,26 +116,22 @@ def photo_delete(request, pk):
     return JsonResponse({'message': 'Successful!'})
 
 
-""" Template that corresponds to each step of the activity creation """
-STEP_TEMPLATES = {
-    "0": "activities/wizard_templates/default.html",
-    "1": "activities/wizard_templates/default.html",
-    "2": "activities/wizard_templates/default.html",
-    "3": "activities/wizard_templates/default.html",
-    "4": "activities/wizard_templates/default.html",
-    "5": "activities/wizard_templates/location.html",
-    "6": "activities/wizard_templates/featured_photo.html",
-}
-
-
 class ActivityCreationView(LoginRequiredMixin, HostOnlyView, SessionWizardView):
-    """ View for activity creation wizard """
-
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
+    STEP_TEMPLATES = {
+        "0": "activities/wizard_templates/default.html",
+        "1": "activities/wizard_templates/default.html",
+        "2": "activities/wizard_templates/default.html",
+        "3": "activities/wizard_templates/default.html",
+        "4": "activities/wizard_templates/price_fh.html",
+        "5": "activities/wizard_templates/location.html",
+        "6": "activities/wizard_templates/featured_photo.html",
+        "7": "activities/wizard_templates/confirmation.html",
+    }
 
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """
-        return [STEP_TEMPLATES[self.steps.current]]
+        return [self.STEP_TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
         """ Calls function after the wizard is completed. Create activity after done """
