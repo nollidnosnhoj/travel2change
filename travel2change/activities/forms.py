@@ -85,6 +85,7 @@ class ActivityUpdateForm(forms.ModelForm):
             'address',
             'latitude',
             'longitude',
+            'fh_item_id',
         )
         widgets = {
             'latitude': forms.TextInput(attrs={
