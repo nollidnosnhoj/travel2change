@@ -10,9 +10,10 @@ class CanViewUnapproved(object):
     def dispatch(self, request, *args, **kwargs):
         activity = get_object_or_404(Activity, pk=kwargs['pk'])
         if activity.status == Activity.STATUS.unapproved:
-            if request.user != activity.host.user or \
-                not request.user.is_staff or \
-                    not request.user.is_superuser:
+            print(request.user != activity.host.user)
+            print(not request.user.is_staff)
+            print(not request.user.is_superuser)
+            if request.user != activity.host.user and (not request.user.is_staff or not request.user.is_superuser):
                 raise Http404
         return super().dispatch(request, *args, **kwargs)
 
