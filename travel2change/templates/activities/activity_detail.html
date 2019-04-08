@@ -100,11 +100,13 @@
             <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="btn btn-primary btn-lg btn-block">Edit</a>
         </div>
         {% endif %}
+        {% if activity.fh_item_id %}
         <div class="card fareharbor-widget">
             <div class="card-body">
                 <p class="card-text">FareHarbor Placeholder</p>
             </div>
         </div>
+        {% endif %}
         {% if photos %}
         <div id="photo-gallery-{{ activity.pk }}" class="photo-gallery carousel slide" data-ride="carousel">
             <div class="carousel-inner">
