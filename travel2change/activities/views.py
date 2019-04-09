@@ -11,7 +11,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm
-from activities.models import Activity, Region, ActivityPhoto, Category
+from activities.models import Activity, Region, ActivityPhoto, Category, Tag
 from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
 from bookmarks.models import Bookmark
 from users.models import Host
@@ -32,17 +32,15 @@ class ActivityBrowseView(ListView):
 
         title = self.request.GET.get('title')
         region = self.request.GET.get('region')
-        categories = self.request.GET.getlist('categories')
-        tags = self.request.GET.getlist('tags')
+        categories = self.request.GET.get('categories')
+        tags = self.request.GET.get('tags')
 
-        if is_valid_queryparam(region) and region != 'Choose...':
+        if is_valid_queryparam(region) and region != 'All Regions':
             qs = qs.filter(region__name=region)
-        if categories:
-            for cat in categories:
-                qs = qs.filter(categories__name=cat)
-        if tags:
-            for tag in tags:
-                qs = qs.filter(tags__name=tag)
+        if is_valid_queryparam(categories) and categories != 'All Categories':
+            qs = qs.filter(categories__name=categories)
+        if is_valid_queryparam(tags) and tags != 'All Tags':
+            qs = qs.filter(tags__name__icontains=tags)
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
         
@@ -52,6 +50,7 @@ class ActivityBrowseView(ListView):
         context = super().get_context_data(*args, **kwargs)
         context['regions'] = Region.objects.all()
         context['categories'] = Category.objects.all()
+        context['tags'] = Tag.objects.all()
         return context
 
 class ActivityDetailView(CanViewUnapproved, DetailView):
