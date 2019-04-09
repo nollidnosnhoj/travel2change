@@ -1,6 +1,6 @@
 from cms.wizards.wizard_base import Wizard
 from cms.wizards.wizard_pool import wizard_pool
-from .forms import ActivityWizardForm
+from activities.forms import ActivityWizardForm
 
 class ActivityWizard(Wizard):
     pass

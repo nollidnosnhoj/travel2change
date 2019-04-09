@@ -20,10 +20,10 @@ class RequirementsForm(forms.ModelForm):
         fields = ['requirements', ]
 
 
-class TagsForm(forms.ModelForm):
+class CategoriesTagsForm(forms.ModelForm):
     class Meta:
         model = Activity
-        fields = ['tags', ]
+        fields = ['categories', 'tags', ]
 
 
 class PriceForm(forms.ModelForm):
@@ -57,7 +57,7 @@ ACTIVITY_CREATE_FORMS_LIST = [
     ("0", BasicInfoForm),
     ("1", HighlightsForm),
     ("2", RequirementsForm),
-    ("3", TagsForm),
+    ("3", CategoriesTagsForm),
     ("4", PriceForm),
     ("5", LocationForm),
     ("6", FeaturedPhotoForm),
@@ -73,6 +73,7 @@ class ActivityUpdateForm(forms.ModelForm):
             'description',
             'highlights',
             'requirements',
+            'categories',
             'tags',
             'featured_photo',
             'price',
@@ -113,5 +114,5 @@ class ActivityWizardForm(forms.ModelForm):
     class Meta:
         model = Activity
         exclude = [
-            'slug', 'review_count', 'created', 'modified',
+            'approved_time', 'created', 'modified', 'slug',
         ]

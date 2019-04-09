@@ -1,6 +1,6 @@
 from django.conf.urls import url
-from .forms import ACTIVITY_CREATE_FORMS_LIST
-from .views import (
+from activities.forms import ACTIVITY_CREATE_FORMS_LIST
+from activities.views import (
     ActivityDetailView,
     ActivityCreationView,
     ActivityUpdateView,

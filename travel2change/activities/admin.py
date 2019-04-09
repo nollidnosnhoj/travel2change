@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Activity, ActivityReview, Tag, Region, Comment
+from activities.models import Activity, ActivityReview, ActivityPhoto, Category, Tag, Region
+
+class ActivityPhotosInline(admin.TabularInline):
+    model = ActivityPhoto
 
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -9,28 +12,26 @@ class ActivityAdmin(admin.ModelAdmin):
             )
         }),
         ('Activity Information', {
-            'classes': ('collapse',),
             'fields': (
-                'highlights', 'requirements', 'tags', 'price',
+                'highlights', 'requirements', 'categories', 'tags', 'price',
             )
         }),
         ('Location', {
-            'classes': ('collapse',),
             'fields': (
                 'address', 'latitude', 'longitude'
             )
         }),
         ('Status', {
-            'classes': ('collapse',),
             'fields': (
-                'approved',
+                'status',
             )
         })
     )
     list_display = (
-        'title', 'host', 'created', 'review_count',
+        'title', 'host', 'approved_time', 'review_count',
     )
-    readonly_fields = ('slug', 'review_count', 'created',)
+    readonly_fields = ('slug', 'review_count', 'approved_time',)
+    inlines = [ActivityPhotosInline, ]
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -41,6 +42,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Tag)
+admin.site.register(Category)
 admin.site.register(Region)
 admin.site.register(ActivityReview, ReviewAdmin)
 admin.site.register(Comment)

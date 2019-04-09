@@ -33,7 +33,7 @@ LANGUAGES = (
 
 # APPS
 # ------------------------------------------------------------------------------
-DJANGO_APPS = [
+DJANGO_APPS = (
     'djangocms_admin_style',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +43,8 @@ DJANGO_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
-]
-DJANGO_CMS_APPS = [
+)
+DJANGO_CMS_APPS = (
     'djangocms_modules',
     'cms',
     'menus',
@@ -65,8 +65,8 @@ DJANGO_CMS_APPS = [
     'djangocms_transfer',
     'djangocms_history',
     'djangocms_attributes_field',
-]
-DJANGO_CMS_BOOTSTRAP_APPS = [
+)
+DJANGO_CMS_BOOTSTRAP_APPS = (
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
     'djangocms_bootstrap4.contrib.bootstrap4_badge',
@@ -82,21 +82,23 @@ DJANGO_CMS_BOOTSTRAP_APPS = [
     'djangocms_bootstrap4.contrib.bootstrap4_picture',
     'djangocms_bootstrap4.contrib.bootstrap4_tabs',
     'djangocms_bootstrap4.contrib.bootstrap4_utilities',
-]
-THIRD_PARTY_APPS = [
+)
+THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'autoslug',
     'crispy_forms',
+    'django_filters',
     'django_social_share',
     'formtools',
-]
-LOCAL_APPS = [
+)
+LOCAL_APPS = (
     'users',
     'activities',
+    'bookmarks',
     'travel2change',
-]
+)
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS
 
 # URLS
@@ -164,6 +166,7 @@ ACCOUNT_FORMS = {'signup': 'users.forms.SignupForm'}
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -172,10 +175,12 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware'
+    'cms.middleware.language.LanguageCookieMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -194,7 +199,7 @@ STATICFILES_DIRS = (
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(DATA_DIR('media'))
+MEDIA_ROOT = str(BASE_DIR('media'))
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -208,17 +213,17 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.template.context_processors.media',
                 'django.template.context_processors.csrf',
                 'django.template.context_processors.tz',
-                'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
-                'cms.context_processors.cms_settings',
                 'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
+                'cms.context_processors.cms_settings',
+                'sekizai.context_processors.sekizai',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -323,3 +328,5 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('dark', _('Dark')),
     ('custom', _('Custom')),
 )
+
+MAX_PHOTOS_PER_ACTIVITY = 5

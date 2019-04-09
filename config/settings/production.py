@@ -1,21 +1,21 @@
-from .base import *  # noqa
-from .base import env
-from decouple import config, Csv
+from config.settings.base import *  # noqa
+from config.settings.base import env
 
 # GENERAL
 SECRET_KEY = env('SECRET_KEY')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.nollidnosnhoj.django.group']
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['.nollidnosnhoj.com'])
+
+INSTALLED_APPS += ('gunicorn', )  # noqa F405
 
 # DATABASES
 DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
-DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # noqa F405
 
 # CACHES
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': 'unix:~/memcached.sock',
     }
 }
 
@@ -26,13 +26,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-ssl-redirect
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
-SESSION_COOKIE_SECURE = True
-# https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
-CSRF_COOKIE_SECURE = True
-# https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-seconds
 SECURE_HSTS_SECONDS = 60
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
@@ -43,8 +39,6 @@ SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
 SECURE_BROWSER_XSS_FILTER = True
-# https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
-X_FRAME_OPTIONS = 'DENY'
 
 # STORAGES
 # ==================================================================================
@@ -80,7 +74,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
     'DEFAULT_FROM_EMAIL',
-    default='admin@nollidnosnhoj.django.group'
+    default='admin@nollidnosnhoj.com'
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
@@ -88,7 +82,7 @@ SERVER_EMAIL = env('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env('EMAIL_SUBJECT_PREFIX', default='[travel2change]')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = evn.('EMAIL_PORT')
+EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
