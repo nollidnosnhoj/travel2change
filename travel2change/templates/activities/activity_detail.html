@@ -88,18 +88,43 @@
                 </div>
             </div>
         </div>
-        <div>
-            {% for review in reviews %}
-            <div>
-                <p>{{ review.content }}</p>
+        <br />
+        {% if can_review %}
+        <h2>Add Review</h2>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action=".">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="test" />
+                </form>
             </div>
-            {% endfor %}
         </div>
-        <form method="POST" action=".">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" value="test" />
-        </form>
+        <br />
+        {% endif %}
+        <h2>{{ activity.title }} Reviews</h2><br />
+        <div class="card">
+            <div class="card-body">
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <h5 class="card-title">
+                        {% if review.show_name %}
+                            {{ review.user.get_full_name }}
+                        {% else %}
+                            Traveler#{{ review.user.pk }}
+                        {% endif %}
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Rating: {{ review.rating }}</h6>
+                    <p class="card-text">{{ review.content }}</p>
+                    {% if not forloop.last %}
+                    <hr>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                <p class="card-text">No reviews yet.</p>
+                {% endif %}
+            </div>
+        </div>
     </article>
     <aside class="col-sm-4">
         {% if request.user == activity.host.user %}
