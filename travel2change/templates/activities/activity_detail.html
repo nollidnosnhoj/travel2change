@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load google_maps_api sekizai_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -88,7 +88,7 @@
                     }
                     </script>
                     <script async defer
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAavNkj0ATISmF7-qHDZ3oKRYO6TRa-7tI&callback=initMap">
+                    src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&callback=initMap">
                     </script>
                 </div>
             </div>

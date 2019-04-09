@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% load google_maps_api crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Step {{ wizard.steps.step1 }} - Activity Creation Wizard{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -168,7 +168,7 @@
 			//https://www.google.com/maps/dir//21.307,-157.858/@21.4297802,-158.1141956,10.83z
 			//last half is the zoom settings; first 2 numbs are lat long.
 		</script><br />
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAavNkj0ATISmF7-qHDZ3oKRYO6TRa-7tI&libraries=places&callback=initMap"
+		<script src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&libraries=places&callback=initMap"
 				async defer></script>
 			{% if wizard.steps.prev %}
 				<button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
