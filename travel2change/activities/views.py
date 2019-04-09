@@ -5,15 +5,35 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import (
+    render,
+    get_object_or_404
+)
 from django.urls import reverse
-from django.views.generic import DetailView, FormView, UpdateView, DeleteView
+from django.views.generic import (
+    DetailView,
+    FormView,
+    UpdateView,
+    DeleteView
+)
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm
-from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
-from activities.models import Activity, ActivityPhoto, ActivityReview
+from activities.forms import (
+    ActivityUpdateForm,
+    PhotoUploadForm
+)
+from activities.mixins import (
+    CanViewUnapproved,
+    OwnershipViewOnly,
+    HostOnlyView
+)
+from activities.models import (
+    Activity,
+    ActivityPhoto,
+)
 from bookmarks.models import Bookmark
+from reviews.forms import ReviewForm
+from reviews.models import ActivityReview
 from users.models import Host
 
 
@@ -25,19 +45,25 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
     context_object_name = 'activity'
     form_class = ReviewForm
 
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.can_review = request.user.is_authenticated \
+            and ActivityReview.objects.filter(user=request.user, activity=self.object).count() < 1
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
         context['reviews'] = ActivityReview.objects.filter(activity=self.object)
         if self.request.user.is_authenticated:
-            context['review_form'] = ReviewForm(initial={'activity': self.object })
-            context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.get_object()).exists()
+            context['review_form'] = ReviewForm(initial={'activity': self.object})
+            context['can_review'] = self.can_review
+            context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
     
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
         form = self.get_form()
-        if form.is_valid():
+        if form.is_valid() and self.can_review:
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
