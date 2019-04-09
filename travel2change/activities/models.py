@@ -9,6 +9,9 @@ from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
 from users.models import Host
 
+
+User = get_user_model()
+
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
     return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
@@ -28,8 +31,6 @@ class ActivityQuerySet(models.QuerySet):
     def unapproved(self):
         return self.filter(status="unapproved")
 
-
-User = get_user_model()
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)

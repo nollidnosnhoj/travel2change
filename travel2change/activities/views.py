@@ -12,7 +12,7 @@ from django.views.generic.detail import SingleObjectMixin
 from formtools.wizard.views import SessionWizardView
 from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm, CommentForm
 from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
-from activities.models import Activity, ActivityPhoto
+from activities.models import Activity, ActivityPhoto, ActivityReview
 from bookmarks.models import Bookmark
 from users.models import Host
 from django.shortcuts import redirect
@@ -34,7 +34,10 @@ class ActivityDetailView(CanViewUnapproved, DetailView):
 
 # Add Review View
 class ActivityReviewView(SingleObjectMixin, FormView):
-    pass
+    template_name = "activities/activity_review.html"
+    
+    form_class = ReviewForm
+    model = ActivityReview
 
 
 class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
@@ -159,6 +162,7 @@ class ActivityCreationView(LoginRequiredMixin, HostOnlyView, SessionWizardView):
 
 
 """
+#Delete
 def add_comment_to_post(request):
     post = get_object_or_404(Activity)
     if request.method == "POST":

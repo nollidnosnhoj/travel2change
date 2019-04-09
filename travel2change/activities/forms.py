@@ -1,5 +1,5 @@
 from django import forms
-from .models import Activity, ActivityReview, Comment
+from .models import Activity, ActivityReview
 
 
 class BasicInfoForm(forms.ModelForm):
@@ -101,12 +101,6 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = ActivityReview
         fields = ('rating', 'content', )
-
-class CommentForm(forms.ModelForm):
-
-    class Meta:
-        model = Comment
-        fields = ('author', 'text',)
 
 
 """ CMS Wizard Form """
