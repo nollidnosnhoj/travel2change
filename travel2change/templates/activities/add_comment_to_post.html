@@ -1,8 +1,0 @@
-{% extends "base.html" %}{% load sekizai_tags social_share cache staticfiles %}
-{% block content %}
-    <h1>New comment</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Send</button>
-    </form>
-{% endblock %}
