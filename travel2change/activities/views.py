@@ -46,7 +46,9 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
     form_class = ReviewForm
 
     def dispatch(self, request, *args, **kwargs):
+        # Get activity object
         self.object = self.get_object()
+        # Check if the user can review the activity
         self.can_review = self.check_if_user_can_review()
         return super().dispatch(request, *args, **kwargs)
 
@@ -60,6 +62,7 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
             context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
     
+    # process review form
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid() and self.can_review:
@@ -67,6 +70,7 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
         else:
             return self.form_invalid(form)
     
+    # save review after form valid
     def form_valid(self, form):
         new_review = form.save(commit=False)
         new_review.user = self.request.user
@@ -83,10 +87,10 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
         })
     
     def check_if_user_can_review(self):
-        if self.object.status == 'unapproved':
-            return False
-        else:
+        if self.request.user.is_authenticated and self.object.status == 'approved':
             return ActivityReview.objects.filter(user=self.request.user, activity=self.object).count() < 1
+        else:
+            return False
 
 
 class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
