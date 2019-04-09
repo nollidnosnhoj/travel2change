@@ -78,6 +78,12 @@ class Host(models.Model):
                         blank=True,
                         help_text=_("Provide a link to your website.")
                     )
+    fh_username     = models.CharField(
+                        _('fareharbor username'),
+                        max_length=60,
+                        blank=True,
+                        help_text=_('Enter your FareHarbor username. This is required if you are hosting paid activities')
+                    )
 
     @property
     def name(self):

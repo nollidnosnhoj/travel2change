@@ -30,6 +30,9 @@ class Region(models.Model):
     slug = AutoSlugField(populate_from='name')
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
     
     def __str__(self):
         return self.name
@@ -41,6 +44,9 @@ class Tag(models.Model):
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -56,6 +62,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -153,6 +160,13 @@ class Activity(models.Model):
                         blank=True,
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
+                    )
+    fh_item_id      = models.PositiveIntegerField(
+                        verbose_name=_('fareharbor item id'),
+                        blank=True,
+                        null=True,
+                        default=None,
+                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
                     )
 
     # Non Editable Fields (at least for users)
