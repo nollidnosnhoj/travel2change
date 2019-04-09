@@ -7,7 +7,33 @@ from users.models import Host
 User = get_user_model()
 
 
+class HostAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('user',)
+        }),
+        ('Host Information', {
+            'fields': (
+                '_name', 'description',
+            )
+        }),
+        ('Contact Information', {
+            'fields': (
+                'phone', 'website',
+            )
+        })
+    )
+    list_display = (
+        'user', 'name', 'phone',
+    )
+
+
+class HostAdminInline(admin.TabularInline):
+    model = Host
+
+
 class CustomUserAdmin(UserAdmin):
+    inlines = [HostAdminInline, ]
     model = User
     list_display = (
         'email',
@@ -38,27 +64,6 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name',)
     ordering = ('email', 'first_name', 'last_name', 'date_joined',)
     filter_horizontal = ()
-
-
-class HostAdmin(admin.ModelAdmin):
-    fieldsets = (
-        (None, {
-            'fields': ('user',)
-        }),
-        ('Host Information', {
-            'fields': (
-                '_name', 'description',
-            )
-        }),
-        ('Contact Information', {
-            'fields': (
-                'phone', 'website',
-            )
-        })
-    )
-    list_display = (
-        'user', 'name', 'phone',
-    )
 
 
 admin.site.register(User, CustomUserAdmin)
