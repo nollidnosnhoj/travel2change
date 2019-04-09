@@ -34,6 +34,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def full_name(self):
+        return self.get_full_name()
 
     def has_perm(self, perm, obj=None):
         return True
@@ -89,7 +93,7 @@ class Host(models.Model):
     def name(self):
         """ If host name is defined, use it as the host name
             If not, use the user's full name """
-        return self._name if self._name else self.user.get_full_name()
+        return self._name if self._name else self.user.full_name
 
     @property
     def profile_slug(self):
