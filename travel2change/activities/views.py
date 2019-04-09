@@ -47,8 +47,7 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.can_review = request.user.is_authenticated \
-            and ActivityReview.objects.filter(user=request.user, activity=self.object).count() < 1
+        self.can_review = self.check_if_user_can_review()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -82,6 +81,13 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
             'slug': self.kwargs['slug'],
             'pk': self.kwargs['pk']
         })
+    
+    def check_if_user_can_review(self):
+        if self.object.status == 'unapproved':
+            return False
+        else:
+            return self.request.user.is_authenticated \
+                and ActivityReview.objects.filter(user=self.request.user, activity=self.object).count() < 1
 
 
 class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
