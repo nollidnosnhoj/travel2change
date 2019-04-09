@@ -86,8 +86,7 @@ class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
         if self.object.status == 'unapproved':
             return False
         else:
-            return self.request.user.is_authenticated \
-                and ActivityReview.objects.filter(user=self.request.user, activity=self.object).count() < 1
+            return ActivityReview.objects.filter(user=self.request.user, activity=self.object).count() < 1
 
 
 class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
