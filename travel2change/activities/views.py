@@ -8,36 +8,54 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import DetailView, FormView, UpdateView, DeleteView
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm, CommentForm
+from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm
 from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
 from activities.models import Activity, ActivityPhoto, ActivityReview
 from bookmarks.models import Bookmark
 from users.models import Host
-from django.shortcuts import redirect
 
 
-class ActivityDetailView(CanViewUnapproved, DetailView):
+class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
     """ View for showing the details of the activity """
 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
+    form_class = ReviewForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
+        context['reviews'] = ActivityReview.objects.filter(activity=self.object)
         if self.request.user.is_authenticated:
+            context['review_form'] = ReviewForm(initial={'activity': self.object })
             context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.get_object()).exists()
         return context
-
-# Add Review View
-class ActivityReviewView(SingleObjectMixin, FormView):
-    template_name = "activities/activity_review.html"
     
-    form_class = ReviewForm
-    model = ActivityReview
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+    
+    def form_valid(self, form):
+        new_review = form.save(commit=False)
+        new_review.user = self.request.user
+        new_review.activity = self.object
+        new_review.save()
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """ Redirect to activity's photos page after successful upload """
+        return reverse('activities:detail', kwargs={
+            'region': self.kwargs['region'],
+            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk']
+        })
 
 
 class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
@@ -53,8 +71,11 @@ class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMi
         return super().delete(request, *args, **kwargs)
     
     def get_success_url(self):
-        return reverse('host_detail', kwargs={
-            'slug': self.get_object().host.slug,
+        """ Redirect to activity's photos page after successful upload """
+        return reverse('activities:photos', kwargs={
+            'region': self.kwargs['region'],
+            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk']
         })
 
 

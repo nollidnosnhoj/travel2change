@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -88,6 +88,18 @@
                 </div>
             </div>
         </div>
+        <div>
+            {% for review in reviews %}
+            <div>
+                <p>{{ review.content }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <form method="POST" action=".">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="test" />
+        </form>
     </article>
     <aside class="col-sm-4">
         {% if request.user == activity.host.user %}

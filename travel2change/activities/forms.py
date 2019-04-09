@@ -100,7 +100,7 @@ class PhotoUploadForm(forms.Form):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = ActivityReview
-        fields = ('rating', 'content', )
+        fields = ['rating', 'content', ]
 
 
 """ CMS Wizard Form """
