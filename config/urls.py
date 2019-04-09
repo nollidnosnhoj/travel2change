@@ -21,6 +21,7 @@ urlpatterns += i18n_patterns(
     url(r'^admin/', admin.site.urls),  # NOQA
     url(r'^accounts/', include('allauth.urls')),
     url(r'^bookmarks/', include('bookmarks.urls')),
+    url(r'^reviews/', include('reviews.urls')),
     url(r'^', include('users.urls')),
     url(r'^', include('cms.urls')),
 )
