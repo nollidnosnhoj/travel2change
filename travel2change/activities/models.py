@@ -194,7 +194,7 @@ class ActivityReview(models.Model):
     def __str__(self):
         return 'Review by {0} on {1}'.format(self.user, self.activity)
 
-
+#Delete Comment
 class Comment(models.Model):
     post = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='comments')
     author = models.CharField(max_length=200)

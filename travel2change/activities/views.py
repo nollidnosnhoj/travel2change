@@ -10,8 +10,8 @@ from django.urls import reverse
 from django.views.generic import DetailView, FormView, UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm, CommentForm
-from activities.models import Activity, ActivityPhoto
+from activities.forms import ActivityUpdateForm, PhotoUploadForm, ReviewForm
+from activities.models import Activity, ActivityPhoto, ActivityReview
 from users.models import Host
 from django.shortcuts import redirect
 
@@ -33,7 +33,14 @@ class ActivityDetailView(DetailView):
 
 # Add Review View
 class ActivityReviewView(SingleObjectMixin, FormView):
-    pass
+    template_name = "activities/activity_review.html"
+    
+    form_class = ReviewForm
+    model = ActivityReview
+
+    #def submit():
+        
+
 
 
 class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
@@ -171,6 +178,7 @@ class ActivityCreationView(UserPassesTestMixin, SessionWizardView):
             'activity': instance,
         })
 
+#Delete
 def add_comment_to_post(request):
     post = get_object_or_404(Activity)
     if request.method == "POST":

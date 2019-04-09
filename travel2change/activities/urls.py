@@ -7,7 +7,7 @@ from .views import (
     ActivityPhotoUploadView,
     ActivityDeleteView,
     photo_delete,
-    add_comment_to_post
+    ActivityReviewView,
 )
 
 app_name = 'activities'
@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)-(?P<pk>[0-9]+)/', ActivityDetailView.as_view(), name='detail'),  # Activity detail URL
     url(r'photos/delete/(?P<pk>[0-9]+)/', photo_delete, name="photo_delete"),  # Photo delete URL
     url(r'^create/', ActivityCreationView.as_view(ACTIVITY_CREATE_FORMS_LIST), name="create"),  # Activity Create URL
-    url(r'^post/comment/', add_comment_to_post, name="comment")
+    url(r'^post/review/', ActivityReviewView.as_view(), name="review"),   #Activity Review URL
 ]
