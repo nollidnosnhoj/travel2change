@@ -26,10 +26,10 @@ class ActivityQuerySet(models.QuerySet):
     def unapproved(self):
         return self.filter(status="unapproved")
 
-    def free_items(self):
+    def free(self):
         return self.approved().filter(is_free=True)
     
-    def paid_items(self):
+    def paid(self):
         return self.approved().filter(is_free=False)
 
     def featured(self):
