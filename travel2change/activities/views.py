@@ -9,8 +9,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import DeleteView, DetailView, FormView, UpdateView
 from formtools.wizard.views import SessionWizardView
-from activities.forms import ActivityUpdateForm, PhotoUploadForm
-from activities.mixins import CanViewUnapproved, OwnershipViewOnly, HostOnlyView
+from activities.forms import PhotoUploadForm
+from activities.mixins import CanViewUnapproved, OwnerCanViewOnly, HostCanViewOnly
 from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
@@ -25,14 +25,13 @@ class ActivityDetailView(CanViewUnapproved, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Query activity photos
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
         if self.request.user.is_authenticated:
             context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.get_object()).exists()
         return context
 
 
-class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMixin, DeleteView):
+class ActivityDeleteView(LoginRequiredMixin, OwnerCanViewOnly, SuccessMessageMixin, DeleteView):
     template_name = "activities/activity_delete.html"
     success_message = "Activity successfully deleted."
 
@@ -49,9 +48,23 @@ class ActivityDeleteView(LoginRequiredMixin, OwnershipViewOnly, SuccessMessageMi
         })
 
 
-class ActivityUpdateView(LoginRequiredMixin, OwnershipViewOnly, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, OwnerCanViewOnly, UpdateView):
     model = Activity
-    form_class = ActivityUpdateForm
+    fields = (
+        'title',
+        'region',
+        'description',
+        'highlights',
+        'requirements',
+        'categories',
+        'tags',
+        'featured_photo',
+        'price',
+        'address',
+        'latitude',
+        'longitude',
+        'fh_item_id',
+    )
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
     
@@ -59,7 +72,7 @@ class ActivityUpdateView(LoginRequiredMixin, OwnershipViewOnly, UpdateView):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(LoginRequiredMixin, OwnershipViewOnly, FormView):
+class ActivityPhotoUploadView(LoginRequiredMixin, OwnerCanViewOnly, FormView):
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
     max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
@@ -115,7 +128,7 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, HostOnlyView, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, HostCanViewOnly, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",

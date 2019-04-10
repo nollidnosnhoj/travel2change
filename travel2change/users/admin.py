@@ -9,19 +9,9 @@ User = get_user_model()
 
 class HostAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {
-            'fields': ('user',)
-        }),
-        ('Host Information', {
-            'fields': (
-                '_name', 'description',
-            )
-        }),
-        ('Contact Information', {
-            'fields': (
-                'phone', 'website',
-            )
-        })
+        (None, {'fields': ('user',)}),
+        ('Information', {'fields': ('_name', 'description', 'fh_username',)}),
+        ('Contact Information', {'fields': ('phone', 'website',)})
     )
     list_display = (
         'user', 'name', 'phone',

@@ -69,34 +69,6 @@ ACTIVITY_CREATE_FORMS_LIST = [
 ]
 
 
-class ActivityUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Activity
-        fields = (
-            'title',
-            'region',
-            'description',
-            'highlights',
-            'requirements',
-            'categories',
-            'tags',
-            'featured_photo',
-            'price',
-            'address',
-            'latitude',
-            'longitude',
-            'fh_item_id',
-        )
-        widgets = {
-            'latitude': forms.TextInput(attrs={
-                'id': 'lat_field',
-            }),
-            'longitude': forms.TextInput(attrs={
-                'id': 'lng_field',
-            })
-        }
-
-
 class PhotoUploadForm(forms.Form):
     photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={
         'multiple': True

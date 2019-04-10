@@ -10,15 +10,12 @@ class CanViewUnapproved(object):
     def dispatch(self, request, *args, **kwargs):
         activity = get_object_or_404(Activity, pk=kwargs['pk'])
         if activity.status == Activity.STATUS.unapproved:
-            print(request.user != activity.host.user)
-            print(not request.user.is_staff)
-            print(not request.user.is_superuser)
             if request.user != activity.host.user and (not request.user.is_staff or not request.user.is_superuser):
                 raise Http404
         return super().dispatch(request, *args, **kwargs)
 
 
-class OwnershipViewOnly(object):
+class OwnerCanViewOnly(object):
     """ Users that created the activity can view only """
     def dispatch(self, request, *args, **kwargs):
         activity = get_object_or_404(Activity, pk=kwargs['pk'])
@@ -27,7 +24,7 @@ class OwnershipViewOnly(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class HostOnlyView(object):
+class HostCanViewOnly(object):
     """ Only hosts can view """
     def dispatch(self, request, *args, **kwargs):
         host = Host.objects.filter(user=request.user)
