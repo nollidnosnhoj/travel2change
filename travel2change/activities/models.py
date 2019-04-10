@@ -41,6 +41,9 @@ class Region(models.Model):
     slug = AutoSlugField(populate_from='name')
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
     
     def __str__(self):
         return self.name
@@ -52,6 +55,9 @@ class Tag(models.Model):
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -67,6 +73,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
