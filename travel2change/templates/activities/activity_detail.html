@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load crispy_forms_tags sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load google_maps_api crispy_forms_tags sekizai_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -9,14 +9,19 @@
     }
 </style>
 {% endblock styles %}
+{% if activity.status == activity.STATUS.unapproved %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    This activity is not approved yet, and is only visible to the host and staff users.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
 <div class="row">
     <article class="single-activity col-sm-8">
         <div class="jumbotron">
             <h1 class="display-4">
                 {{ activity.title }}
-                {% if activity.status == activity.STATUS.unapproved %}
-                    <span class="badge badge-warning">Unapproved</span>
-                {% endif %}
             </h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
@@ -83,7 +88,7 @@
                     }
                     </script>
                     <script async defer
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAavNkj0ATISmF7-qHDZ3oKRYO6TRa-7tI&callback=initMap">
+                    src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&callback=initMap">
                     </script>
                 </div>
             </div>
@@ -132,11 +137,27 @@
             <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="btn btn-primary btn-lg btn-block">Edit</a>
         </div>
         {% endif %}
+        {% if activity.fh_item_id %}
         <div class="card fareharbor-widget">
             <div class="card-body">
-                <p class="card-text">FareHarbor Placeholder</p>
+                {% if activity.is_free %}
+                    {% if activity.fh_item_id %}
+                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
+                        <script src="https://fareharbor.com/embeds/script/calendar/travel2change/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
+                    {% else %}
+                        <p class="card-text">Please insert FareHarbor Item ID</p>
+                    {% endif %}
+                {% else %}
+                    {% if activity.fh_item_id and activity.host.fh_username %}
+                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
+                        <script src="https://fareharbor.com/embeds/script/calendar/{{ activity.host.fh_username }}/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
+                    {% else %}
+                        <p class="card-text">Please insert FareHarbor Item ID and/or FareHarbor Username</p>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
+        {% endif %}
         {% if photos %}
         <div id="photo-gallery-{{ activity.pk }}" class="photo-gallery carousel slide" data-ride="carousel">
             <div class="carousel-inner">
@@ -155,6 +176,22 @@
                 <span class="sr-only">Next</span>
             </a>
         </div>
+        {% endif %}
+        {% if request.user.is_staff or request.user.is_superuser %}
+            {% if activity.status == 'unapproved' %}
+            <div class="row">
+                <div class="col-sm-6">
+                    <a class="btn btn-success btn-block" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                        Approve
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a class="btn btn-danger btn-block" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                        Disapprove
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         {% endif %}
     </aside>
 </div>

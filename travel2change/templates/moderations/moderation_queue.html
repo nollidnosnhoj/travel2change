@@ -1,0 +1,63 @@
+{% extends "base.html" %}{% load sekizai_tags thumbnail cache staticfiles %}
+{% block title %}Activity Moderation Queue{% endblock title %}
+{% block styles %}
+{% endblock styles %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Activity</th>
+                <th scope="col">Host</th>
+                <th scope="col">Submitted Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+                <tr>
+                    <td scope="row">{{ activity.pk }}</td>
+                    <td><a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a></td>
+                    <td>{{ activity.host.name }}</td>
+                    <td>{{ activity.created }}</td>
+                    <td>
+                        <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                            <i class="fas fa-check"></i>
+                        </a>
+                        <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+            <tr>
+                <td scope="row" colspan="5">No activites in moderation queue.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br />
+{% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{% endblock content %}
