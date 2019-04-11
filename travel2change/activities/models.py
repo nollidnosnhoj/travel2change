@@ -260,4 +260,4 @@ class FeaturedActivities(CMSPlugin):
         return queryset[:self.number_of_activities]
     
     def __str__(self):
-        return ugettext('Featured activities: {0}'.format(self.latest_activities))
+        return ugettext('Featured activities: {0}'.format(self.number_of_activities))
