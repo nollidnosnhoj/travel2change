@@ -1,10 +1,18 @@
 {% extends "account/base.html" %}
 {% load i18n crispy_forms_tags %}
-{% block head_title %}{% trans "Account" %}{% endblock %}
+{% block title %}{% trans "Modify Email(s)" %}{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-lg-4">
         <div class="list-group">
+            <a href="{% url 'user_update' %}" class="list-group-item list-group-item-action">
+                Edit Account
+            </a>
+            {% if user.host %}
+            <a href="{% url 'host_update' %}" class="list-group-item list-group-item-action">
+                Edit Host Profile
+            </a>
+            {% endif %}
             <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action active">
                 Email Management
             </a>
@@ -76,7 +84,7 @@
 {% endblock %}
 
 
-{% block extra_body %}
+{% block scripts %}
 <script type="text/javascript">
     (function () {
         var message = "{% trans 'Do you really want to remove the selected e-mail address?' %}";

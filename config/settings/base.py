@@ -43,6 +43,7 @@ DJANGO_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+    'django.contrib.humanize',
 )
 DJANGO_CMS_APPS = (
     'djangocms_modules',
@@ -96,6 +97,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'users',
     'activities',
+    'moderations',
     'bookmarks',
     'travel2change',
 )
@@ -330,3 +332,4 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
 )
 
 MAX_PHOTOS_PER_ACTIVITY = 5
+GOOGLE_MAPS_API = env('GOOGLE_MAPS_API')
