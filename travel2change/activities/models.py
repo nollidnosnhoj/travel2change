@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Avg
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -230,6 +231,10 @@ class Activity(models.Model):
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
+    
+    def average_rating(self):
+        avg_dict = self.reviews.all().aggregate(Avg('rating'))
+        return avg_dict.get('rating__avg')
 
 
 class ActivityPhoto(models.Model):
