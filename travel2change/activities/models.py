@@ -9,20 +9,22 @@ from model_utils.fields import MonitorField, StatusField
 from users.models import Host
 
 class ActivityQuerySet(models.QuerySet):
+    """ Activity Queries """
+
     def approved(self):
         return self.filter(status="approved")
     
     def unapproved(self):
         return self.filter(status="unapproved")
 
+    def free(self):
+        return self.approved().filter(is_free=True)
+    
+    def paid(self):
+        return self.approved().filter(is_free=False)
 
-def get_featured_image_filename(instance, filename):
-    """ Path to store activity's featured photo """
-    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
-
-def get_photo_image_filename(instance, filename):
-    """ Path where activity's photos are stored """
-    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
+    def featured(self):
+        return self.approved().filter(is_featured=True)
 
 
 class Region(models.Model):
@@ -30,6 +32,9 @@ class Region(models.Model):
     slug = AutoSlugField(populate_from='name')
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
     
     def __str__(self):
         return self.name
@@ -41,6 +46,9 @@ class Tag(models.Model):
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -56,6 +64,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -154,16 +163,29 @@ class Activity(models.Model):
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
                     )
+    fh_item_id      = models.PositiveIntegerField(
+                        verbose_name=_('fareharbor item id'),
+                        blank=True,
+                        null=True,
+                        default=None,
+                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
+                    )
 
-    # Non Editable Fields (at least for users)
+    """ Private fields """
+
+    # Activity status (Approved or Unapproved)
     status          = StatusField(default=STATUS.unapproved)
+    # Time when activity status is approved
     approved_time   = MonitorField(monitor='status', when=['approved'])
+    # Time when activity was submitted
     created         = models.DateTimeField(auto_now_add=True)
+    # Time when activity is modified
     modified        = models.DateTimeField(auto_now=True)
+    # Boolean field to check if activity is featured
     is_featured     = models.BooleanField(verbose_name=_("is featured"), default=False)
+    # Number of reviews for activity
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 
-    # Model Managers
     objects         = ActivityQuerySet.as_manager()
 
     class Meta:

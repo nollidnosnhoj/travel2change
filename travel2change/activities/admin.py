@@ -6,26 +6,11 @@ class ActivityPhotosInline(admin.TabularInline):
 
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {
-            'fields': (
-                'title', 'slug', 'host', 'description', 'region', 'featured_photo',
-            )
-        }),
-        ('Activity Information', {
-            'fields': (
-                'highlights', 'requirements', 'categories', 'tags', 'price',
-            )
-        }),
-        ('Location', {
-            'fields': (
-                'address', 'latitude', 'longitude'
-            )
-        }),
-        ('Status', {
-            'fields': (
-                'status',
-            )
-        })
+        (None, {'fields': ('title', 'slug', 'host', 'description', 'region', 'featured_photo',)}),
+        ('Information', {'fields': ('highlights', 'requirements', 'categories', 'tags', 'price',)}),
+        ('Location', {'fields': ('address', 'latitude', 'longitude')}),
+        ('FareHarbor Item', {'fields': ('fh_item_id', )}),
+        ('Status', {'fields': ('status',)}),
     )
     list_display = (
         'title', 'host', 'approved_time', 'review_count',
