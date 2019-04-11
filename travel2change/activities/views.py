@@ -27,7 +27,7 @@ class ActivityBrowseView(ListView):
     context_object_name = 'activityBrowse'
 
     def get_queryset(self):
-        qs = Activity.objects.all()
+        qs = Activity.objects.approved()
 
         title = self.request.GET.get('title')
         region = self.request.GET.get('region')
@@ -43,7 +43,7 @@ class ActivityBrowseView(ListView):
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
         
-        return qs.order_by("approved_time")
+        return qs.order_by("-is_featured", "title")
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

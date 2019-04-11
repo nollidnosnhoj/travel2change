@@ -203,6 +203,7 @@ class Activity(models.Model):
     def __str__(self):
         return self.title
 
+    @property
     def get_absolute_url(self):
         return reverse('activities:detail', kwargs={
             'region': self.region.slug,
