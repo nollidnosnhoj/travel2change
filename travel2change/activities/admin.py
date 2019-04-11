@@ -11,7 +11,7 @@ class ActivityAdmin(admin.ModelAdmin):
         ('Information', {'fields': ('highlights', 'requirements', 'categories', 'tags', 'price',)}),
         ('Location', {'fields': ('address', 'latitude', 'longitude')}),
         ('FareHarbor Item', {'fields': ('fh_item_id', )}),
-        ('Status', {'fields': ('status',)}),
+        ('Status', {'fields': ('status', 'is_featured',)}),
     )
     list_display = (
         'title', 'host', 'approved_time', 'review_count',
