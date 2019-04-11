@@ -27,6 +27,14 @@ class ActivityQuerySet(models.QuerySet):
         return self.approved().filter(is_featured=True)
 
 
+def get_featured_image_filename(instance, filename):
+    """ Path to store activity's featured photo """
+    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
+
+def get_photo_image_filename(instance, filename):
+    """ Path where activity's photos are stored """
+    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
+
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
     slug = AutoSlugField(populate_from='name')
