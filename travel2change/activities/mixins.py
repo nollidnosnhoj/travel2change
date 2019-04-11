@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from .models import Activity
 from users.models import Host
 
-class CanViewUnapproved(object):
+class CanViewUnapprovedMixin(object):
     """ If activity is not approved, users that aren't staff
         or owner of the activity will be blocked """
     def dispatch(self, request, *args, **kwargs):
@@ -15,7 +15,7 @@ class CanViewUnapproved(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class OwnerCanViewOnly(object):
+class OwnerViewOnlyMixin(object):
     """ Users that created the activity can view only """
     def dispatch(self, request, *args, **kwargs):
         activity = get_object_or_404(Activity, pk=kwargs['pk'])
@@ -24,7 +24,7 @@ class OwnerCanViewOnly(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class HostCanViewOnly(object):
+class HostViewOnlyMixin(object):
     """ Only hosts can view """
     def dispatch(self, request, *args, **kwargs):
         host = Host.objects.filter(user=request.user)

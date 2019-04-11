@@ -10,13 +10,13 @@ from django.urls import reverse
 from django.views.generic import DeleteView, DetailView, FormView, UpdateView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapproved, OwnerCanViewOnly, HostCanViewOnly
+from activities.mixins import CanViewUnapprovedMixin, OwnerViewOnlyMixin, HostViewOnlyMixin
 from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
 
 
-class ActivityDetailView(CanViewUnapproved, DetailView):
+class ActivityDetailView(CanViewUnapprovedMixin, DetailView):
     """ View for showing the details of the activity """
 
     template_name = 'activities/activity_detail.html'
@@ -31,7 +31,7 @@ class ActivityDetailView(CanViewUnapproved, DetailView):
         return context
 
 
-class ActivityDeleteView(LoginRequiredMixin, OwnerCanViewOnly, SuccessMessageMixin, DeleteView):
+class ActivityDeleteView(LoginRequiredMixin, OwnerViewOnlyMixin, SuccessMessageMixin, DeleteView):
     template_name = "activities/activity_delete.html"
     success_message = "Activity successfully deleted."
 
@@ -48,7 +48,7 @@ class ActivityDeleteView(LoginRequiredMixin, OwnerCanViewOnly, SuccessMessageMix
         })
 
 
-class ActivityUpdateView(LoginRequiredMixin, OwnerCanViewOnly, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, OwnerViewOnlyMixin, UpdateView):
     model = Activity
     fields = (
         'title',
@@ -72,7 +72,7 @@ class ActivityUpdateView(LoginRequiredMixin, OwnerCanViewOnly, UpdateView):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(LoginRequiredMixin, OwnerCanViewOnly, FormView):
+class ActivityPhotoUploadView(LoginRequiredMixin, OwnerViewOnlyMixin, FormView):
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
     max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
@@ -128,7 +128,7 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, HostCanViewOnly, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, HostViewOnlyMixin, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",
