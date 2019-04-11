@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% block title %}Confirmation - Activity Creation Wizard{% endblock title %}
+{% block content %}
+<div class="row justify-content-center">
+    <form action="" method="POST" class="col-lg" novalidate>
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Almost done!</h4>
+            <p>Please make sure that the form is filled out correclty. After submission, the activity will be reviewed.</p>
+            <p>During this time, the activity will be set to private, and only the host and staff team can view it.</p>
+            <p>The staff team may also contact you during the review process.</p>
+            <hr>
+            <p class="mb-0">Once the review process is finished, if the activity was approved, it will be public for everyone to see.</p>
+            <p>However, if the activity was not approved, the activity will be deleted, and the host will have to resubmit again.</p>
+            <hr>
+            <p class="mb-0">Clicking <strong>Submit</strong> means you have filled out the form correctly.</p>
+        </div>
+        <br />
+        {% if wizard.steps.prev %}
+            <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
+        {% endif %}
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+{% endblock content %}

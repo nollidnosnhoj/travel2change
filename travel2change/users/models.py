@@ -34,6 +34,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def full_name(self):
+        return self.get_full_name()
 
     def has_perm(self, perm, obj=None):
         return True
@@ -78,12 +82,18 @@ class Host(models.Model):
                         blank=True,
                         help_text=_("Provide a link to your website.")
                     )
+    fh_username     = models.CharField(
+                        _('fareharbor username'),
+                        max_length=60,
+                        blank=True,
+                        help_text=_('Enter your FareHarbor username. This is required if you are hosting paid activities')
+                    )
 
     @property
     def name(self):
         """ If host name is defined, use it as the host name
             If not, use the user's full name """
-        return self._name if self._name else self.user.get_full_name()
+        return self._name if self._name else self.user.full_name
 
     @property
     def profile_slug(self):

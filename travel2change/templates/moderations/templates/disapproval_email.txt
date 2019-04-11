@@ -1,0 +1,10 @@
+Aloha, {{ activity.host.name }}!
+
+You are receiving this email notification because your submitted activity, {{ activity.title }} was not approved by our staff team.
+
+Reasons: {{ reasons }}
+
+You can resubmit your activity so that it can meet our guidelines.
+
+Mahalo,
+travel2change
