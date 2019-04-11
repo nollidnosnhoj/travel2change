@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import (
     render,
     get_object_or_404
@@ -19,33 +19,24 @@ from django.views.generic import (
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
 from activities.forms import (
-    ActivityUpdateForm,
     PhotoUploadForm
 )
 from activities.mixins import (
-    CanViewUnapproved,
-    OwnershipViewOnly,
-    HostOnlyView
+    CanViewUnapprovedMixin,
+    OwnerViewOnlyMixin,
+    HostViewOnlyMixin
 )
 from activities.models import (
     Activity,
     ActivityPhoto,
 )
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
-from django.views.generic import DeleteView, DetailView, FormView, UpdateView
-from formtools.wizard.views import SessionWizardView
-from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapprovedMixin, OwnerViewOnlyMixin, HostViewOnlyMixin
-from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from reviews.forms import ReviewForm
 from reviews.models import ActivityReview
 from users.models import Host
 
 
-class ActivityDetailView(CanViewUnapproved, FormMixin, DetailView):
+class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     """ View for showing the details of the activity """
 
     template_name = 'activities/activity_detail.html'
