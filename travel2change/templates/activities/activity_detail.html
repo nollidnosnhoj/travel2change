@@ -3,7 +3,8 @@
 {% block content %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" />
-<link rel="stylesheet" href="{% static 'css/fontawesome_stars.css' %}" />
+<link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
+<link rel="stylesheet" href="{% static 'css/star-ratings/krajee-fas/theme.css' %}" media="all" type="text/css" />
 <style>
     #map {
         height: 300px;
@@ -199,14 +200,9 @@
 {% endblock content %}
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
-<script src="{% static 'js/jquery.barrating.js' %}"></script>
-<script type="text/javascript">
-    $(function () {
-        $('#id_rating').barrating({
-            theme: 'fontawesome-stars'
-        });
-    });
-</script>
+<script src="{% static 'js/star-ratings/star-rating.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'css/star-ratings/krajee-fas/theme.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/star-ratings/star-rating-custom.js' %}" type="text/javascript"></script>
 <script>
 $('[data-action="bookmark"]').click(function() {
     var current = $(this);
