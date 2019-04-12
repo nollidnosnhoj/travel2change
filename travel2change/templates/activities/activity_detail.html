@@ -115,19 +115,18 @@
                 {% if reviews %}
                     {% for review in reviews %}
                     <div class="clearfix">
-                        <h5 class="card-title">
+                        <h5 class="card-title float-left">
                             {% if review.show_name %}
                                 {{ review.user.get_full_name }}
                             {% else %}
                                 Traveler#{{ review.user.pk }}
                             {% endif %}
                         </h5>
-                        <div>
+                        <div class="float-right">
                             <input
                                 class="rating"
                                 type="number"
                                 value="{{ review.rating }}"
-                                data-theme="krajee-fas"
                                 data-size="xs"
                             />
                         </div>

@@ -32,7 +32,7 @@ from activities.models import (
 )
 from bookmarks.models import Bookmark
 from reviews.forms import ReviewForm
-from reviews.models import ActivityReview
+from reviews.models import Review
 from users.models import Host
 
 
@@ -54,7 +54,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
-        context['reviews'] = ActivityReview.objects.filter(activity=self.object).order_by("-created")
+        context['reviews'] = Review.objects.filter(activity=self.object).order_by("-created")
         if self.request.user.is_authenticated:
             context['review_form'] = ReviewForm(initial={'activity': self.object})
             context['can_review'] = self.can_review
@@ -87,7 +87,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     
     def check_if_user_can_review(self):
         if self.request.user.is_authenticated and self.object.status == 'approved':
-            return ActivityReview.objects.filter(user=self.request.user, activity=self.object).count() < 1
+            return Review.objects.filter(user=self.request.user, activity=self.object).count() < 1
         else:
             return False
 

@@ -9,9 +9,13 @@ User = get_user_model()
 def get_review_image_filename(instance, filename):
     return 'uploads/reviews/{0}/{1}/{2}'.format(instance.user.pk, instance.activity.pk, filename)
 
-class ActivityReview(models.Model):
+class Review(models.Model):
     RATING_CHOICES  = (
-        (1, 'Terrible'), (2, 'Poor'), (3, 'Average'), (4, 'Very Good'), (5, 'Exceptional'),
+        (1, 'Terrible'),
+        (2, 'Poor'),
+        (3, 'Average'),
+        (4, 'Very Good'),
+        (5, 'Exceptional'),
     )
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
     activity        = models.ForeignKey(

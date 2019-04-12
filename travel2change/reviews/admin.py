@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from .models import ActivityReview
+from .models import Review
 
-class ActivityReviewInline(admin.TabularInline):
-    model = ActivityReview
+class ReviewInline(admin.TabularInline):
+    model = Review
 
-class ActivityReviewAdmin(admin.ModelAdmin):
+class ReviewAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('user', 'activity', )}),
         (_('Content'), {'fields': ('content', )}),
@@ -19,4 +19,4 @@ class ActivityReviewAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'modified', )
 
 
-admin.site.register(ActivityReview, ActivityReviewAdmin)
+admin.site.register(Review, ReviewAdmin)
