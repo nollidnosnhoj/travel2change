@@ -47,8 +47,6 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
-        # Check if the user can review the activity
-        self.can_review = self.check_if_user_can_review()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -56,8 +54,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
         context['reviews'] = Review.objects.filter(activity=self.object).order_by("-created")
         if self.request.user.is_authenticated:
-            context['review_form'] = ReviewForm(initial={'activity': self.object})
-            context['can_review'] = self.can_review
+            context['can_review'] = self.check_if_user_can_review()
             context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
     
@@ -86,7 +83,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         })
     
     def check_if_user_can_review(self):
-        if self.request.user.is_authenticated and self.object.status == 'approved':
+        if self.object.status == 'approved' and self.request.user != self.object.host.user:
             return Review.objects.filter(user=self.request.user, activity=self.object).count() < 1
         else:
             return False
