@@ -4,7 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
 from users.models import Host
-from users.mixins import UserIsHostMixin
+from users.mixins import UserIsHostMixin, HostListView
 from activities.models import Activity
 from reviews.models import Review
 
@@ -44,13 +44,15 @@ class HostDetailView(DetailView):
     model = Host
     context_object_name = 'host'
     number_of_activites_in_profile = 8
+    number_of_reviews_in_profile = 10
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         activities = Activity.objects.approved().filter(host=self.object).order_by('-approved_time')
+        reviews = Review.objects.filter(activity__in=activities).order_by('-created').distinct()
         # Display 5 activities of the host's, ordered by the creation time
         context['activities'] = activities[:self.number_of_activites_in_profile]
-        context['show_more_activities'] = activities.count() > self.number_of_activites_in_profile
+        context['reviews'] = reviews[:self.number_of_reviews_in_profile]
         return context
 
 
@@ -67,19 +69,21 @@ class HostUpdateView(LoginRequiredMixin, UserIsHostMixin, SuccessMessageMixin, U
         return reverse('host_detail', kwargs={'slug': self.object.slug})
 
 
-class HostActivitiesListView(LoginRequiredMixin, ListView):
+class HostActivitiesListView(HostListView):
     model = Activity
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        self.host = get_object_or_404(Host, user=request.user)
-        return super().dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
         return Activity.objects.approved().filter(host=self.host).order_by("-approved_time")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['host'] = self.host
-        return context
+
+class HostReviewsListView(HostListView):
+    model = Review
+    context_object_name = "reviews"
+    template_name = 'users/host_reviews_list.html'
+    
+    def get_queryset(self):
+        activities = Activity.objects.approved().filter(host=self.host)
+        reviews = Review.objects.filter(activity__in=activities).order_by("-created").distinct()
+        return reviews
