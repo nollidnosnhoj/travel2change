@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% load google_maps_api crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Step {{ wizard.steps.step1 }} - Activity Creation Wizard{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -10,7 +10,12 @@
 <div class="row justify-content-center">
     <form action="" method="POST" class="col-lg" novalidate>
         {% csrf_token %}
-        <h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2>
+		<h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2><br />
+		<div class="alert alert-info" role="alert">
+			<h4 class="alert-heading">Where should we meet?</h4>
+			<p>Fill out the address of where participants should meet. The <strong>address</strong> does not need to be formatted as an address. It could be a landmark or such.</p>
+			<p>Use the Google Maps widget below to makr where the activity is located.</p>
+		</div>
 		{{ wizard.management_form }}
 		{{ wizard.form|crispy }}
 		<div class="pac-card" id="pac-card">
@@ -46,10 +51,12 @@
 		</div>
 		<script>
 		function initMap() {
+			var inputLat = parseFloat(document.getElementById('lat_field').value);
+			var inputLng = parseFloat(document.getElementById('lng_field').value);
 			var map = new google.maps.Map(document.getElementById('map'), {
 				center: {
-					lat: 21.3000,
-					lng: 202.1460
+					lat: inputLat,
+					lng: inputLng,
 				},
 				zoom: 13
 			});
@@ -69,7 +76,7 @@
 
 			// Set the data fields to return when the user selects a place.
 			autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
-			var myLatlng = new google.maps.LatLng(21.307, -157.858); //sets marker to honolulu
+			var myLatlng = new google.maps.LatLng(inputLat, inputLng); //sets marker to honolulu
 			var infowindow = new google.maps.InfoWindow();
 			var infowindowContent = document.getElementById('infowindow-content');
 			infowindow.setContent(infowindowContent);
@@ -160,13 +167,13 @@
 			//get directions part will use this link 
 			//https://www.google.com/maps/dir//21.307,-157.858/@21.4297802,-158.1141956,10.83z
 			//last half is the zoom settings; first 2 numbs are lat long.
-		</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAavNkj0ATISmF7-qHDZ3oKRYO6TRa-7tI&libraries=places&callback=initMap"
+		</script><br />
+		<script src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&libraries=places&callback=initMap"
 				async defer></script>
 			{% if wizard.steps.prev %}
 				<button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
 			{% endif %}
-		<button type="submit" class="btn btn-success">Submit</button>
+		<button type="submit" class="btn btn-success">Next</button>
     </form>
 </div>
 {% endblock content %}

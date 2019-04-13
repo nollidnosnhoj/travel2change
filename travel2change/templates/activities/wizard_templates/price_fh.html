@@ -6,6 +6,18 @@
     <form action="" method="POST" class="col-lg" novalidate>
         {% csrf_token %}
         <h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2>
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Activity Pricing</h4>
+            <p>
+                FareHarbor handles all the activities bookings and payments.
+                If you are hosting a free activity, then do not worry about the <strong>FareHarbor Item ID. </strong>
+                However, if you are hosting a paid activity, then you will need to fill out the field with the FareHarbor Item
+                ID.
+                You will also need to insert your FareHarbor username in your host profile.
+            </p>
+            <hr>
+            <p class="mb-0">If you need help with setting up FareHarbor for your paid activity, contact us.</p>
+        </div><br />
         {{ wizard.management_form }}
         {{ wizard.form|crispy }}
         {% if wizard.steps.prev %}

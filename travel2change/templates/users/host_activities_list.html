@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% load humanize thumbnail sekizai_tags cache staticfiles %}
+{% block title %}{{ host.name }}'s Activities{% endblock title %}
+{% block jumbo %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">{{ host.name }}'s Activities</h1>
+    </div>
+</div>
+{% endblock jumbo %}
+{% block content %}
+{% addtoblock "css" %}
+<link rel="stylesheet" href="{% static 'css/users/profile.css' %}">
+{% endaddtoblock %}
+<article class="single-activity">
+    <div class="row">
+        {% for activity in activities %}
+        <div class="col-md-3">
+            <div class="card">
+                {% if bookmark.activity.featured_photo %}
+                <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ activity.get_absolute_url }}">{{ activity.title }}</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ activity.region }}</h6>
+                    <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
+                    {% for tag in activity.tags.all %}
+                    <a href="#" class="card-link">{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        {{ activity.approved_time|naturaltime }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:"4" and not forloop.last %}
+        </div><br />
+        <div class="row">
+        {% endif %}
+        {% empty %}
+        <p>Host have not created an activity yet.</p>
+        {% endfor %}
+    </div>
+</article>
+{% endblock content %}
