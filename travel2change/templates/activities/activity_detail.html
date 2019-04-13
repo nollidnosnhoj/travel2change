@@ -115,13 +115,18 @@
                 {% if reviews %}
                     {% for review in reviews %}
                     <div class="clearfix">
-                        <h5 class="card-title float-left">
-                            {% if review.show_name %}
+                        <div class="float-left">
+                            <h5 class="card-title">
+                                {% if review.show_name %}
                                 {{ review.user.get_full_name }}
-                            {% else %}
+                                {% else %}
                                 Traveler#{{ review.user.pk }}
+                                {% endif %}
+                            </h5>
+                            {% if is_host and review.show_email %}
+                            <p class="text-muted">{{ review.user.email }}</p>
                             {% endif %}
-                        </h5>
+                        </div>
                         <div class="float-right">
                             <input
                                 class="rating"
@@ -143,7 +148,7 @@
         </div>
     </article>
     <aside class="col-sm-4">
-        {% if request.user == activity.host.user %}
+        {% if is_host %}
         <div class="edit-profile">
             <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="btn btn-primary btn-lg btn-block">Edit</a>
         </div>
