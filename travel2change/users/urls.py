@@ -4,12 +4,14 @@ from users.views import (
     HostDetailView,
     HostUpdateView,
     UserUpdateView,
+    UserReviewsListView,
 )
 
 
 urlpatterns = [
     path('hosts/<slug:slug>/activities/', HostActivitiesListView.as_view(), name="host_activities"),
     path('hosts/<slug:slug>/', HostDetailView.as_view(), name="host_detail"),
+    path('accounts/reviews/', UserReviewsListView.as_view(), name="user_reviews"),
     path('accounts/host/', HostUpdateView.as_view(), name="host_update"),
     path('accounts/', UserUpdateView.as_view(), name='user_update'),
 ]

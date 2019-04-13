@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView, UpdateView
 from users.models import Host
 from users.mixins import UserIsHostMixin
 from activities.models import Activity
+from reviews.models import Review
 
 User = get_user_model()
 
@@ -21,6 +22,22 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('user_update')
+
+
+class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Review
+    context_object_name = "reviews"
+    template_name = "users/user_reviews.html"
+
+    """
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['user'] = self.request.user
+        return context
+    """
+
+    def get_queryset(self):
+        return Review.objects.filter(user=self.request.user)
 
 
 class HostDetailView(DetailView):
