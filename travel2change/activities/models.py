@@ -37,7 +37,7 @@ def get_photo_image_filename(instance, filename):
 
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = AutoSlugField(populate_from='name')
+    slug = models.SlugField(max_length=20, unique=True)
 
     objects = models.Manager()
 
@@ -50,6 +50,7 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
+    slug = models.SlugField(max_length=20, unique=True)
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
@@ -64,6 +65,7 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
+    slug = models.SlugField(max_length=20, unique=True)
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
