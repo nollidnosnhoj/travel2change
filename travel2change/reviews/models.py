@@ -33,7 +33,8 @@ class Review(models.Model):
                     )
 
     show_name       = models.BooleanField(default=False)
-    show_email      = models.BooleanField(default=False)
+    show_email      = models.BooleanField(default=False,
+                        help_text=_('Email will only show for the host of the activity.'))
 
     created         = models.DateTimeField(auto_now_add=True)
     modified        = models.DateTimeField(auto_now=True)
