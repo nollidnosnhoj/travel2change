@@ -8,9 +8,14 @@
             <a href="{% url 'user_update' %}" class="list-group-item list-group-item-action">
                 Edit Account
             </a>
+            {% if user.host %}
             <a href="{% url 'host_update' %}" class="list-group-item list-group-item-action active">
-                Edit Host Profile
+                Edit Profile
             </a>
+            <a href="{% url 'user_reviews' %}" class="list-group-item list-group-item-action">
+                Your Reviews
+            </a>
+            {% endif %}
             <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
                 Email Management
             </a>
