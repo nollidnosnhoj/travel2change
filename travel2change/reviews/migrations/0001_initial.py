@@ -11,8 +11,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('activities', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('activities', '0003_remove_activity_image'),
     ]
 
     operations = [
