@@ -204,6 +204,9 @@ class Activity(models.Model):
 
     objects         = ActivityQuerySet.as_manager()
 
+    #PhotoReview
+    #image = models.ImageField(upload_to = 'picture', blank = True)
+
     class Meta:
         verbose_name = _("activity")
         verbose_name_plural = _("activities")
@@ -242,6 +245,7 @@ class Activity(models.Model):
 class ActivityPhoto(models.Model):
     activity        = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
     file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
+
 
 
 """                         ACTIVITY CMS PLUGINS                            """

@@ -134,6 +134,9 @@
                                 value="{{ review.rating }}"
                                 data-size="xs"
                             />
+                            {% if review.photo %}
+                            <img src = "{{ review.photo.url }}" width = "180">
+                            {% endif %}
                         </div>
                     </div>
                     <p class="card-text">{{ review.content }}</p>
