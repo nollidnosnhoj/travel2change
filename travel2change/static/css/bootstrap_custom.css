@@ -493,26 +493,6 @@ mark,
   height: auto;
 }
 
-.review-photo .img-thumbnail {
-  max-width: 50%;
-}
-
-.review-card .media .img-thumbnail {
-  width: 250px;
-}
-
-@media (max-width: 576px) {
-  .review-photo .img-thumbnail {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .review-card .media .img-thumbnail {
-    width: 80px;
-  }
-}
-
 .figure {
   display: inline-block;
 }
