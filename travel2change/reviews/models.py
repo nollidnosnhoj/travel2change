@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 def get_review_image_filename(instance, filename):
-    return 'uploads/reviews/{0}/{1}/{2}'.format(instance.user.pk, instance.activity.pk, filename)
+    return 'uploads/reviews/user-{0}/activity-{1}/review-{2}/{3}'.format(instance.user.pk, instance.activity.pk, instance.pk, filename)
 
 class Review(models.Model):
     RATING_CHOICES  = (
