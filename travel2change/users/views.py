@@ -4,7 +4,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
 from users.models import Host
-from users.mixins import UserIsHostMixin
 from activities.models import Activity
 
 User = get_user_model()
@@ -37,7 +36,7 @@ class HostDetailView(DetailView):
         return context
 
 
-class HostUpdateView(LoginRequiredMixin, UserIsHostMixin, SuccessMessageMixin, UpdateView):
+class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Host
     fields = ['_name', 'custom_slug', 'description', 'phone', 'website', 'fh_username', ]
     template_name_suffix = '_update'

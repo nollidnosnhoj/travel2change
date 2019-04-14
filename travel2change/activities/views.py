@@ -4,13 +4,13 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import DeleteView, DetailView, FormView, UpdateView
 from formtools.wizard.views import SessionWizardView
 from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapprovedMixin, OwnerViewOnlyMixin, HostViewOnlyMixin
+from activities.mixins import CanViewUnapprovedMixin
 from activities.models import Activity, ActivityPhoto
 from bookmarks.models import Bookmark
 from users.models import Host
@@ -31,12 +31,12 @@ class ActivityDetailView(CanViewUnapprovedMixin, DetailView):
         return context
 
 
-class ActivityDeleteView(LoginRequiredMixin, OwnerViewOnlyMixin, SuccessMessageMixin, DeleteView):
+class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = "activities/activity_delete.html"
     success_message = "Activity successfully deleted."
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'])
+        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -48,7 +48,7 @@ class ActivityDeleteView(LoginRequiredMixin, OwnerViewOnlyMixin, SuccessMessageM
         })
 
 
-class ActivityUpdateView(LoginRequiredMixin, OwnerViewOnlyMixin, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, UpdateView):
     model = Activity
     fields = (
         'title',
@@ -67,19 +67,22 @@ class ActivityUpdateView(LoginRequiredMixin, OwnerViewOnlyMixin, UpdateView):
     )
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
+
+    def get_object(self):
+        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
 
 
-class ActivityPhotoUploadView(LoginRequiredMixin, OwnerViewOnlyMixin, FormView):
+class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
     template_name = 'activities/activity_upload.html'
     form_class = PhotoUploadForm
     max_photos = settings.MAX_PHOTOS_PER_ACTIVITY
 
     def dispatch(self, request, *args, **kwargs):
         """ Get the current activity """
-        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'])
+        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
         return super().dispatch(request, *args, **kwargs)
 
     # Upload the photos for the activities
@@ -128,7 +131,7 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, HostViewOnlyMixin, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",
@@ -140,6 +143,11 @@ class ActivityCreationView(LoginRequiredMixin, HostViewOnlyMixin, SessionWizardV
         "6": "activities/wizard_templates/featured_photo.html",
         "7": "activities/wizard_templates/confirmation.html",
     }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.host:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """
