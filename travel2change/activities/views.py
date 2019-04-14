@@ -178,7 +178,6 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 def photo_delete(request, pk):
     """ Simple view to delete photo """
     photo = get_object_or_404(ActivityPhoto, pk=pk)
-    photo.file.delete(False)
     photo.delete()
     return HttpResponse("Photo deleted successfully.")
 
