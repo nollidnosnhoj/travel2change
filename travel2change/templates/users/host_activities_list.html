@@ -1,9 +1,14 @@
 {% extends "base.html" %}{% load humanize thumbnail sekizai_tags cache staticfiles %}
-{% block title %}{{ host.name }}'s Activities{% endblock title %}
+{% block title %}Reviews about {{ host.name }}{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
+<link rel="stylesheet" href="{% static 'css/star-ratings/krajee-fas/theme.css' %}" media="all" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+{% endblock styles %}
 {% block jumbo %}
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
-        <h1 class="display-4">{{ host.name }}'s Activities</h1>
+        <h1 class="display-4">Reviews about {{ host.name }}</h1>
     </div>
 </div>
 {% endblock jumbo %}
@@ -11,38 +16,21 @@
 {% addtoblock "css" %}
 <link rel="stylesheet" href="{% static 'css/users/profile.css' %}">
 {% endaddtoblock %}
-<article class="single-activity">
-    <div class="row">
-        {% for activity in activities %}
-        <div class="col-md-3">
-            <div class="card">
-                {% if activity.featured_photo %}
-                <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{{ activity.get_absolute_url }}">{{ activity.title }}</a>
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ activity.region }}</h6>
-                    <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
-                    {% for tag in activity.tags.all %}
-                    <a href="#" class="card-link">{{ tag.name }}</a>
-                    {% endfor %}
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">
-                        {{ activity.approved_time|naturaltime }}
-                    </small>
-                </div>
-            </div>
-        </div>
-        {% if forloop.counter|divisibleby:"4" and not forloop.last %}
-        </div><br />
-        <div class="row">
-        {% endif %}
-        {% empty %}
-        <p>Host have not created an activity yet.</p>
-        {% endfor %}
-    </div>
-</article>
+{% if reviews %}
+{% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
+{% else %}
+<p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
+{% endif %}
 {% endblock content %}
+{% block scripts %}
+    <script src="{% static 'js/star-ratings/star-rating.js' %}" type="text/javascript"></script>
+    <script src="{% static 'css/star-ratings/krajee-fas/theme.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/star-ratings/star-rating-custom.js' %}" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <script>
+    $('[data-fancybox="reviewphotos"]').fancybox({
+        arrows: false,
+    });
+    </script>
+{% endblock scripts %}
+
