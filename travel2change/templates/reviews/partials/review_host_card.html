@@ -1,0 +1,47 @@
+{% load humanize %}
+{% for review in reviews %}
+<div class="review-card card">
+    <div class="card-header clearfix">
+        <div class="float-left">
+            <input class="rating" type="number" value="{{ review.rating }}" data-size="xs" />
+        </div>
+        <div class="float-right">{{ review.created|naturaltime }}</div>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            <div class="mr-3">
+                <a data-fancybox="reviewphotos" href="{{ review.photo.url }}">
+                    <img src="{{ review.photo.url }}" class="img-thumbnail" />
+                </a>
+            </div>
+            <div class="media-body">
+                <h5 class="card-title">
+                    Activity: <a
+                        href="{% url 'activities:detail' review.activity.region.slug review.activity.slug review.activity.pk %}"
+                        alt="{{ review.activity.title }}">
+                        {{ review.activity.title }}
+                    </a>
+                </h5>
+                <p class="card-text">{{ review.content|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-muted clearfix">
+        <div class="float-left">
+            <span>
+                Review by 
+                {% if request.user == review.user or review.show_name %}
+                    {{ review.user.full_name }}
+                {% else %}
+                    Traveler #{{ review.pk }}
+                {% endif %}
+            </span>
+        </div>
+        <div class="float-right">
+            {% if request.user == host.user and review.show_email %}
+            {{ review.user.email }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
