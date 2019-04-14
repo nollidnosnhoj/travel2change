@@ -1,10 +1,12 @@
-{% extends "base.html" %}{% load google_maps_api crispy_forms_tags sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}
+{% load google_maps_api crispy_forms_tags sekizai_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" />
 <link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
 <link rel="stylesheet" href="{% static 'css/star-ratings/krajee-fas/theme.css' %}" media="all" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 <style>
     #map {
         height: 300px;
@@ -110,42 +112,7 @@
         <br />
         {% endif %}
         <h2>{{ activity.title }} Reviews - {{ activity.average_rating }}</h2><br />
-        <div class="card">
-            <div class="card-body">
-                {% if reviews %}
-                    {% for review in reviews %}
-                    <div class="clearfix">
-                        <div class="float-left">
-                            <h5 class="card-title">
-                                {% if review.show_name %}
-                                {{ review.user.get_full_name }}
-                                {% else %}
-                                Traveler#{{ review.user.pk }}
-                                {% endif %}
-                            </h5>
-                            {% if is_host and review.show_email %}
-                            <p class="text-muted">{{ review.user.email }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="float-right">
-                            <input
-                                class="rating"
-                                type="number"
-                                value="{{ review.rating }}"
-                                data-size="xs"
-                            />
-                        </div>
-                    </div>
-                    <p class="card-text">{{ review.content }}</p>
-                    {% if not forloop.last %}
-                    <hr>
-                    {% endif %}
-                    {% endfor %}
-                {% else %}
-                <p class="card-text">No reviews yet.</p>
-                {% endif %}
-            </div>
-        </div>
+        {% include 'reviews/partials/review_detail_card.html' with reviews=reviews %}
     </article>
     <aside class="col-sm-4">
         {% if is_host %}
@@ -217,7 +184,11 @@
 <script src="{% static 'js/star-ratings/star-rating.js' %}" type="text/javascript"></script>
 <script src="{% static 'css/star-ratings/krajee-fas/theme.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/star-ratings/star-rating-custom.js' %}" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 <script>
+$('[data-fancybox="reviewphotos"]').fancybox({
+    arrows: false,
+});
 $('[data-action="bookmark"]').click(function() {
     var current = $(this);
     var url = current.data('url');

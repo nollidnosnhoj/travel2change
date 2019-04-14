@@ -3,6 +3,7 @@
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
 <link rel="stylesheet" href="{% static 'css/star-ratings/krajee-fas/theme.css' %}" media="all" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 {% endblock styles %}
 {% block jumbo %}
 <div class="jumbotron jumbotron-fluid">
@@ -16,40 +17,7 @@
 <link rel="stylesheet" href="{% static 'css/users/profile.css' %}">
 {% endaddtoblock %}
 {% if reviews %}
-{% for review in reviews %}
-<div class="card">
-    <div class="card-header clearfix">
-        <div class="float-left">
-            {% if review.show_name %}
-                {{ review.user.full_name }}
-            {% else %}
-                Traveler#{{ review.pk }}
-            {% endif %}
-        </div>
-        <div class="float-right">
-            {% if request.user == host.user and review.show_email %}
-                {{ review.user.email }}
-            {% endif %}
-        </div>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">
-            Activity: <a
-                href="{% url 'activities:detail' review.activity.region.slug review.activity.slug review.activity.pk %}"
-                alt="{{ review.activity.title }}">
-                {{ review.activity.title }}
-            </a>
-        </h5>
-        <p class="card-text">{{ review.content }}</p>
-    </div>
-    <div class="card-footer text-muted clearfix">
-        <div class="float-left">{{ review.created|naturaltime }}</div>
-        <div class="float-right">
-            <input class="rating" type="number" value="{{ review.rating }}" data-size="xs" />
-        </div>
-    </div>
-</div>
-{% endfor %}
+{% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
 {% else %}
 <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
 {% endif %}
@@ -58,5 +26,11 @@
     <script src="{% static 'js/star-ratings/star-rating.js' %}" type="text/javascript"></script>
     <script src="{% static 'css/star-ratings/krajee-fas/theme.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/star-ratings/star-rating-custom.js' %}" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <script>
+    $('[data-fancybox="reviewphotos"]').fancybox({
+        arrows: false,
+    });
+    </script>
 {% endblock scripts %}
 
