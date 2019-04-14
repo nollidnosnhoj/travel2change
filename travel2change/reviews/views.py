@@ -13,8 +13,10 @@ class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Review successfully updated."
 
     def dispatch(self, request, *args, **kwargs):
-        self.object = get_object_or_404(Review, pk=kwargs.get('pk'), user=request.user)
         return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        return get_object_or_404(Review, pk=self.kwargs.get('pk'), user=self.request.user)
 
     def get_success_url(self):
         return reverse('user_reviews')
