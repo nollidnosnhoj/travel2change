@@ -1,4 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Avg
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -7,6 +9,9 @@ from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
 from users.models import Host
+
+
+User = get_user_model()
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
@@ -228,11 +233,15 @@ class Activity(models.Model):
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
+    
+    def average_rating(self):
+        avg_dict = self.reviews.all().aggregate(Avg('rating'))
+        return avg_dict.get('rating__avg')
 
 
 class ActivityPhoto(models.Model):
-    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    file = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
+    activity        = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
+    file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
 
 
 """                         ACTIVITY CMS PLUGINS                            """
