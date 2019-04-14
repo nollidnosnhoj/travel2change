@@ -16,7 +16,7 @@
         {% for activity in activities %}
         <div class="col-md-3">
             <div class="card">
-                {% if bookmark.activity.featured_photo %}
+                {% if activity.featured_photo %}
                 <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
                 {% endif %}
                 <div class="card-body">
