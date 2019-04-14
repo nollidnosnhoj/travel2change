@@ -32,7 +32,8 @@ class Review(models.Model):
                         null=True,
                     )
 
-    show_name       = models.BooleanField(default=False)
+    show_name       = models.BooleanField(default=False,
+                        help_text=_('Show your name in public. You can see still your name, regardless if checked or not.'))
     show_email      = models.BooleanField(default=False,
                         help_text=_('Email will only show for the host of the activity.'))
 
