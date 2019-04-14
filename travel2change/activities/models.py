@@ -15,11 +15,11 @@ User = get_user_model()
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
+    return 'uploads/activities/activity-{0}/featured/{1}'.format(instance.pk, filename)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
+    return 'uploads/activities/activity-{0}/photos/{1}'.format(instance.activity.pk, filename)
 
 
 class ActivityQuerySet(models.QuerySet):
@@ -204,9 +204,6 @@ class Activity(models.Model):
 
     objects         = ActivityQuerySet.as_manager()
 
-    #PhotoReview
-    #image = models.ImageField(upload_to = 'picture', blank = True)
-
     class Meta:
         verbose_name = _("activity")
         verbose_name_plural = _("activities")
@@ -247,8 +244,8 @@ class ActivityPhoto(models.Model):
     file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
 
 
-
 """                         ACTIVITY CMS PLUGINS                            """
+
 
 class LatestActivities(CMSPlugin):
     latest_activities = models.IntegerField(
