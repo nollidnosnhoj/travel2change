@@ -69,13 +69,26 @@ class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('host_detail', kwargs={'slug': self.object.slug})
 
 
-class HostActivitiesListView(HostListView):
+class HostActivitiesPublicListView(HostListView):
     model = Activity
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
 
     def get_queryset(self):
         return Activity.objects.approved().filter(host=self.host).order_by("-approved_time")
+
+
+class HostActivitiesDashboardView(DetailView):
+    model = Host
+    template_name = "users/host_activities_dashboard.html"
+
+    def get_object(self):
+        return get_object_or_404(Host, user=self.request.user)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['activities'] = Activity.objects.all().filter(host=self.object).distinct().order_by('-status', '-created')
+        return context
 
 
 class HostReviewsListView(HostListView):
