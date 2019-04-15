@@ -22,12 +22,14 @@
                     <td>{{ activity.host.name }}</td>
                     <td>{{ activity.created }}</td>
                     <td>
-                        <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
-                            <i class="fas fa-check"></i>
-                        </a>
-                        <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
-                            <i class="fas fa-times"></i>
-                        </a>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
+                            <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% empty %}

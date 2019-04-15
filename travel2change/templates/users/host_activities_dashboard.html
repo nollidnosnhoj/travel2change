@@ -54,14 +54,14 @@
                                 <td><a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a></td>
                                 <td>{{ activity.created|date:"M d, Y" }}</td>
                                 <td>
-                                    <a class="btn btn-primary"
-                                        href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}">
-                                        <i class="fas fa-pencil-alt" alt="Edit Activity" title="Edit Activity"></i>
-                                    </a>
-                                    <a class="btn btn-danger"
-                                        href="{% url 'activities:delete' activity.region.slug activity.slug activity.pk %}">
-                                        <i class="fas fa-trash" alt="Delete Activity" title="Delete Activity"></i>
-                                    </a>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Activity Actions">
+                                        <a class="btn btn-secondary" href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}">
+                                            <i class="fas fa-pencil-alt" alt="Edit Activity" title="Edit Activity"></i>
+                                        </a>
+                                        <a class="btn btn-secondary" href="{% url 'activities:delete' activity.region.slug activity.slug activity.pk %}">
+                                            <i class="fas fa-trash" alt="Delete Activity" title="Delete Activity"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -69,7 +69,7 @@
                     </table>
                 </div>
                 {% else %}
-                <p>No activities are currently awaiting approval.</p>
+                <p>You have not created an activity.</p>
                 {% endif %}
             </div>
         </div><br />
