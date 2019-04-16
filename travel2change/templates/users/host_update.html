@@ -30,7 +30,10 @@
     </div>
     <div class="col-lg-8">
         <div class="card">
-            <h5 class="card-header">{% trans "Modify Host Profile" %}</h5>
+            <div class="card-header clearfix">
+                    <h5 class="float-left">{% trans "Modify Host Profile" %}</h5>
+                    <a class="float-right" href="{% url 'host_detail' object.slug %}" alt="View Profile">View Profile</a>             
+            </div>
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
