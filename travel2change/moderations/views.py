@@ -3,13 +3,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, ListView, UpdateView
 
 from activities.models import Activity
-from .forms import ApproveForm
 from .mixins import StaffUserOnlyMixin
 
 class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
@@ -26,7 +25,7 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
     model = Activity
-    form_class = ApproveForm
+    fields = ('fh_item_id', )
     template_name = 'moderations/moderation_approval.html'
     success_message = 'Activity has successfully been approved! Email sent.'
 
@@ -34,8 +33,12 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
         # Change status to approve, and send email to host
         instance = form.save(commit=False)
         instance.status = Activity.STATUS.approved
-        subject = "Your Activity Was Approved."
-        send_notification(instance, subject, "approval")
+        send_notification(instance, "Your Activity Was Approved.", "approval")
+        instance.save()
+        return redirect('activities:detail',
+            region=instance.region.slug,
+            slug=instance.slug,
+            pk=instance.pk)
         return super().form_valid(form)
 
 
