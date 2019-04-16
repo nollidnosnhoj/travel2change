@@ -15,7 +15,7 @@ class BookmarkListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         bookmarks = Bookmark.objects.filter(user=self.request.user)
-        return bookmarks.select_related('activity').all()
+        return bookmarks.select_related('activity').all().order_by('-created')
 
 
 class SetBookmarkView(LoginRequiredMixin, View):

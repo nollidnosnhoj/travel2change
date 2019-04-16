@@ -16,11 +16,10 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
     paginate_by = 10
-    ordering = ['created']
 
     def get_queryset(self):
         # Order Unapproved Activities by Created Time Ascending
-        return self.model.objects.unapproved().all()
+        return self.model.objects.unapproved().all().order_by('created')
 
 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
