@@ -8,6 +8,6 @@ class CanViewUnapprovedMixin(object):
     def dispatch(self, request, *args, **kwargs):
         activity = get_object_or_404(Activity, pk=kwargs['pk'])
         if activity.status == Activity.STATUS.unapproved:
-            if request.user != activity.host.user and (not request.user.is_staff or not request.user.is_superuser):
+            if request.user != activity.host.user or (not request.user.is_staff and not request.user.is_superuser):
                 raise Http404
         return super().dispatch(request, *args, **kwargs)
