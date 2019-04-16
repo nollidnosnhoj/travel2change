@@ -142,9 +142,9 @@ class Activity(models.Model):
                         help_text=_("Select tag(s) that best describe your activity.")
                     )
     address         = models.CharField(
-                        verbose_name=_("address"),
+                        verbose_name=_("meeting place"),
                         max_length=255,
-                        help_text=_("Enter the address of the meeting place")
+                        help_text=_("Enter a meeting place for the activity")
                     )
     latitude        = models.DecimalField(
                         verbose_name=_("latitude"),
@@ -173,8 +173,8 @@ class Activity(models.Model):
     featured_photo  = models.ImageField(
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
-                        null=True,
-                        blank=True,
+                        blank=False,
+                        default='defaults/default_region.jpg',
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
                     )
@@ -183,7 +183,7 @@ class Activity(models.Model):
                         blank=True,
                         null=True,
                         default=None,
-                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
+                        help_text=_('This is the FareHarbor item for your activity.')
                     )
 
     """ Private fields """
