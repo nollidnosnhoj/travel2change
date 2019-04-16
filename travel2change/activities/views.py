@@ -37,10 +37,20 @@ class ActivityBrowseView(ListView):
     def get_queryset(self):
         qs = Activity.objects.approved()
 
+        q = self.request.GET.get('q')
         title = self.request.GET.get('title')
         region = self.request.GET.get('region')
         categories = self.request.GET.get('categories')
         tags = self.request.GET.getlist('tags')
+
+        if is_valid_queryparam(q):
+            from django.db.models import Q
+            qs = qs.filter(
+                Q(title__icontains=q)
+                | Q(region__slug=q)
+                | Q(categories__slug=q)
+                | Q(tags__slug=q)
+            ).distinct()
 
         if is_valid_queryparam(region):
             qs = qs.filter(region__slug=region)
