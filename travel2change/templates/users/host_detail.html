@@ -54,6 +54,9 @@
             </table>
         </div>
         <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+            <div class="text-right mb-3">
+                <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
+            </div>
             <div class="row">
                 {% for activity in activities %}
                 <div class="col-md-4">
@@ -67,11 +70,11 @@
                     <p>Host have not created an activity yet.</p>
                 {% endfor %}
             </div>
-            <p class="text-center mt-2">
-                <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
-            </p>
         </div>
         <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+            <div class="text-right mb-3">
+                <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
+            </div>
             {% if reviews %}
             {% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
             {% else %}
