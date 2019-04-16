@@ -1,4 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Avg
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -7,6 +9,18 @@ from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
 from users.models import Host
+
+
+User = get_user_model()
+
+def get_featured_image_filename(instance, filename):
+    """ Path to store activity's featured photo """
+    return 'uploads/activities/activity-{0}/featured/{1}'.format(instance.pk, filename)
+
+def get_photo_image_filename(instance, filename):
+    """ Path where activity's photos are stored """
+    return 'uploads/activities/activity-{0}/photos/{1}'.format(instance.activity.pk, filename)
+
 
 class ActivityQuerySet(models.QuerySet):
     """ Activity Queries """
@@ -26,18 +40,9 @@ class ActivityQuerySet(models.QuerySet):
     def featured(self):
         return self.approved().filter(is_featured=True)
 
-
-def get_featured_image_filename(instance, filename):
-    """ Path to store activity's featured photo """
-    return 'uploads/{0}/featured/{1}'.format(instance.pk, filename)
-
-def get_photo_image_filename(instance, filename):
-    """ Path where activity's photos are stored """
-    return 'uploads/{0}/photos/{1}'.format(instance.activity.pk, filename)
-
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
-    slug = AutoSlugField(populate_from='name')
+    slug = models.SlugField(max_length=20, unique=True)
 
     objects = models.Manager()
 
@@ -50,6 +55,7 @@ class Region(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
+    slug = models.SlugField(max_length=20, unique=True)
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
@@ -64,6 +70,7 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
+    slug = models.SlugField(max_length=20, unique=True)
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
         help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
@@ -226,14 +233,19 @@ class Activity(models.Model):
     def is_free(self):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
+    
+    def average_rating(self):
+        avg_dict = self.reviews.all().aggregate(Avg('rating'))
+        return avg_dict.get('rating__avg')
 
 
 class ActivityPhoto(models.Model):
-    activity = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    file = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
+    activity        = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
+    file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
 
 
 """                         ACTIVITY CMS PLUGINS                            """
+
 
 class LatestActivities(CMSPlugin):
     latest_activities = models.IntegerField(

@@ -1,0 +1,38 @@
+<div class="card">
+    <div class="card-body">
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="clearfix">
+                <div class="float-left">
+                    <h5 class="card-title">
+                        {% if review.show_name %}
+                            <span>{{ review.user.get_full_name }}</span>
+                        {% else %}
+                            <span>Traveler#{{ review.user.pk }}</span>
+                        {% endif %}
+                    </h5>
+                    {% if is_host and review.show_email %}
+                    <p class="text-muted">{{ review.user.email }}</p>
+                    {% endif %}
+                </div>
+                <div class="float-right">
+                    <input class="rating" type="number" value="{{ review.rating }}" data-size="xs" />
+                </div>
+            </div>
+            <p class="card-text">{{ review.content|linebreaks }}</p>
+            {% if review.photo %}
+                <div class="review-photo">
+                    <a data-fancybox="gallery" href="{{ review.photo.url }}">
+                        <img src="{{ review.photo.url }}" class="img-thumbnail" />
+                    </a>
+                </div>
+            {% endif %}
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="card-text">No reviews yet.</p>
+        {% endif %}
+    </div>
+</div>

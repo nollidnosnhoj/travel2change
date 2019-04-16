@@ -1,5 +1,6 @@
 from django.contrib import admin
 from activities.models import Activity, ActivityPhoto, Category, Tag, Region
+from reviews.admin import ReviewInline
 
 class ActivityPhotosInline(admin.TabularInline):
     model = ActivityPhoto
@@ -16,7 +17,7 @@ class ActivityAdmin(admin.ModelAdmin):
         'title', 'host', 'approved_time', 'review_count',
     )
     readonly_fields = ('slug', 'review_count', 'approved_time',)
-    inlines = [ActivityPhotosInline, ]
+    inlines = [ActivityPhotosInline, ReviewInline, ]
 
 
 admin.site.register(Activity, ActivityAdmin)
