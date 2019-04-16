@@ -62,10 +62,6 @@
                 <div class="col-md-4">
                         {% include 'activities/partials/activity_card.html' with activity=activity %}
                 </div>
-                {% if forloop.counter|divisibleby:"3" and not forloop.last %}
-                    </div><br />
-                    <div class="row">
-                {% endif %}
                 {% empty %}
                     <p>Host have not created an activity yet.</p>
                 {% endfor %}

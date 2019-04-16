@@ -38,20 +38,15 @@
 	<button type="submit" class="btn btn-primary">Browse</button>
 </form>
 
-{% for activity in activityBrowse %}{% comment %} every 4 iterations put this in the code {% endcomment %}
-{% if forloop.counter0|divisibleby:4 %}
 <div class="row">
-{% endif %}
+	{% for activity in activityBrowse %}
 	<div class="col-lg-3" style="padding-top:50px;">
 		{% include 'activities/partials/activity_card.html' with activity=activity %}
 	</div>
-{% comment %} every 4 iterations put this in the code {% endcomment %}
-{% if forloop.counter|divisibleby:4 or forloop.last %}
+	{% empty %}
+		<p>Unfortunately, there are no activities based on your search.</p>
+	{% endfor %}
 </div>
-{% endif %}
-{% empty %}
-    <p>No activities yet.</p>
-{% endfor %}
 
 {% endblock content %}
 {% block scripts %}
