@@ -75,11 +75,11 @@
             <div class="text-right mb-3">
                 <a href="{% url 'host_activities' host.slug %}">Show More Activities</a>
             </div>
-            {% if reviews %}
-            {% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
-            {% else %}
-            <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
-            {% endif %}
+            {% for review in reviews %}
+                {% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
+            {% empty %}
+                <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
+            {% endfor %}
             <p class="text-center mt-2">
                 <a href="{% url 'host_reviews' host.slug %}">Show More Reviews</a>
             </p>
