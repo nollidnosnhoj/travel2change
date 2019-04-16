@@ -67,6 +67,7 @@ class ActivityBrowseView(ListView):
         context['tags'] = Tag.objects.all()
         return context
 
+        
 class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     """ View for showing the details of the activity """
 

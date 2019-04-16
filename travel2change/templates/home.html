@@ -10,7 +10,7 @@
         <div class="container">
             <h1 class="heading">Join Fun & Impactful Activities on Hawaii.</h1>
             <h3 class="heading2" style="font-family: Open Sans;font-weight: 300">Activities are Free or Discounted.</h3>
-            <form class="searchWrapper" action="">
+            <form class="searchWrapper" action="{% url 'activities:browse' %}">
                 <div class="form-group">
                     <input type="text" placeholder="Start searching for activities..." name="q" />
                     <button type="submit"><i class="fa fa-search"></i></button>
