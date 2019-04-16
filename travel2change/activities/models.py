@@ -197,7 +197,7 @@ class Activity(models.Model):
     # Time when activity is modified
     modified        = models.DateTimeField(auto_now=True)
     # Boolean field to check if activity is featured
-    is_featured     = models.BooleanField(verbose_name=_("is featured"), default=False)
+    is_featured     = models.IntegerField(blank=True, default=0, verbose_name=_("is featured"))
     # Number of reviews for activity
     review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
 

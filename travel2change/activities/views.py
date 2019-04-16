@@ -16,7 +16,7 @@ from django.views.generic import (
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
 from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapprovedMixin, OwnerViewOnlyMixin, HostViewOnlyMixin
+from activities.mixins import CanViewUnapprovedMixin
 from activities.models import Activity, ActivityPhoto, Region, Category, Tag
 from bookmarks.models import Bookmark
 from reviews.forms import ReviewForm
@@ -51,7 +51,7 @@ class ActivityBrowseView(ListView):
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
         
-        return qs.order_by("-is_featured", "title")
+        return qs.order_by("-is_featured")
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
