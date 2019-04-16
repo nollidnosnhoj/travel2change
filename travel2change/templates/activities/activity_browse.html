@@ -1,27 +1,6 @@
 {% extends "base.html" %}{% load sekizai_tags cache staticfiles %}
 {% block title %}Activity Browse{% endblock title %}
 {% block styles %}
-<style>
-    #activity_button:hover {
-		text-decoration: none;
-	}
-	.activity-card {
-		height: 100% !important;
-	}
-	a .activity-card {
-		color: #212529;
-	}
-	.activity-card h4 {
-		font-size: 1.2rem;
-	}
-	.activity-card .card-text {
-		font-size: 0.9rem;
-	}
-	.activity-card .card-img-top {
-		height: 20vh;
-		object-fit: cover;
-	}
-</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.7/dist/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="{% static 'css/activities/browse-activity.css' %}">
 {% endblock styles %}
@@ -64,18 +43,7 @@
 <div class="row">
 {% endif %}
 	<div class="col-lg-3" style="padding-top:50px;">
-		<a href="{{ activity.get_absolute_url }}" id="activity_button">
-			<div class="activity-card card">
-				{% if activity.featured_photo %}
-				<img class="card-img-top" src="{{ activity.featured_photo.url }}" alt="{{ activity.title }}">
-				{% endif %}
-				<div class="card-body">
-					<h4 class="card-title">{{activity.title}}</h4>
-					<p class="card-text">{{activity.host.name}}</p>
-					<p class="card-text">{{activity.region}}</p>
-				</div>
-			</div>
-		</a>
+		{% include 'activities/partials/activity_card.html' with activity=activity %}
 	</div>
 {% comment %} every 4 iterations put this in the code {% endcomment %}
 {% if forloop.counter|divisibleby:4 or forloop.last %}

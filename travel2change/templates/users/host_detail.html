@@ -57,28 +57,7 @@
             <div class="row">
                 {% for activity in activities %}
                 <div class="col-md-4">
-                    <div class="card">
-                        {% if activity.featured_photo %}
-                        <img src="{{ activity.featured_photo.url }}" class="card-img-top" alt="{{ activity.title }}">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href="{{ activity.get_absolute_url }}">
-                                    {{ activity.title }}
-                                </a>
-                            </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ activity.region }}</h6>
-                            <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
-                            {% for tag in activity.tags.all %}
-                            <a href="#" class="card-link">{{ tag.name }}</a>
-                            {% endfor %}
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">
-                                Created by {{ activity.approved_time }}
-                            </small>
-                        </div>
-                    </div>
+                        {% include 'activities/partials/activity_card.html' with activity=activity %}
                 </div>
                 {% if forloop.counter|divisibleby:"3" and not forloop.last %}
                     </div><br />

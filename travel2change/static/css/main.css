@@ -21,3 +21,23 @@
     margin-top: 20px;
     z-index: 999 !important;
 }
+
+#activity_button:hover {
+    text-decoration: none;
+}
+.activity-card {
+    height: 100% !important;
+}
+a .activity-card {
+    color: #212529;
+}
+.activity-card h4 {
+    font-size: 1.2rem;
+}
+.activity-card .card-text {
+    font-size: 0.9rem;
+}
+.activity-card .card-img-top {
+    height: 20vh;
+    object-fit: cover;
+}
