@@ -39,8 +39,9 @@
         {% cms_toolbar %}
         {% include 'partials/navigation.html' %}
         {% include 'partials/messages.html' %}
-        {% block jumbo %}{% endblock jumbo %}
-        <div class="container">
+        {% block jumbo %}
+        {% endblock jumbo %}
+        <div class="container p-3">
             <main class="content mt-5 mb-5">
                 {% block content %}
                 {% endblock content %}

@@ -17,12 +17,55 @@ from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
 from activities.forms import PhotoUploadForm
 from activities.mixins import CanViewUnapprovedMixin
-from activities.models import Activity, ActivityPhoto
+from activities.models import Activity, ActivityPhoto, Region, Category, Tag
 from bookmarks.models import Bookmark
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
 
+from django.views.generic import ListView
+
+def is_valid_queryparam(param):
+    return (param != '' and param is not None)
+
+class ActivityBrowseView(ListView):
+    model = Activity
+    template_name = 'activities/activity_browse.html'
+    paginate_by = 10
+    context_object_name = 'activityBrowse'
+
+    def get_queryset(self):
+        qs = Activity.objects.approved()
+
+        title = self.request.GET.get('title')
+        region = self.request.GET.get('region')
+        categories = self.request.GET.get('categories')
+        tags = self.request.GET.getlist('tags')
+
+        if is_valid_queryparam(region):
+            qs = qs.filter(region__slug=region)
+
+        if is_valid_queryparam(categories):
+            qs = qs.filter(categories__slug=categories)
+
+        if is_valid_queryparam(tags) and tags:
+            for tag in tags:
+                qs = qs.filter(tags__slug=tag).distinct()
+            """
+            qs = qs.filter(tags__slug__in=tags).distinct()
+            """
+
+        if is_valid_queryparam(title):
+            qs = qs.filter(title__icontains=title)
+        
+        return qs.order_by("-is_featured")
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['regions'] = Region.objects.all()
+        context['categories'] = Category.objects.all()
+        context['tags'] = Tag.objects.all()
+        return context
 
 class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
     """ View for showing the details of the activity """
