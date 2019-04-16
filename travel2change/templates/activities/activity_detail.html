@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load google_maps_api crispy_forms_tags sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load cms_tags google_maps_api crispy_forms_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -20,6 +20,7 @@
     </button>
 </div>
 {% endif %}
+{% render_model_block activity %}
 <div class="row">
     <article class="single-activity col-sm-8">
         <div class="jumbotron">
@@ -177,6 +178,7 @@
         {% endif %}
     </aside>
 </div>
+{% endrender_model_block %}
 {% endblock content %}
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
