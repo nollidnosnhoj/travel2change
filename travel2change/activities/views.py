@@ -40,14 +40,21 @@ class ActivityBrowseView(ListView):
         title = self.request.GET.get('title')
         region = self.request.GET.get('region')
         categories = self.request.GET.get('categories')
-        tags = self.request.GET.get('tags')
+        tags = self.request.GET.getlist('tags')
 
-        if is_valid_queryparam(region) and region != 'All Regions':
-            qs = qs.filter(region__name=region)
-        if is_valid_queryparam(categories) and categories != 'All Categories':
-            qs = qs.filter(categories__name=categories)
-        if is_valid_queryparam(tags) and tags != 'All Tags':
-            qs = qs.filter(tags__name__icontains=tags)
+        if is_valid_queryparam(region):
+            qs = qs.filter(region__slug=region)
+
+        if is_valid_queryparam(categories):
+            qs = qs.filter(categories__slug=categories)
+
+        if is_valid_queryparam(tags) and tags:
+            for tag in tags:
+                qs = qs.filter(tags__slug=tag).distinct()
+            """
+            qs = qs.filter(tags__slug__in=tags).distinct()
+            """
+
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
         
