@@ -34,7 +34,6 @@
         <br />
     </div>
     <div class="col-lg-8">
-        {% if reviews %}
         {% for review in reviews %}
         <div class="card">
             <div class="card-body">
@@ -67,10 +66,9 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
-        {% else %}
+        {% empty %}
         <p>You have not reviewed an activity. Start your impact and book for an activity!</p>
-        {% endif %}
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}
