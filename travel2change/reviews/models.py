@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +8,8 @@ User = get_user_model()
 
 
 def get_review_image_filename(instance, filename):
-    return 'uploads/reviews/user-{0}/activity-{1}/review-{2}/{3}'.format(instance.user.pk, instance.activity.pk, instance.pk, filename)
+    ext = filename.split('.')[-1]
+    return 'uploads/reviews/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
 class Review(models.Model):
     RATING_CHOICES  = (
