@@ -201,6 +201,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
             messages.success(self.request, "Photo(s) successfully uploaded.")
             return self.form_valid(form)
         else:
+            messages.error(self.request, "You must only upload images (jpg|gif|png).")
             return self.form_invalid(form)
 
     def get_success_url(self):

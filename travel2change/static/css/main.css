@@ -14,8 +14,14 @@
     height: 100vh;
 }
 
+/* DJANGO MESSAGES */
+
 .messages {
-    margin: 0 !important;
+    padding-right: 0rem!important; /* override bootstrap's alert-dismissible */
+    margin-bottom: 0rem!important; /* override bootstrap's alert */
+}
+.messages .container {
+    padding: 0rem 1rem !important;
 }
 .messages .close {
     position: static !important;
@@ -24,6 +30,9 @@
 #activity_button:hover {
     text-decoration: none;
 }
+
+/* ACTIVITY CARD */
+
 .activity-card {
     height: 100% !important;
 }
