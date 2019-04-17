@@ -23,10 +23,22 @@
                     <td>{{ activity.created }}</td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
-                            <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
+                            <a  class="btn btn-success"
+                                href="{% url 'moderations:approve' activity.pk %}"
+                                target="_blank"
+                                data-toggle="tooltip"
+                                title="Approve"
+                                alt="Approve Activity"
+                            >
                                 <i class="fas fa-check"></i>
                             </a>
-                            <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
+                            <a  class="btn btn-danger"
+                                href="{% url 'moderations:disapprove' activity.pk %}"
+                                target="_blank"
+                                data-toggle="tooltip"
+                                title="Disapprove"
+                                alt="Disapprove Activity"
+                            >
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>
