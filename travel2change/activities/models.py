@@ -225,8 +225,8 @@ class Activity(models.Model):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
-    def get_bookmark_count(self):
-        self.bookmark_set.all().count()
+    def get_favorite_count(self):
+        self.favorite_set.all().count()
 
     @property
     def is_free(self):

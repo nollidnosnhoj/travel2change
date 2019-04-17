@@ -23,7 +23,7 @@
             {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'moderations:queue' %}" class="dropdown-item">{% trans "Moderation" %}</a>
             {% endif %}
-            <a href="{% url 'bookmarks:list' %}" class="dropdown-item">{% trans "Bookmarks" %}</a>
+            <a href="{% url 'favorites:list' %}" class="dropdown-item">{% trans "Favorites" %}</a>
             {% if user.host %}
               <a href="{% url 'host_detail' user.host.slug %}" class="dropdown-item">{% trans "Profile" %}</a>
             {% endif %}

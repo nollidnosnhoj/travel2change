@@ -43,6 +43,7 @@ class Review(models.Model):
     objects         = models.Manager()
 
     class Meta:
+        unique_together = (('user', 'activity', ))
         ordering = ('created', )
     
     def __str__(self):
