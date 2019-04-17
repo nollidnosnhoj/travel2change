@@ -15,13 +15,12 @@
 }
 
 .messages {
-    position: absolute;
-    left: 0; right: 0;
-    margin-right: auto; margin-left: auto;
-    margin-top: 20px;
-    z-index: 999 !important;
+    margin: 0 !important;
 }
-
+.messages .close {
+    position: static !important;
+    padding: 0 !important;
+}
 #activity_button:hover {
     text-decoration: none;
 }
