@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Avg
@@ -15,11 +16,16 @@ User = get_user_model()
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return 'uploads/activities/activity-{0}/featured/{1}'.format(instance.pk, filename)
+    ext = filename.split('.')[-1]
+    if instance.pk:
+        return 'uploads/activities/featured-photos/activity_{0}.{1}'.format(instance.pk, ext)
+    else:
+        return 'uploads/activities/featured-photos/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return 'uploads/activities/activity-{0}/photos/{1}'.format(instance.activity.pk, filename)
+    ext = filename.split('.')[-1]
+    return 'uploads/activities/photos/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
 
 class ActivityQuerySet(models.QuerySet):
@@ -210,7 +216,6 @@ class Activity(models.Model):
     def __str__(self):
         return self.title
 
-    @property
     def get_absolute_url(self):
         return reverse('activities:detail', kwargs={
             'region': self.region.slug,
@@ -226,8 +231,8 @@ class Activity(models.Model):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
-    def get_bookmark_count(self):
-        self.bookmark_set.all().count()
+    def get_favorite_count(self):
+        self.favorite_set.all().count()
 
     @property
     def is_free(self):
