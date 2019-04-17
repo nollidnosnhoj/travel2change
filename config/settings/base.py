@@ -99,7 +99,7 @@ LOCAL_APPS = (
     'users',
     'activities',
     'moderations',
-    'bookmarks',
+    'favorites',
     'reviews',
     'travel2change',
 )
