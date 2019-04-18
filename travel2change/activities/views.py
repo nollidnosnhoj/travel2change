@@ -18,7 +18,7 @@ from formtools.wizard.views import SessionWizardView
 from activities.forms import PhotoUploadForm
 from activities.mixins import CanViewUnapprovedMixin
 from activities.models import Activity, ActivityPhoto, Region, Category, Tag
-from bookmarks.models import Bookmark
+from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
@@ -100,7 +100,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         context['can_review'] = self.can_review
         context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
-            context['bookmarked'] = Bookmark.objects.filter(user=self.request.user, activity=self.object).exists()
+            context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
     
     # process review form
@@ -232,7 +232,6 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 def photo_delete(request, pk):
     """ Simple view to delete photo """
     photo = get_object_or_404(ActivityPhoto, pk=pk)
-    photo.file.delete(False)
     photo.delete()
     return HttpResponse("Photo deleted successfully.")
 

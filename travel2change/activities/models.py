@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Avg
@@ -15,11 +16,16 @@ User = get_user_model()
 
 def get_featured_image_filename(instance, filename):
     """ Path to store activity's featured photo """
-    return 'uploads/activities/activity-{0}/featured/{1}'.format(instance.pk, filename)
+    ext = filename.split('.')[-1]
+    if instance.pk:
+        return 'uploads/activities/featured-photos/activity_{0}.{1}'.format(instance.pk, ext)
+    else:
+        return 'uploads/activities/featured-photos/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
 def get_photo_image_filename(instance, filename):
     """ Path where activity's photos are stored """
-    return 'uploads/activities/activity-{0}/photos/{1}'.format(instance.activity.pk, filename)
+    ext = filename.split('.')[-1]
+    return 'uploads/activities/photos/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
 
 class ActivityQuerySet(models.QuerySet):
@@ -142,9 +148,9 @@ class Activity(models.Model):
                         help_text=_("Select tag(s) that best describe your activity.")
                     )
     address         = models.CharField(
-                        verbose_name=_("address"),
+                        verbose_name=_("meeting place"),
                         max_length=255,
-                        help_text=_("Enter the address of the meeting place")
+                        help_text=_("Enter a meeting place for the activity")
                     )
     latitude        = models.DecimalField(
                         verbose_name=_("latitude"),
@@ -173,8 +179,8 @@ class Activity(models.Model):
     featured_photo  = models.ImageField(
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
-                        null=True,
-                        blank=True,
+                        blank=False,
+                        default='defaults/default_region.jpg',
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.')
                     )
@@ -183,7 +189,7 @@ class Activity(models.Model):
                         blank=True,
                         null=True,
                         default=None,
-                        help_text=_('This is the FareHarbor item for your activity. If your activity is free, please this blank')
+                        help_text=_('This is the FareHarbor item for your activity.')
                     )
 
     """ Private fields """
@@ -210,7 +216,6 @@ class Activity(models.Model):
     def __str__(self):
         return self.title
 
-    @property
     def get_absolute_url(self):
         return reverse('activities:detail', kwargs={
             'region': self.region.slug,
@@ -226,8 +231,8 @@ class Activity(models.Model):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
 
-    def get_bookmark_count(self):
-        self.bookmark_set.all().count()
+    def get_favorite_count(self):
+        self.favorite_set.all().count()
 
     @property
     def is_free(self):

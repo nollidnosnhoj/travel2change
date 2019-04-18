@@ -90,6 +90,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'autoslug',
     'crispy_forms',
+    'django_cleanup.apps.CleanupConfig',
     'django_filters',
     'django_social_share',
     'formtools',
@@ -98,7 +99,7 @@ LOCAL_APPS = (
     'users',
     'activities',
     'moderations',
-    'bookmarks',
+    'favorites',
     'reviews',
     'travel2change',
 )

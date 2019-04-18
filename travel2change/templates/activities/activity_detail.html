@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load google_maps_api crispy_forms_tags sekizai_tags social_share cache staticfiles %}
+{% extends "base.html" %}{% load cms_tags google_maps_api crispy_forms_tags social_share cache staticfiles %}
 {% block title %}{{ activity.title }}{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -20,6 +20,7 @@
     </button>
 </div>
 {% endif %}
+{% render_model_block activity %}
 <div class="row">
     <article class="single-activity col-sm-8">
         <div class="jumbotron">
@@ -33,9 +34,13 @@
             <div class="card-body">
                 <div class="clearfix">
                     {% if user.is_authenticated %}
-                    <button type="button" class="btn btn-light" data-url="{% url 'bookmarks:set' activity.pk %}" data-action="bookmark" title="Bookmark">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
-                        <span class="bookmarkText">{% if bookmarked %}Remove{% else %}Bookmark{% endif %}</span>
+                    <button type="button" class="btn favorite-button" data-url="{% url 'favorites:set' activity.pk %}" data-action="favorite" title="Favorite">
+                        <span class="spinner-border" role="status" aria-hidden="true" style="display:none;"></span>
+                        {% if favorited %}
+                        <i class="fas fa-heart" style="color: #d63031; font-size: 24px;"></i>
+                        {% else %}
+                        <i class="fas fa-heart" style="color: #b2bec3; font-size: 24px;"></i>
+                        {% endif %}
                     </button>
                     {% endif %}
                     <div class="social_share dropdown float-right">
@@ -177,6 +182,7 @@
         {% endif %}
     </aside>
 </div>
+{% endrender_model_block %}
 {% endblock content %}
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
@@ -188,16 +194,18 @@
 $('[data-fancybox="reviewphotos"]').fancybox({
     arrows: false,
 });
-$('[data-action="bookmark"]').click(function() {
+$('[data-action="favorite"]').click(function() {
     var current = $(this);
     var url = current.data('url');
+    $('.favorite-button i').hide();
     $('.spinner-border').show();
     $.ajax({
         url: url,
         type: 'POST',
         success: function(data) {
             $('.spinner-border').hide();
-            document.querySelector(".bookmarkText").textContent = data.message;
+            $('.favorite-button i').show();
+            $('.favorite-button i').css('color', data.result);
             current.prop("disabled", true);
         }
     });

@@ -1,23 +1,24 @@
 from django.contrib import admin
+from cms.admin.placeholderadmin import FrontendEditableAdminMixin
 from activities.models import Activity, ActivityPhoto, Category, Tag, Region
-from reviews.admin import ReviewInline
 
 class ActivityPhotosInline(admin.TabularInline):
     model = ActivityPhoto
 
-class ActivityAdmin(admin.ModelAdmin):
+class ActivityAdmin(FrontendEditableAdminMixin, admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('title', 'slug', 'host', 'description', 'region', 'featured_photo',)}),
-        ('Information', {'fields': ('highlights', 'requirements', 'categories', 'tags', 'price',)}),
-        ('Location', {'fields': ('address', 'latitude', 'longitude')}),
-        ('FareHarbor Item', {'fields': ('fh_item_id', )}),
-        ('Status', {'fields': ('status', 'is_featured',)}),
+        ('Essential Information', {'fields': ('title', 'slug', 'host', 'status', 'is_featured', )}),
+        ('Activity Information', {'fields': ('description', 'region', 'categories', 'tags', )}),
+        ('Pricing and FareHarbor Item', {'fields': ('price', 'fh_item_id', )}),
+        ('Highlights and Requirements', {'fields': ('highlights', 'requirements', )}),
+        ('Featured Photo', {'fields': ('featured_photo', )}),
+        ('Location', {'fields': ('address', 'latitude', 'longitude', )}),
     )
     list_display = (
         'title', 'host', 'approved_time', 'review_count',
     )
     readonly_fields = ('slug', 'review_count', 'approved_time',)
-    inlines = [ActivityPhotosInline, ReviewInline, ]
+    inlines = [ActivityPhotosInline, ]
 
 
 admin.site.register(Activity, ActivityAdmin)

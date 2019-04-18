@@ -1,0 +1,78 @@
+{% extends "account/base.html" %}
+{% load i18n crispy_forms_tags %}
+{% block title %}{% trans "Modify Account" %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="list-group">
+            <a href="{% url 'user_update' %}" class="list-group-item list-group-item-action">
+                Edit Account
+            </a>
+            {% if user.host %}
+            <a href="{% url 'host_update' %}" class="list-group-item list-group-item-action">
+                Edit Profile
+            </a>
+            <a href="{% url 'host_activities_dashboard' %}" class="list-group-item list-group-item-action active">
+                Your Activities
+            </a>
+            {% endif %}
+            <a href="{% url 'user_reviews' %}" class="list-group-item list-group-item-action">
+                Your Reviews
+            </a>
+            <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
+                Email Management
+            </a>
+            <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action">
+                Change Password
+            </a>
+        </div>
+        <br />
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <h5 class="card-header">{% trans "Your Activities" %}</h5>
+            <div class="card-body">
+                {% if activities %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Activity</th>
+                                <th scope="col">Submitted Date</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for activity in activities %}
+                            <tr>
+                                <td scope="row">
+                                    {% if activity.status == 'unapproved' %}
+                                    <i class="fas fa-hourglass-half" alt="Awaiting Approval" title="Awaiting Approval"></i>
+                                    {% endif %}
+                                </td>
+                                <td><a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a></td>
+                                <td>{{ activity.created|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Activity Actions">
+                                        <a class="btn btn-secondary" href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}">
+                                            <i class="fas fa-pencil-alt" alt="Edit Activity" title="Edit Activity"></i>
+                                        </a>
+                                        <a class="btn btn-secondary" href="{% url 'activities:delete' activity.region.slug activity.slug activity.pk %}">
+                                            <i class="fas fa-trash" alt="Delete Activity" title="Delete Activity"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p>You have not created an activity.</p>
+                {% endif %}
+            </div>
+        </div><br />
+    </div>
+</div>
+{% endblock %}
