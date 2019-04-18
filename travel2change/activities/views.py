@@ -11,22 +11,22 @@ from django.views.generic import (
     DetailView,
     FormView,
     UpdateView,
-    DeleteView
+    DeleteView,
+    ListView,
 )
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapprovedMixin
-from activities.models import Activity, ActivityPhoto, Region, Category, Tag
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
-
-from django.views.generic import ListView
+from .forms import PhotoUploadForm
+from .mixins import CanViewUnapprovedMixin
+from .models import Activity, ActivityPhoto, Region, Category, Tag
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
+
 
 class ActivityBrowseView(ListView):
     model = Activity
@@ -90,6 +90,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
+        context['fh_link'] = self.create_fareharbor_widget()
         return context
     
     # process review form
@@ -121,6 +122,16 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
             return Review.objects.filter(user=self.request.user, activity=self.object).count() < 1
         else:
             return False
+    
+    def create_fareharbor_widget(self):
+        fh_string = '<script src="https://fareharbor.com/embeds/script/calendar/%s/items/%s/?fallback=simple&flow=18919"></script>'
+        if self.object.is_free:
+            if self.object.fh_item_id:
+                return fh_string % ('travel2change', self.object.fh_item_id)
+        else:
+            if self.object.fh_item_id and self.object.host.fh_username:
+                return fh_string % (self.object.host.fh_username, self.object.fh_item_id)
+        return ''
 
 
 class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -158,7 +169,6 @@ class ActivityUpdateView(LoginRequiredMixin, UpdateView):
         'address',
         'latitude',
         'longitude',
-        'fh_item_id',
     )
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."

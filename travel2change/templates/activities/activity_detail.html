@@ -23,16 +23,16 @@
 {% render_model_block activity %}
 <div class="row">
     <article class="single-activity col-sm-8">
-        <div class="jumbotron">
+        <section class="jumbotron">
             <h1 class="display-4">
                 {{ activity.title }}
             </h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
-        </div>
+        </section>
         <div class="card">
             <div class="card-body">
-                <div class="clearfix">
+                <section class="clearfix">
                     {% if user.is_authenticated %}
                     <button type="button" class="btn favorite-button" data-url="{% url 'favorites:set' activity.pk %}" data-action="favorite" title="Favorite">
                         <span class="spinner-border" role="status" aria-hidden="true" style="display:none;"></span>
@@ -52,27 +52,29 @@
                             {% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url "Twitter" %}
                         </div>
                     </div>
-                </div>
-                <div class="description block"><p>{{ activity.description }}</p></div>
-                <div class="highlights block">
+                </section>
+                <section class="description block">
+                    <p>{{ activity.description }}</p>
+                </section>
+                <section class="highlights block">
                     <h2>Highlights</h2>
                     <ul>
                         {% for highlight in activity.highlights_as_list %}
                             <li>{{ highlight }}</li>
                         {% endfor %}
                     </ul>
-                </div>
+                </section>
                 {% if activity.requirements %}
-                <div class="requirements block">
+                <section class="requirements block">
                     <h2>Requirements</h2>
                     <ul>
                     {% for requirement in activity.requirements_as_list %}
                         <li>{{ requirement }}</li>
                     {% endfor %}
                     </ul>
-                </div>
+                </section>
                 {% endif %}
-                <div class="location block">
+                <section class="location block">
                     <h2>Address</h2>
                     <p>{{ activity.address }}</p>
                     <div id="map"></div>
@@ -98,55 +100,43 @@
                     <script async defer
                     src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&callback=initMap">
                     </script>
-                </div>
+                </section>
             </div>
         </div>
         <br />
         {% if can_review %}
-        <h2>Add Review</h2>
-        <div class="card">
-            <div class="card-body">
-                <form method="POST" action="." enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Submit Review</button>
-                </form>
+        <section>
+            <h2>Add Review</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="." enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
             </div>
-        </div>
-        <br />
-        {% endif %}
-        <h2>{{ activity.title }} Reviews - {{ activity.average_rating }} Stars</h2><br />
-        {% include 'reviews/partials/review_detail_card.html' with reviews=reviews %}
+            <br />
+            {% endif %}
+            <h2>{{ activity.title }} Reviews - {{ activity.average_rating }} Stars</h2><br />
+            {% include 'reviews/partials/review_detail_card.html' with reviews=reviews %}
+        </section>
     </article>
     <aside class="col-sm-4">
         {% if is_host %}
-        <div class="edit-profile">
+        <section class="edit-profile">
             <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="btn btn-primary btn-lg btn-block">Edit</a>
-        </div>
+        </section>
         {% endif %}
         {% if activity.fh_item_id %}
-        <div class="card fareharbor-widget">
+        <section class="card fareharbor-widget">
             <div class="card-body">
-                {% if activity.is_free %}
-                    {% if activity.fh_item_id %}
-                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
-                        <script src="https://fareharbor.com/embeds/script/calendar/travel2change/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
-                    {% else %}
-                        <p class="card-text">Please insert FareHarbor Item ID</p>
-                    {% endif %}
-                {% else %}
-                    {% if activity.fh_item_id and activity.host.fh_username %}
-                        <!-- FareHarbor calendar of item #{{ activity.fh_item_id }} -->
-                        <script src="https://fareharbor.com/embeds/script/calendar/{{ activity.host.fh_username }}/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
-                    {% else %}
-                        <p class="card-text">Please insert FareHarbor Item ID and/or FareHarbor Username</p>
-                    {% endif %}
-                {% endif %}
+                {{ fh_link|safe }}
             </div>
-        </div>
+        </section>
         {% endif %}
         {% if photos %}
-        <div id="photo-gallery-{{ activity.pk }}" class="photo-gallery carousel slide" data-ride="carousel">
+        <section id="photo-gallery-{{ activity.pk }}" class="photo-gallery carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 {% for photo in photos %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -162,11 +152,11 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
-        </div>
+        </section>
         {% endif %}
         {% if request.user.is_staff or request.user.is_superuser %}
             {% if activity.status == 'unapproved' %}
-            <div class="row">
+            <section class="row">
                 <div class="col-sm-6">
                     <a class="btn btn-success btn-block" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
                         Approve
@@ -177,7 +167,7 @@
                         Disapprove
                     </a>
                 </div>
-            </div>
+            </section>
             {% endif %}
         {% endif %}
     </aside>
@@ -189,6 +179,7 @@
 <script src="{% static 'js/star-ratings/star-rating.js' %}" type="text/javascript"></script>
 <script src="{% static 'css/star-ratings/krajee-fas/theme.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/star-ratings/star-rating-custom.js' %}" type="text/javascript"></script>
+<script src="https://fareharbor.com/embeds/api/v1/?autolightframe=yes"></script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 <script>
 $('[data-fancybox="reviewphotos"]').fancybox({
