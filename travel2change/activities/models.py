@@ -2,7 +2,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Avg
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
@@ -27,6 +27,13 @@ def get_photo_image_filename(instance, filename):
     ext = filename.split('.')[-1]
     return 'uploads/activities/photos/{0}.{1}'.format(uuid.uuid4().hex, ext)
 
+def get_region_image_filename(instance, filename):
+    ext = filename.split('.')[-1]
+    if instance.pk:
+        return 'uploads/regions/region_{0}.{1}'.format(instance.pk, ext)
+    else:
+        return 'uploads/regions/{0}.{1}'.format(uuid.uuid4().hex, ext)
+
 
 class ActivityQuerySet(models.QuerySet):
     """ Activity Queries """
@@ -49,6 +56,11 @@ class ActivityQuerySet(models.QuerySet):
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
     slug = models.SlugField(max_length=20, unique=True)
+    image = models.ImageField(
+        upload_to=get_region_image_filename,
+        blank=True,
+        help_text=_('Image to display in region widget.')
+    )
 
     objects = models.Manager()
 
@@ -57,6 +69,13 @@ class Region(models.Model):
     
     def __str__(self):
         return self.name
+    
+    @property
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        else:
+            return '/static/img/regions/default-region.jpg'
 
 
 class Tag(models.Model):
@@ -253,6 +272,11 @@ class ActivityPhoto(models.Model):
 
 
 class LatestActivities(CMSPlugin):
+    per_row = models.IntegerField(
+        verbose_name=_('Number of Items per Row'),
+        default=3,
+        validators=[MinValueValidator(1), MaxValueValidator(4)]
+    )
     latest_activities = models.IntegerField(
         default=5,
         help_text=_('The maximum number of latest activities to display')
@@ -261,12 +285,20 @@ class LatestActivities(CMSPlugin):
     def get_activities(self, request):
         queryset = Activity.approved.all()
         return queryset[:self.latest_activities]
+    
+    def get_per_rows(self, request):
+        return self.per_row
 
     def __str__(self):
         return ugettext('Latest activities: {0}'.format(self.latest_activities))
 
 
 class FeaturedActivities(CMSPlugin):
+    per_row = models.IntegerField(
+        verbose_name=_('Number of Items per Row'),
+        default=3,
+        validators=[MinValueValidator(1), MaxValueValidator(4)]
+    )
     number_of_activities = models.IntegerField(
         default=5,
         help_text=_('The maximum number of featured activities to display')
@@ -276,5 +308,29 @@ class FeaturedActivities(CMSPlugin):
         queryset = Activity.approved.filter(is_featured=True)
         return queryset[:self.number_of_activities]
     
+    def get_per_rows(self, request):
+        return self.per_row
+    
     def __str__(self):
         return ugettext('Featured activities: {0}'.format(self.number_of_activities))
+
+
+class RegionsPluginModel(CMSPlugin):
+    per_row = models.IntegerField(
+        verbose_name=_('Number of Items per Row'),
+        default=3,
+        validators=[MinValueValidator(1), MaxValueValidator(4)]
+    )
+    regions = models.ManyToManyField(Region)
+
+    def copy_relations(self, old_instance):
+        self.regions.set(old_instance.regions.all())
+
+    def get_regions(self, request):
+        return self.regions.all()
+    
+    def get_per_rows(self, request):
+        return self.per_row
+
+    def __str__(self):
+        return ugettext('Regions Widget')
