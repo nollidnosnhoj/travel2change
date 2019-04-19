@@ -8,8 +8,8 @@
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
-            <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action">Edit Activity</a>
-            <a href="{% url 'activities:photos' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action active">Edit Images</a>
+            <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action">Edit Activity</a>
+            <a href="{% url 'activities:photos' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action active">Edit Images</a>
             <a href="{{ activity.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
         <br />

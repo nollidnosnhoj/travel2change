@@ -6,7 +6,7 @@ class CanViewUnapprovedMixin(object):
     """ If activity is not approved, users that aren't staff
         or owner of the activity will be blocked """
     def dispatch(self, request, *args, **kwargs):
-        activity = get_object_or_404(Activity, pk=kwargs['pk'])
+        activity = get_object_or_404(Activity, slug=kwargs['slug'])
         if activity.status == Activity.STATUS.unapproved:
             if request.user != activity.host.user and (not request.user.is_staff and not request.user.is_superuser):
                 raise Http404

@@ -22,10 +22,7 @@ from users.models import Host
 from .forms import PhotoUploadForm
 from .mixins import CanViewUnapprovedMixin
 from .models import Activity, ActivityPhoto, Region, Category, Tag
-from .utils import (
-    check_if_user_can_review,
-    construct_fareharbor_widget,
-)
+from .utils import check_if_user_can_review
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
@@ -90,7 +87,6 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
-        context['fh_link'] = construct_fareharbor_widget(self.object)
         return context
     
     # process review form
@@ -114,7 +110,6 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         return reverse('activities:detail', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
 
 
@@ -123,7 +118,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Activity successfully deleted."
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -134,7 +129,6 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
 
 
@@ -158,7 +152,7 @@ class ActivityUpdateView(LoginRequiredMixin, UpdateView):
     success_message = "Activity successfully updated."
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
@@ -171,7 +165,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         """ Get the current activity """
-        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        self.activity = get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
         return super().dispatch(request, *args, **kwargs)
 
     # Upload the photos for the activities
@@ -202,7 +196,6 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
         return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
     
     def get_context_data(self, **kwargs):

@@ -239,7 +239,6 @@ class Activity(models.Model):
         return reverse('activities:detail', kwargs={
             'region': self.region.slug,
             'slug': self.slug,
-            'pk': self.pk
         })
 
     def requirements_as_list(self):

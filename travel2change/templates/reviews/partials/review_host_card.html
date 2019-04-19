@@ -16,7 +16,7 @@
             <div class="media-body">
                 <h5 class="card-title">
                     Activity: <a
-                        href="{% url 'activities:detail' review.activity.region.slug review.activity.slug review.activity.pk %}"
+                        href="{{ review.activity.get_absolute_url }}"
                         alt="{{ review.activity.title }}">
                         {{ review.activity.title }}
                     </a>
