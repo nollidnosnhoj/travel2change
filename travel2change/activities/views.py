@@ -18,11 +18,14 @@ from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
-from reviews.models import Review
 from users.models import Host
 from .forms import PhotoUploadForm
 from .mixins import CanViewUnapprovedMixin
 from .models import Activity, ActivityPhoto, Region, Category, Tag
+from .utils import (
+    check_if_user_can_review,
+    construct_fareharbor_widget,
+)
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
@@ -51,9 +54,6 @@ class ActivityBrowseView(ListView):
         if is_valid_queryparam(tags) and tags:
             for tag in tags:
                 qs = qs.filter(tags__slug=tag).distinct()
-            """
-            qs = qs.filter(tags__slug__in=tags).distinct()
-            """
 
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
@@ -79,18 +79,18 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         # Get activity object
         self.object = self.get_object()
         self.is_host = request.user == self.object.host.user
-        self.can_review = self.check_if_user_can_review()
+        self.can_review = check_if_user_can_review(request, self.object)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
-        context['reviews'] = Review.objects.filter(activity=self.object).order_by("-created")
+        context['photos'] = self.object.photos.all()
+        context['reviews'] = self.object.reviews.all().order_by("-created")
         context['can_review'] = self.can_review
         context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
-        context['fh_link'] = self.create_fareharbor_widget()
+        context['fh_link'] = construct_fareharbor_widget(self.object)
         return context
     
     # process review form
@@ -116,22 +116,6 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
             'slug': self.kwargs['slug'],
             'pk': self.kwargs['pk']
         })
-    
-    def check_if_user_can_review(self):
-        if self.object.status == 'approved' and not self.is_host:
-            return Review.objects.filter(user=self.request.user, activity=self.object).count() < 1
-        else:
-            return False
-    
-    def create_fareharbor_widget(self):
-        fh_string = '<script src="https://fareharbor.com/embeds/script/calendar/%s/items/%s/?fallback=simple&flow=18919"></script>'
-        if self.object.is_free:
-            if self.object.fh_item_id:
-                return fh_string % ('travel2change', self.object.fh_item_id)
-        else:
-            if self.object.fh_item_id and self.object.host.fh_username:
-                return fh_string % (self.object.host.fh_username, self.object.fh_item_id)
-        return ''
 
 
 class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -224,7 +208,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['activity'] = self.activity
-        context['photos'] = ActivityPhoto.objects.filter(activity=self.activity)
+        context['photos'] = self.activity.photos.all()
         context['max_photos'] = self.max_photos
         return context
 
