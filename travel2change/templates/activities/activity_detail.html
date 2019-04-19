@@ -22,7 +22,7 @@
 {% endif %}
 {% render_model_block activity %}
 <div class="row">
-    <article class="single-activity col-sm-8">
+    <article class="single-activity col-lg-8">
         <section class="jumbotron">
             <h1 class="display-4">{{ activity.title }}</h1>
             <hr class="my-4">
@@ -118,7 +118,7 @@
             {% include 'reviews/partials/review_detail_card.html' with reviews=reviews %}
         </section>
     </article>
-    <aside class="col-sm-4">
+    <aside class="col-lg-4">
         {% if is_host %}
         <section class="edit-profile">
             <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="btn btn-primary btn-lg btn-block">Edit</a>
@@ -127,7 +127,7 @@
         {% if activity.fh_item_id %}
         <section class="card fareharbor-widget">
             <div class="card-body">
-                <script src="https://fareharbor.com/embeds/script/calendar/{{ activity.host.fh_username }}/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
+                <script src="https://fareharbor.com/embeds/script/calendar/{{ activity.host.get_fh_username }}/items/{{ activity.fh_item_id }}/?fallback=simple&flow=18919"></script>
             </div>
         </section>
         {% endif %}
@@ -136,7 +136,7 @@
         <section class="photo-gallery">
             <div class="row">
                 {% for photo in photos %}
-                <div class="col-4 col-md-4">
+                <div class="col-4 col-lg-4 photo">
                     <a data-fancybox="activityphotos" href="{{ photo.file.url }}">
                         <img    src="{{ photo.file.url }}" 
                                 alt="{{ activity.title }} - Photo #{{ forloop.counter1 }}"
