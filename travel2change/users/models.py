@@ -85,7 +85,8 @@ class Host(models.Model):
     fh_username     = models.CharField(
                         _('fareharbor username'),
                         max_length=60,
-                        blank=True,
+                        blank=False,
+                        default=_('travel2change'),
                         help_text=_('Enter your FareHarbor username. This is required if you are hosting paid activities')
                     )
 
