@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -17,18 +16,27 @@ class FavoritesListView(LoginRequiredMixin, ListView):
         return favorites.select_related('activity').all().order_by('-created')
 
 
-class SetFavoritesView(LoginRequiredMixin, View):
+class SetFavoritesView(View):
     model = Favorite
-
+    
     def post(self, request, pk):
-        user = get_user(request)
-        activity = get_object_or_404(Activity, pk=pk)
-        favorite, created = self.model.objects.get_or_create(
-            user=user, activity=activity,)
-        if not created:
-            favorite.delete()
-        added = '#d63031'
-        removed = '#b2bec3'
-        return JsonResponse({
-            'result': added if created else removed
-        })
+        if request.user.is_authenticated:
+            activity = get_object_or_404(Activity, pk=pk)
+            favorite, created = self.model.objects.get_or_create(
+                user=request.user, activity=activity,
+            )
+            if not created:
+                favorite.delete()
+            added = '#d63031'
+            removed = '#b2bec3'
+            response = JsonResponse({
+                'result': added if created else removed
+            })
+            response.status_code = 200
+            return response
+        else:
+            response = JsonResponse({
+                'error': 'You must login to favorite activities.'
+            })
+            response.status_code = 404
+            return response

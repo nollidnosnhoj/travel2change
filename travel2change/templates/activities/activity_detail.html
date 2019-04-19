@@ -24,16 +24,13 @@
 <div class="row">
     <article class="single-activity col-sm-8">
         <section class="jumbotron">
-            <h1 class="display-4">
-                {{ activity.title }}
-            </h1>
+            <h1 class="display-4">{{ activity.title }}</h1>
             <hr class="my-4">
             <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
         </section>
         <div class="card">
             <div class="card-body">
                 <section class="clearfix">
-                    {% if user.is_authenticated %}
                     <button type="button" class="btn favorite-button" data-url="{% url 'favorites:set' activity.pk %}" data-action="favorite" title="Favorite">
                         <span class="spinner-border" role="status" aria-hidden="true" style="display:none;"></span>
                         {% if favorited %}
@@ -42,8 +39,7 @@
                         <i class="fas fa-heart" style="color: #b2bec3; font-size: 24px;"></i>
                         {% endif %}
                     </button>
-                    {% endif %}
-                    <div class="social_share dropdown float-right">
+                    <section class="social_share dropdown float-right">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">Share
                         </button>
@@ -51,7 +47,7 @@
                             {% post_to_facebook activity.get_absolute_url "Facebook" %}
                             {% post_to_twitter "Check this out: {{ activity.title }}" activity.get_absolute_url "Twitter" %}
                         </div>
-                    </div>
+                    </section>
                 </section>
                 <section class="description block">
                     <p>{{ activity.description }}</p>
@@ -198,6 +194,13 @@ $('[data-action="favorite"]').click(function() {
             $('.favorite-button i').show();
             $('.favorite-button i').css('color', data.result);
             current.prop("disabled", true);
+        },
+        error: function(xhr, desc, err) {
+            if (xhr.status == 404) {
+                alert('Please login to favorite activities.');
+            }
+            $('.spinner-border').hide();
+            $('.favorite-button i').show();
         }
     });
 });
