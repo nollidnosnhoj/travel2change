@@ -94,6 +94,7 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'django_social_share',
     'formtools',
+    'pinax.points',
 )
 LOCAL_APPS = (
     'users',
