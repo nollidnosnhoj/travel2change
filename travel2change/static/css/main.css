@@ -14,10 +14,64 @@
     height: 100vh;
 }
 
+/* DJANGO MESSAGES */
+
 .messages {
+    padding-right: 0rem!important; /* override bootstrap's alert-dismissible */
+    margin-bottom: 0rem!important; /* override bootstrap's alert */
+}
+.messages .container {
+    padding: 0rem 1rem !important;
+}
+.messages .close {
+    position: static !important;
+    padding: 0 !important;
+}
+#activity_button:hover {
+    text-decoration: none;
+}
+
+/* ACTIVITY CARD */
+
+.activity-card {
+    height: 100% !important;
+}
+a .activity-card {
+    color: #212529;
+}
+.activity-card h4 {
+    font-size: 1.2rem;
+}
+.activity-card .card-text {
+    font-size: 0.9rem;
+}
+.activity-card .card-img-top {
+    height: 20vh;
+    object-fit: cover;
+}
+
+/* REGION CARD */
+
+.region-card {
+    background-position: center;
+    background-size: cover;
+    min-height: 30vh;
+    position: relative;
+    margin-bottom: 1rem !important;
+}
+
+.region-card .layer {
+    background: rgba(0,0,0,0.5);
+    background-size: cover;
+    min-height: 30vh;
+}
+
+.region-card .region-name {
     position: absolute;
-    left: 0; right: 0;
-    margin-right: auto; margin-left: auto;
-    margin-top: 20px;
-    z-index: 999 !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    text-align:center;
+    color: #fff;
 }

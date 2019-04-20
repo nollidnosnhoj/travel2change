@@ -29,13 +29,6 @@ class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
     context_object_name = "reviews"
     template_name = "users/user_reviews.html"
 
-    """
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['user'] = self.request.user
-        return context
-    """
-
     def get_queryset(self):
         return Review.objects.filter(user=self.request.user)
 

@@ -86,6 +86,7 @@ class Host(models.Model):
                         _('fareharbor username'),
                         max_length=60,
                         blank=True,
+                        default=_('travel2change'),
                         help_text=_('Enter your FareHarbor username. This is required if you are hosting paid activities')
                     )
 
@@ -100,6 +101,12 @@ class Host(models.Model):
         """ If custom slug is defined, use it as slug.
             If not, use the host's name """
         return self.custom_slug if self.custom_slug else self.name
+    
+    @property
+    def get_fh_username(self):
+        if self.fh_username is None or self.fh_username == "":
+            return _('travel2change')
+        return self.fh_username
 
     def __str__(self):
         return self.user.email

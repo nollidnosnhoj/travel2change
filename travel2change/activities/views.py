@@ -11,22 +11,22 @@ from django.views.generic import (
     DetailView,
     FormView,
     UpdateView,
-    DeleteView
+    DeleteView,
+    ListView,
 )
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
-from activities.forms import PhotoUploadForm
-from activities.mixins import CanViewUnapprovedMixin
-from activities.models import Activity, ActivityPhoto, Region, Category, Tag
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
-
-from django.views.generic import ListView
+from .forms import PhotoUploadForm
+from .models import Activity, ActivityPhoto, Region, Category, Tag
+from .utils import check_if_user_can_review
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
+
 
 class ActivityBrowseView(ListView):
     model = Activity
@@ -61,9 +61,6 @@ class ActivityBrowseView(ListView):
         if is_valid_queryparam(tags) and tags:
             for tag in tags:
                 qs = qs.filter(tags__slug=tag).distinct()
-            """
-            qs = qs.filter(tags__slug__in=tags).distinct()
-            """
 
         if is_valid_queryparam(title):
             qs = qs.filter(title__icontains=title)
@@ -77,32 +74,39 @@ class ActivityBrowseView(ListView):
         context['tags'] = Tag.objects.all()
         return context
 
-        
-class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
+class ActivityDetailView(FormMixin, DetailView):
     """ View for showing the details of the activity """
-
+ 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
     form_class = ReviewForm
-
+ 
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
-        self.is_host = request.user == self.object.host.user
-        self.can_review = self.check_if_user_can_review()
+        self.can_review = check_if_user_can_review(request, self.object)
         return super().dispatch(request, *args, **kwargs)
-
+ 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['photos'] = ActivityPhoto.objects.filter(activity=self.object)
-        context['reviews'] = Review.objects.filter(activity=self.object).order_by("-created")
+        context['photos'] = ActivityPhoto.objects.select_related('activity').filter(activity=self.object)
+        context['reviews'] = Review.objects.select_related('activity').filter(activity=self.object).order_by('-created')
         context['can_review'] = self.can_review
-        context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
-    
+   
+    def get_object(self):
+        try:
+            activity = self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
+            if activity.status == Activity.STATUS.unapproved:
+                if self.request.user != activity.host.user and (not self.request.user.is_staff and not self.request.user.is_superuser):
+                    raise Http404('This activity has not been approved yet.')
+        except Activity.DoesNotExist:
+            raise Http404("This activity does not match the given query.")
+        return activity
+   
     # process review form
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -110,7 +114,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-    
+   
     # save review after form valid
     def form_valid(self, form):
         new_review = form.save(commit=False)
@@ -118,20 +122,13 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         new_review.activity = self.object
         new_review.save()
         return super().form_valid(form)
-    
+   
     def get_success_url(self):
         """ Redirect to activity's photos page after successful upload """
         return reverse('activities:detail', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
-    
-    def check_if_user_can_review(self):
-        if self.object.status == 'approved' and not self.is_host:
-            return Review.objects.filter(user=self.request.user, activity=self.object).count() < 1
-        else:
-            return False
 
 
 class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -139,7 +136,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Activity successfully deleted."
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -150,7 +147,6 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
 
 
@@ -169,13 +165,12 @@ class ActivityUpdateView(LoginRequiredMixin, UpdateView):
         'address',
         'latitude',
         'longitude',
-        'fh_item_id',
     )
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
@@ -188,7 +183,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         """ Get the current activity """
-        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
+        self.activity = get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
         return super().dispatch(request, *args, **kwargs)
 
     # Upload the photos for the activities
@@ -212,19 +207,19 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
             messages.success(self.request, "Photo(s) successfully uploaded.")
             return self.form_valid(form)
         else:
+            messages.error(self.request, "You must only upload images (jpg|gif|png).")
             return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse('activities:photos', kwargs={
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
-            'pk': self.kwargs['pk']
         })
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['activity'] = self.activity
-        context['photos'] = ActivityPhoto.objects.filter(activity=self.activity)
+        context['photos'] = ActivityPhoto.objects.select_related('activity').filter(activity=self.activity)
         context['max_photos'] = self.max_photos
         return context
 

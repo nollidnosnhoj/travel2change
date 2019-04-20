@@ -1,5 +1,4 @@
 {% load humanize %}
-{% for review in reviews %}
 <div class="review-card card">
     <div class="card-header clearfix">
         <div class="float-left">
@@ -17,7 +16,7 @@
             <div class="media-body">
                 <h5 class="card-title">
                     Activity: <a
-                        href="{% url 'activities:detail' review.activity.region.slug review.activity.slug review.activity.pk %}"
+                        href="{{ review.activity.get_absolute_url }}"
                         alt="{{ review.activity.title }}">
                         {{ review.activity.title }}
                     </a>
@@ -44,4 +43,3 @@
         </div>
     </div>
 </div>
-{% endfor %}

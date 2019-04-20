@@ -32,45 +32,49 @@
         <div class="card">
             <h5 class="card-header">{% trans "Your Activities" %}</h5>
             <div class="card-body">
-                {% if activities %}
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">Activity</th>
-                                <th scope="col">Submitted Date</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for activity in activities %}
-                            <tr>
-                                <td scope="row">
-                                    {% if activity.status == 'unapproved' %}
-                                    <i class="fas fa-hourglass-half" alt="Awaiting Approval" title="Awaiting Approval"></i>
-                                    {% endif %}
-                                </td>
-                                <td><a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a></td>
-                                <td>{{ activity.created|date:"M d, Y" }}</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="Activity Actions">
-                                        <a class="btn btn-secondary" href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}">
-                                            <i class="fas fa-pencil-alt" alt="Edit Activity" title="Edit Activity"></i>
-                                        </a>
-                                        <a class="btn btn-secondary" href="{% url 'activities:delete' activity.region.slug activity.slug activity.pk %}">
-                                            <i class="fas fa-trash" alt="Delete Activity" title="Delete Activity"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                {% for activity in activities %}
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <h6>
+                            {% if activity.status == 'unapproved' %}
+                            <span   class="badge badge-warning mr-1"
+                                    data-toggle="tooltip"
+                                    data-placement="left"
+                                    title="Awaiting Approval"
+                                    alt="Awaiting Approval"
+                            >
+                                <i class="fas fa-pause-circle"></i>
+                            </span>
+                            {% endif %}
+                            <a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-4 text-muted">{{ activity.created|date:"M d, Y" }}</div>
+                    <div class="col-md-2">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Activity Actions">
+                            <a  class="btn btn-secondary" 
+                                href="{% url 'activities:update' activity.region.slug activity.slug %}"
+                                data-toggle="tooltip"
+                                alt="Edit Activity"
+                                title="Edit Activity"
+                            >
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a  class="btn btn-secondary"
+                                href="{% url 'activities:delete' activity.region.slug activity.slug %}"
+                                data-toggle="tooltip"
+                                alt="Delete Activity"
+                                title="Delete Activity"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                {% else %}
+                <hr>
+                {% empty %}
                 <p>You have not created an activity.</p>
-                {% endif %}
+                {% endfor %}
             </div>
         </div><br />
     </div>

@@ -34,12 +34,11 @@
         <br />
     </div>
     <div class="col-lg-8">
-        {% if reviews %}
         {% for review in reviews %}
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">
-                    Activity: <a href="{% url 'activities:detail' review.activity.region.slug review.activity.slug review.activity.pk %}"
+                    Activity: <a href="{{ review.activity.get_absolute_url }}"
                         alt="{{ review.activity.title }}">
                         {{ review.activity.title }}
                     </a>
@@ -67,10 +66,9 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
-        {% else %}
+        {% empty %}
         <p>You have not reviewed an activity. Start your impact and book for an activity!</p>
-        {% endif %}
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}
