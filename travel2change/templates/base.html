@@ -20,8 +20,20 @@
             crossorigin="anonymous"
         >
         <link rel="stylesheet" href="{% static 'css/bootstrap_custom.css' %}">
+        <link href='{% static "css/modern-business.css" %}' rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         {% endaddtoblock %}
+        <style>
+            .bg-transparent {
+              background-color: rgba(0, 0, 0, 0.5) !important;
+            }
+            .navbar-nav .nav-link {
+              padding-right: 5px;
+              padding-left: 5px;
+            }
+        
+        </style>
     </head>
     <body>
         {% cms_toolbar %}
@@ -35,6 +47,12 @@
                 {% endblock content %}
             </main>
         </div>
+        <footer class="py-5 bg-light">
+            <div class="container">
+                <p class="m-0 text-center text-black">Copyright &copy; travel2change 2019</p>
+            </div>
+            <!-- /.container -->
+        </footer>
         {% render_block "js" %}
         {% block scripts %}{% endblock scripts %}
         {% addtoblock "js" %}

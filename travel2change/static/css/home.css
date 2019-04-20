@@ -1,0 +1,113 @@
+.input-group.md-form.form-sm.form-2 input.lime-border {
+    border: 1px solid #cddc39;
+}
+
+.wrapper {
+    width: 100%;
+    height: auto;
+    min-height: 75vh;
+    background-image: url('img/image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    text-align: center;
+}
+.wrapper::after {
+    content:"";
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 75vh;
+    position:absolute;
+    background-color:rgba(0,0,0,0.5);
+    z-index:1;
+}
+.wrapper > * {
+    position:relative;
+    z-index:2;
+}
+
+.wrapper .heading {
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 48px;
+    
+}
+
+.wrapper .heading2 {
+    color: #fff;
+    font-family: "Hanken", sans-serif;
+}
+
+form.searchWrapper {
+    margin: 2rem auto;
+    width: 80%;
+}
+@media (max-width: 576px) {
+    .wrapper .heading {
+        font-size: 36px;
+    }
+    .wrapper .heading2 {
+        font-size: 24px;
+    }
+    form.searchWrapper {
+        width: 95%;
+    }
+}
+
+form.searchWrapper input[type=text] {
+    padding: 15px;
+    font-size: 17px;
+    border: 1px solid grey;
+    width: 75%;
+    background: #f1f1f1;
+}
+
+form.searchWrapper button {
+    position: relative;
+    float: right;
+    width: 25%;
+    padding: 15px;
+    background: #1ea5be;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    /* Prevent double borders */
+    cursor: pointer;
+}
+
+form.searchWrapper button:hover {
+    background: #0b7dda;
+}
+
+/* Clear floats */
+form.searchWrapper::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.image-container {
+    position: relative;
+    width: 239px;
+    height: 289px;
+    overflow: hidden;
+}
+
+.image-container .after {
+    position: absolute;
+    display: block;
+    background: rgba(0, 0, 0, .3);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding-top: 50%;
+    color: #FFF;
+    font-family: Open Sans;
+    font-size: 24px;
+    font-weight: 300;
+}

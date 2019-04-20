@@ -1,17 +1,35 @@
 {% extends "base.html" %}
-{% load cms_tags %}
-
+{% load cms_tags staticfiles %}
 {% block title %}{% page_attribute "page_title" %}{% endblock title %}
-
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock styles %}
 {% block jumbo %}
-<div class="jumbotron jumbotron-fluid fullvh-height">
-    <div class="container">
-        {% placeholder 'search-box' %}
+<div class="jumbotron2" style="width: 100%">
+    <div class="wrapper d-flex align-items-center">
+        <div class="container">
+            <h1 class="heading">Join Fun & Impactful Activities on Hawaii.</h1>
+            <h3 class="heading2" style="font-family: Open Sans;font-weight: 300">Activities are Free or Discounted.</h3>
+            <form class="searchWrapper" action="{% url 'activities:browse' %}">
+                <div class="form-group">
+                    <input type="text" placeholder="Start searching for activities..." name="q" />
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock jumbo %}
 {% block content %}
+<div class="container2">
+    <div class="jumbotron2">
+        {% placeholder "feature" %}
+    </div>
+    {% placeholder "wumbo" %}
+</div>
+{% placeholder "TAITORU" %}
 <div class="container">
     {% placeholder "content" %}
+    {% placeholder "splashbox" %}
 </div>
 {% endblock content %}
