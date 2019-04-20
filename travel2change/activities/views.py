@@ -18,9 +18,9 @@ from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
+from reviews.models import Review
 from users.models import Host
 from .forms import PhotoUploadForm
-from .mixins import CanViewUnapprovedMixin
 from .models import Activity, ActivityPhoto, Region, Category, Tag
 from .utils import check_if_user_can_review
 
@@ -64,31 +64,39 @@ class ActivityBrowseView(ListView):
         context['tags'] = Tag.objects.all()
         return context
 
-class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
+class ActivityDetailView(FormMixin, DetailView):
     """ View for showing the details of the activity """
-
+ 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
     form_class = ReviewForm
-
+ 
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
-        self.is_host = request.user == self.object.host.user
         self.can_review = check_if_user_can_review(request, self.object)
         return super().dispatch(request, *args, **kwargs)
-
+ 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['photos'] = self.object.photos.all()
-        context['reviews'] = self.object.reviews.all().order_by("-created")
+        context['photos'] = ActivityPhoto.objects.select_related('activity').filter(activity=self.object)
+        context['reviews'] = Review.objects.select_related('activity').filter(activity=self.object).order_by('-created')
         context['can_review'] = self.can_review
-        context['is_host'] = self.is_host
         if self.request.user.is_authenticated:
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
-    
+   
+    def get_object(self):
+        try:
+            activity = self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
+            if activity.status == Activity.STATUS.unapproved:
+                if self.request.user != activity.host.user and (not self.request.user.is_staff and not self.request.user.is_superuser):
+                    raise Http404('This activity has not been approved yet.')
+        except Activity.DoesNotExist:
+            raise Http404("This activity does not match the given query.")
+        return activity
+   
     # process review form
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -96,7 +104,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-    
+   
     # save review after form valid
     def form_valid(self, form):
         new_review = form.save(commit=False)
@@ -104,7 +112,7 @@ class ActivityDetailView(CanViewUnapprovedMixin, FormMixin, DetailView):
         new_review.activity = self.object
         new_review.save()
         return super().form_valid(form)
-    
+   
     def get_success_url(self):
         """ Redirect to activity's photos page after successful upload """
         return reverse('activities:detail', kwargs={

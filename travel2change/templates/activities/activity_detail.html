@@ -119,7 +119,7 @@
         </section>
     </article>
     <aside class="col-lg-4">
-        {% if is_host %}
+        {% if request.user == activity.host.user %}
         <section class="edit-profile">
             <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="btn btn-primary btn-lg btn-block">Edit</a>
         </section>
