@@ -209,7 +209,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['activity'] = self.activity
-        context['photos'] = self.activity.photos.all()
+        context['photos'] = ActivityPhoto.objects.select_related('activity').filter(activity=self.activity)
         context['max_photos'] = self.max_photos
         return context
 
