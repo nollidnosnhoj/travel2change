@@ -304,7 +304,7 @@ class FeaturedActivities(CMSPlugin):
     )
 
     def get_activities(self, request):
-        queryset = Activity.approved.filter(is_featured=True)
+        queryset = Activity.objects.approved().filter(is_featured=True)
         return queryset[:self.number_of_activities]
     
     def get_per_rows(self, request):

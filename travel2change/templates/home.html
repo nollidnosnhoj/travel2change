@@ -22,34 +22,8 @@
 {% endblock jumbo %}
 {% block content %}
 <div class="container2">
-    {% placeholder "feature" %}
-    <div class="jumbotron2 d-flex justify-content-center">
-        <div class="row">
-            <div class="col">
-                <div class="image-container">
-                    <img src="{% static 'img/Oahu.jpg'%}">
-                    <div class="after">Oahu</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="image-container">
-                    <img src="{% static 'img/Maui.jpg'%}">
-                    <div class="after">Maui</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="image-container">
-                    <img src="{% static 'img/Kauai.jpg'%}">
-                    <div class="after">Kauai</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="image-container">
-                    <img src="{% static 'img/IslandOfHawaii.jpg'%}">
-                    <div class="after">Island of Hawaii</div>
-                </div>
-            </div>
-        </div>
+    <div class="jumbotron2">
+        {% placeholder "feature" %}
     </div>
     {% placeholder "wumbo" %}
 </div>
