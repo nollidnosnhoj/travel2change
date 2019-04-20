@@ -16,6 +16,7 @@ from django.views.generic import (
 )
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
+from pinax.points.models import award_points
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
@@ -120,6 +121,9 @@ class ActivityDetailView(FormMixin, DetailView):
         new_review = form.save(commit=False)
         new_review.user = self.request.user
         new_review.activity = self.object
+        if new_review.photo:
+            award_points(new_review.user, 'review_photo')
+        award_points(new_review.user, 'review_create')
         new_review.save()
         return super().form_valid(form)
    
