@@ -1,0 +1,12 @@
+<a href="{{ activity.get_absolute_url }}" id="activity_button">
+    <div class="activity-card card">
+        {% if activity.featured_photo %}
+        <img class="card-img-top" src="{{ activity.featured_photo.url }}" alt="{{ activity.title }}">
+        {% endif %}
+        <div class="card-body">
+            <h4 class="card-title">{{activity.title}}</h4>
+            <p class="card-text">{{activity.host.name}}</p>
+            <p class="card-text">{{activity.region}}</p>
+        </div>
+    </div>
+</a>

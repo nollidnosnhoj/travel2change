@@ -16,7 +16,7 @@ class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
-        return get_object_or_404(Review, pk=self.kwargs.get('pk'), user=self.request.user)
+        return get_object_or_404(Review, slug=self.kwargs['slug'], user=self.request.user)
 
     def get_success_url(self):
         return reverse('user_reviews')

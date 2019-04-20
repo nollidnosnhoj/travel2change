@@ -16,11 +16,10 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
     paginate_by = 10
-    ordering = ['created']
 
     def get_queryset(self):
         # Order Unapproved Activities by Created Time Ascending
-        return self.model.objects.unapproved().all()
+        return self.model.objects.unapproved().all().order_by('created')
 
 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
@@ -35,10 +34,11 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
         instance.status = Activity.STATUS.approved
         send_notification(instance, "Your Activity Was Approved.", "approval")
         instance.save()
-        return redirect('activities:detail',
+        return redirect(
+            'activities:detail',
             region=instance.region.slug,
             slug=instance.slug,
-            pk=instance.pk)
+        )
         return super().form_valid(form)
 
 
@@ -48,7 +48,7 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
     success_url = reverse_lazy("moderations:queue")
 
     def get_object(self):
-        return get_object_or_404(Activity, pk=self.kwargs['pk'])
+        return get_object_or_404(Activity, slug=self.kwargs['slug'])
     
     def delete(self, request, *args, **kwargs):
         # Notify users about disapproval, then delete object

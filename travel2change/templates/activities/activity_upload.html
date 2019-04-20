@@ -8,8 +8,8 @@
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
-            <a href="{% url 'activities:update' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action">Edit Activity</a>
-            <a href="{% url 'activities:photos' activity.region.slug activity.slug activity.pk %}" class="list-group-item list-group-item-action active">Edit Images</a>
+            <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action">Edit Activity</a>
+            <a href="{% url 'activities:photos' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action active">Edit Images</a>
             <a href="{{ activity.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
         <br />
@@ -25,18 +25,22 @@
             Each activity can have up to {{ max_photos }} photos (not including the featured photo)
         </div>
         <h3>Photos</h3>
-        {% for photo in photos %}
-        <div class="row photo-row">
-            <div class="col-sm-8">
-                <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name}}" alt="{{ photo.file.name }}">{{ photo.file.name|truncatechars:30 }}</a>
+        <div class="row">
+            {% for photo in photos %}
+            <div class="photo-img col-6 col-md-4">
+                <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name }}" alt="{{ photo.file.name }}">
+                    <img    src="{{ photo.file.url }}" 
+                            alt="{{ activity.title }} - Photo #{{ forloop.counter1 }}"
+                            class="img-thumbnail"
+                            style="width:25vh;height:25vh;margin:0.5rem 0;"
+                    >
+                </a>
+                <button class="delete_photo btn btn-danger btn-sm" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
             </div>
-            <div class="col-sm-4 delete-photo">
-                <button class="delete_photo btn btn-danger" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
-            </div>
+            {% empty %}
+            <p>You have not uploaded any photos yet.</p>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>You have not uploaded any photos yet.</p>
-        {% endfor %}
     </article>
 </div>
 {% endblock content %}
@@ -44,15 +48,20 @@
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script>
 $(".delete_photo").click(function() {
-    console.log("CLICKED!")
     var button = $(this);
+    console.log(button.data('url'));
     if (confirm("Are you sure you want to delete this photo?")) {
         $.ajax({
-            type: "DELETE",
-            url: $(this).data('url'),
+            type: "POST",
+            url: button.data('url'),
             success: function() {
-                button.parent().parent().fadeOut(1000);
+                button.parent().fadeOut(1000);
             },
+            statusCode: {
+                404: function(xhr) {
+                    alert('Photo cannot be found.');
+                }
+            }
         });
     }
 });
