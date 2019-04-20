@@ -245,8 +245,7 @@ class ActivityCreationView(LoginRequiredMixin, SessionWizardView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.host:
-            raise Http404
+        self.host = get_object_or_404(Host, user=request.user)
         return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
