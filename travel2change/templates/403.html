@@ -5,8 +5,14 @@
 {% block content %}
 	<div class="container">
         <h1>You do not have the permissions to view.</h1>
+        {% if exception %}
+        <p>
+            {{ exception }}
+        </p>
+        {% else %}
         <p>
             There is not reason for you to view this page. 😅
         </p>
+        {% endif %}
 	</div>
 {% endblock content %}
