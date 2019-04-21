@@ -257,6 +257,10 @@ class Activity(models.Model):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
     
+    @property
+    def is_approved(self):
+        return self.status == self.STATUS.approved
+    
     def average_rating(self):
         avg_dict = self.reviews.all().aggregate(Avg('rating'))
         return avg_dict.get('rating__avg')
