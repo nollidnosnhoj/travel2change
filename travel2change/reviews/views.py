@@ -5,6 +5,7 @@ from django.views.generic import DeleteView, UpdateView
 from .forms import ReviewForm
 from .models import Review
 
+
 class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Review
     form_class = ReviewForm
