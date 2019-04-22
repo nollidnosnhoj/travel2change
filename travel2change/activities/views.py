@@ -162,6 +162,10 @@ class ActivityUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Activity cannot be updated. Please check for validation errors.")
+        return super().form_invalid(form)
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
