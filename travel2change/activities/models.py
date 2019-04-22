@@ -260,10 +260,13 @@ class Activity(models.Model):
     @property
     def is_approved(self):
         return self.status == self.STATUS.approved
-    
+
+    @property
     def average_rating(self):
-        avg_dict = self.reviews.all().aggregate(Avg('rating'))
-        return avg_dict.get('rating__avg')
+        avg_rating = self.reviews.all().aggregate(Avg('rating')).get('rating__avg')
+        if avg_rating is None:
+            return 0.00
+        return avg_rating
 
 
 class ActivityPhoto(models.Model):
