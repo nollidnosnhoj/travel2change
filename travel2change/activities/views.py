@@ -28,6 +28,11 @@ from .utils import check_if_user_can_review
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
 
+class UserIsHost(object):
+    def dispatch(self, request, *args, **kwargs):
+        self.host = get_object_or_404(Host, user=request.user)
+        return super().dispatch(request, *args, **kwargs)
+
 
 class ActivityBrowseView(ListView):
     model = Activity
@@ -235,7 +240,7 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, UserIsHost, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",
@@ -247,10 +252,6 @@ class ActivityCreationView(LoginRequiredMixin, SessionWizardView):
         "6": "activities/wizard_templates/featured_photo.html",
         "7": "activities/wizard_templates/confirmation.html",
     }
-
-    def dispatch(self, request, *args, **kwargs):
-        self.host = get_object_or_404(Host, user=request.user)
-        return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """
