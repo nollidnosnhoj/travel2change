@@ -16,11 +16,11 @@ from django.views.generic import (
 )
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import SessionWizardView
-from pinax.points.models import award_points
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
+from points.models import award_points
 from .forms import PhotoUploadForm
 from .models import Activity, ActivityPhoto, Region, Category, Tag
 from .utils import check_if_user_can_review
