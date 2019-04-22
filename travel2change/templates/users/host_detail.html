@@ -76,9 +76,6 @@
             {% empty %}
                 <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
             {% endfor %}
-            <p class="text-center mt-2">
-                <a href="{% url 'host_reviews' host.slug %}">Show More Reviews</a>
-            </p>
         </div>
     </div>
 </article>

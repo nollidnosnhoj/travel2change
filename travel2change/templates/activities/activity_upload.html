@@ -38,7 +38,9 @@
                 <button class="delete_photo btn btn-danger btn-sm" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
             </div>
             {% empty %}
-            <p>You have not uploaded any photos yet.</p>
+            <div class="col">
+                <p>You have not uploaded any photos yet.</p>
+            </div>
             {% endfor %}
         </div>
     </article>
