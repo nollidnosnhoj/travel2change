@@ -1,12 +1,10 @@
-{% extends "base.html" %}
+{% extends "container.html" %}
 
 {% block title %}403 - Permission Denied{% endblock title %}
 
 {% block content %}
-	<div class="container">
-        <h1>403 Forbidden</h1>
-        <p>
-            CSRF verification failed. Request aborted.
-        </p>
-	</div>
+    <h1>403 Forbidden</h1>
+    <p>
+        CSRF verification failed. Request aborted.
+    </p>
 {% endblock content %}

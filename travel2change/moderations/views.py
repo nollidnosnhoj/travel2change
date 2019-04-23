@@ -48,7 +48,7 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
     success_url = reverse_lazy("moderations:queue")
 
     def get_object(self):
-        return get_object_or_404(Activity, slug=self.kwargs['slug'])
+        return get_object_or_404(Activity, pk=self.kwargs['pk'])
     
     def delete(self, request, *args, **kwargs):
         # Notify users about disapproval, then delete object

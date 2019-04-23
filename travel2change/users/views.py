@@ -1,3 +1,4 @@
+from django. contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -19,6 +20,10 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "User Info. unable to update. Please check for validation errors.")
+        return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse('user_update')
@@ -57,6 +62,10 @@ class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Host, user=self.request.user)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Profile unable to update. Please check for validation errors.")
+        return super().form_invalid(form)
     
     def get_success_url(self):
         return reverse('host_detail', kwargs={'slug': self.object.slug})

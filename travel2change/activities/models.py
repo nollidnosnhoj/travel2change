@@ -222,9 +222,15 @@ class Activity(models.Model):
     # Time when activity is modified
     modified        = models.DateTimeField(auto_now=True)
     # Boolean field to check if activity is featured
-    is_featured     = models.IntegerField(blank=True, default=0, verbose_name=_("is featured"))
+    is_featured     = models.PositiveIntegerField(
+                        blank=False,
+                        default=0,
+                        verbose_name=_("featured tier"),
+                        validators=[MaxValueValidator(5)],
+                        help_text=_('Each featured tier will determine if the activity will be featured in certain areas on the website.')
+                    )
     # Number of reviews for activity
-    review_count    = models.IntegerField(blank=True, default=0, verbose_name=_("review count"))
+    review_count    = models.IntegerField(blank=False, default=0, verbose_name=_("review count"))
 
     objects         = ActivityQuerySet.as_manager()
 
@@ -257,9 +263,16 @@ class Activity(models.Model):
         # Checks if the activity is free or not
         return self.price == 0.00 or self.price is None
     
+    @property
+    def is_approved(self):
+        return self.status == self.STATUS.approved
+
+    @property
     def average_rating(self):
-        avg_dict = self.reviews.all().aggregate(Avg('rating'))
-        return avg_dict.get('rating__avg')
+        avg_rating = self.reviews.all().aggregate(Avg('rating')).get('rating__avg')
+        if avg_rating is None:
+            return 0.00
+        return avg_rating
 
 
 class ActivityPhoto(models.Model):
@@ -274,11 +287,12 @@ class LatestActivities(CMSPlugin):
     per_row = models.IntegerField(
         verbose_name=_('Number of Items per Row'),
         default=3,
-        validators=[MinValueValidator(1), MaxValueValidator(4)]
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
+        help_text=_('Number of activities per row.')
     )
     latest_activities = models.IntegerField(
         default=5,
-        help_text=_('The maximum number of latest activities to display')
+        help_text=_('The maximum number of latest activities to display. Insert "0" to show all')
     )
 
     def get_activities(self, request):
@@ -296,15 +310,25 @@ class FeaturedActivities(CMSPlugin):
     per_row = models.IntegerField(
         verbose_name=_('Number of Items per Row'),
         default=3,
-        validators=[MinValueValidator(1), MaxValueValidator(4)]
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
+        help_text=_('Number of activities per row.')
     )
+
     number_of_activities = models.IntegerField(
         default=5,
-        help_text=_('The maximum number of featured activities to display')
+        help_text=_('The maximum number of featured activities to display.')
+    )
+
+    featured_tier = models.PositiveIntegerField(
+        verbose_name=_('Featured Tier'),
+        default=3,
+        validators=[MaxValueValidator(5)],
+        help_text=_('Activity with tiers higher than this number will be featured in the widget.')
     )
 
     def get_activities(self, request):
-        queryset = Activity.objects.approved().filter(is_featured=True)
+        queryset = Activity.objects.approved()
+        queryset = queryset.filter(is_featured__gte=self.featured_tier)
         return queryset[:self.number_of_activities]
     
     def get_per_rows(self, request):

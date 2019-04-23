@@ -1,10 +1,10 @@
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import (
@@ -22,16 +22,11 @@ from reviews.models import Review
 from users.models import Host
 from points.models import award_points
 from .forms import PhotoUploadForm
+from .mixins import UnapprovedActivityMixin, ReviewCheck
 from .models import Activity, ActivityPhoto, Region, Category, Tag
-from .utils import check_if_user_can_review
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
-
-class UserIsHost(object):
-    def dispatch(self, request, *args, **kwargs):
-        self.host = get_object_or_404(Host, user=request.user)
-        return super().dispatch(request, *args, **kwargs)
 
 
 class ActivityBrowseView(ListView):
@@ -52,10 +47,7 @@ class ActivityBrowseView(ListView):
         if is_valid_queryparam(q):
             from django.db.models import Q
             qs = qs.filter(
-                Q(title__icontains=q)
-                | Q(region__slug=q)
-                | Q(categories__slug=q)
-                | Q(tags__slug=q)
+                Q(title__icontains=q) | Q(region__slug=q) | Q(categories__slug=q) | Q(tags__slug=q)
             ).distinct()
 
         if is_valid_queryparam(region):
@@ -80,7 +72,7 @@ class ActivityBrowseView(ListView):
         context['tags'] = Tag.objects.all()
         return context
 
-class ActivityDetailView(FormMixin, DetailView):
+class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, DetailView):
     """ View for showing the details of the activity """
  
     template_name = 'activities/activity_detail.html'
@@ -91,7 +83,7 @@ class ActivityDetailView(FormMixin, DetailView):
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
-        self.can_review = check_if_user_can_review(request, self.object)
+        self.can_review = self.has_review_permission(request)
         return super().dispatch(request, *args, **kwargs)
  
     def get_context_data(self, **kwargs):
@@ -104,14 +96,8 @@ class ActivityDetailView(FormMixin, DetailView):
         return context
    
     def get_object(self):
-        try:
-            activity = self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
-            if activity.status == Activity.STATUS.unapproved:
-                if self.request.user != activity.host.user and (not self.request.user.is_staff and not self.request.user.is_superuser):
-                    raise Http404('This activity has not been approved yet.')
-        except Activity.DoesNotExist:
-            raise Http404("This activity does not match the given query.")
-        return activity
+        return self.model.objects.select_related('host__user')\
+            .get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
    
     # process review form
     def post(self, request, *args, **kwargs):
@@ -180,6 +166,10 @@ class ActivityUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Activity cannot be updated. Please check for validation errors.")
+        return super().form_invalid(form)
     
     def get_success_url(self):
         return self.get_object().get_absolute_url()
@@ -240,8 +230,10 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, UserIsHost, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
+    permission_denied_message = "You must be a host to view page."
+
     STEP_TEMPLATES = {
         "0": "activities/wizard_templates/default.html",
         "1": "activities/wizard_templates/default.html",
@@ -252,6 +244,9 @@ class ActivityCreationView(LoginRequiredMixin, UserIsHost, SessionWizardView):
         "6": "activities/wizard_templates/featured_photo.html",
         "7": "activities/wizard_templates/confirmation.html",
     }
+
+    def test_func(self):
+        return Host.objects.filter(user=self.request.user).exists()
 
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """

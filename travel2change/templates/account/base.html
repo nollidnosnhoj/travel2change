@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load sekizai_tags cache staticfiles %}
-{% block content %}
+{% block container %}
 {% addtoblock "css" %}
     <link rel="stylesheet" href="{% static 'css/accounts/accounts.css' %}">
 {% endaddtoblock %}
@@ -11,4 +11,4 @@
     </div>
 </div>
 
-{% endblock content %}
+{% endblock container %}
