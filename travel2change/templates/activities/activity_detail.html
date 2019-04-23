@@ -1,18 +1,14 @@
-{% extends "base.html" %}{% load cms_tags google_maps_api crispy_forms_tags social_share cache staticfiles %}
-{% block title %}{{ activity.title }}{% endblock title %}
+{% extends "base.html" %}
+{% load cms_tags google_maps_api crispy_forms_tags social_share cache staticfiles %}
+{% block title %}{{ activity.title }} - travel2change{% endblock title %}
 {% block content %}
 {% block styles %}
-<link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" />
+<link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" media="all" type="text/css" />
 <link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
 <link rel="stylesheet" href="{% static 'css/star-ratings/krajee-fas/theme.css' %}" media="all" type="text/css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-<style>
-    #map {
-        height: 300px;
-    }
-</style>
 {% endblock styles %}
-{% if activity.status == activity.STATUS.unapproved %}
+{% if not activity.is_approved %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     This activity is not approved yet, and is only visible to the host and staff users.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -23,15 +19,48 @@
 {% render_model_block activity %}
 <div class="row">
     <article class="single-activity col-lg-8">
-        <section class="jumbotron">
+        <section class="activity-title-cover jumbotron">
             <h1 class="display-4">{{ activity.title }}</h1>
             <hr class="my-4">
-            <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
+            <div class="row">
+                <div class="activity-host col-md-8">
+                    <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
+                </div>
+                <div class="activity-actions col-md-4">
+                    <span class="edit-profile">
+                        {% if request.user == activity.host.user %}
+                        <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="btn btn-primary btn-sm">
+                            <i class="far fa-edit"></i> Edit
+                        </a>
+                        {% endif %}
+                    
+                        {% if request.user.is_staff or request.user.is_superuser %}
+                        {% if not activity.is_approved %}
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
+                            <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank"
+                                data-toggle="tooltip" title="Approve" alt="Approve Activity">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank"
+                                data-toggle="tooltip" title="Disapprove" alt="Disapprove Activity">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
         </section>
-        <div class="card">
-            <div class="card-body">
+        <section class="card">
+            <div class="activity-body card-body">
                 <section class="clearfix">
-                    <button type="button" class="btn favorite-button" data-url="{% url 'favorites:set' activity.pk %}" data-action="favorite" title="Favorite">
+                    <button type="button"
+                            class="btn favorite-button"
+                            data-url="{% url 'favorites:set' activity.pk %}"
+                            data-action="favorite"
+                            title="Favorite"
+                    >
                         <span class="spinner-border" role="status" aria-hidden="true" style="display:none;"></span>
                         {% if favorited %}
                         <i class="fas fa-heart" style="color: #d63031; font-size: 24px;"></i>
@@ -49,10 +78,10 @@
                         </div>
                     </div>
                 </section>
-                <section class="description block">
-                    <p>{{ activity.description }}</p>
+                <section class="description">
+                    <p>{{ activity.description|linebreaks }}</p>
                 </section>
-                <section class="highlights block">
+                <section class="highlights">
                     <h2>Highlights</h2>
                     <ul>
                         {% for highlight in activity.highlights_as_list %}
@@ -61,7 +90,7 @@
                     </ul>
                 </section>
                 {% if activity.requirements %}
-                <section class="requirements block">
+                <section class="requirements">
                     <h2>Requirements</h2>
                     <ul>
                     {% for requirement in activity.requirements_as_list %}
@@ -70,10 +99,10 @@
                     </ul>
                 </section>
                 {% endif %}
-                <section class="location block">
+                <section class="location">
                     <h2>Address</h2>
                     <p>{{ activity.address }}</p>
-                    <div id="map"></div>
+                    <div id="map" style="height: 300px;"></div>
                     <script>
                     function initMap() {
                         var myLatLng = {
@@ -94,14 +123,13 @@
                     }
                     </script>
                     <script async defer
-                    src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&callback=initMap">
+                        src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&callback=initMap">
                     </script>
                 </section>
             </div>
-        </div>
-        <br />
+        </section>
         {% if can_review %}
-        <section>
+        <section class="review">
             <h2>Add Review</h2>
             <div class="card">
                 <div class="card-body">
@@ -114,16 +142,12 @@
             </div>
             <br />
             {% endif %}
-            <h2>{{ activity.title }} Reviews - {{ activity.average_rating }} Stars</h2><br />
+            <h2>Reviews - {{ activity.average_rating }} Stars</h2><br />
             {% include 'reviews/partials/review_detail_card.html' with reviews=reviews %}
         </section>
     </article>
     <aside class="col-lg-4">
-        {% if request.user == activity.host.user %}
-        <section class="edit-profile">
-            <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="btn btn-primary btn-lg btn-block">Edit</a>
-        </section>
-        {% endif %}
+        
         {% if activity.fh_item_id %}
         <section class="card fareharbor-widget">
             <div class="card-body">
@@ -148,22 +172,6 @@
                 {% endfor %}
             </div>
         </section>
-        {% endif %}
-        {% if request.user.is_staff or request.user.is_superuser %}
-            {% if activity.status == 'unapproved' %}
-            <section class="row">
-                <div class="col-sm-6">
-                    <a class="btn btn-success btn-block" href="{% url 'moderations:approve' activity.pk %}" target="_blank">
-                        Approve
-                    </a>
-                </div>
-                <div class="col-sm-6">
-                    <a class="btn btn-danger btn-block" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank">
-                        Disapprove
-                    </a>
-                </div>
-            </section>
-            {% endif %}
         {% endif %}
     </aside>
 </div>

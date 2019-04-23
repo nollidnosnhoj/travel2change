@@ -8,7 +8,10 @@
     margin-bottom: 2rem;
 }
 .single-activity div li {
-    margin-bottom: 1rem !important;
+    line-height: 2rem;
+}
+.single-activity .activity-actions {
+    text-align: right;
 }
 .photo-gallery .photo {
     padding-left: 5px;
@@ -23,3 +26,8 @@
 .delete-photo {
     text-align: center;
 }
+@media (max-width: 768px) { 
+    .single-activity .activity-actions {
+        text-align: left;
+    }
+ }
