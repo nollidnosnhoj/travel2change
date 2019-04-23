@@ -19,6 +19,15 @@
     margin-bottom: 2rem;
 }
 
+#content-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+#content-wrapper main {
+    flex: 1;
+}
+
 /* DJANGO MESSAGES */
 
 .messages {

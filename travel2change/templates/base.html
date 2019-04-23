@@ -37,22 +37,24 @@
     </head>
     <body>
         {% cms_toolbar %}
-        {% include 'partials/header.html' %}
-        <main id="main">
+        <div id="content-wrapper">
+            {% include 'partials/header.html' %}
             {% include 'partials/messages.html' %}
-            {% block jumbo %}
-            {% endblock jumbo %}
-            {% block container %}
-            {% endblock container %}
-        </main>
-        <footer class="py-5 bg-light">
-            <div class="container">
-                <p class="m-0 text-center text-black">Copyright &copy; travel2change 2019</p>
-            </div>
-            <!-- /.container -->
-        </footer>
-        {% render_block "js" %}
-        {% block scripts %}{% endblock scripts %}
+            <main id="main">
+                {% block jumbo %}
+                {% endblock jumbo %}
+                {% block container %}
+                {% endblock container %}
+            </main>
+            <footer class="py-5 bg-light">
+                <div class="container">
+                    <p class="m-0 text-center text-black">Copyright &copy; travel2change 2019</p>
+                </div>
+                <!-- /.container -->
+            </footer>
+            {% render_block "js" %}
+            {% block scripts %}{% endblock scripts %}
+        </div>
         {% addtoblock "js" %}
             <script
                 src="https://code.jquery.com/jquery-3.3.1.min.js"
