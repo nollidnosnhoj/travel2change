@@ -41,12 +41,10 @@
         {% include 'partials/messages.html' %}
         {% block jumbo %}
         {% endblock jumbo %}
-        <div class="container p-3">
-            <main class="content">
-                {% block content %}
-                {% endblock content %}
-            </main>
-        </div>
+        <main id="main">
+            {% block container %}
+            {% endblock container %}
+        </main>
         <footer class="py-5 bg-light">
             <div class="container">
                 <p class="m-0 text-center text-black">Copyright &copy; travel2change 2019</p>
