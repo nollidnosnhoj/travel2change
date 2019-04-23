@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load humanize thumbnail sekizai_tags cache staticfiles %}
+{% extends "container.html" %}{% load humanize thumbnail sekizai_tags cache staticfiles %}
 {% block title %}Reviews about {{ host.name }}{% endblock title %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/star-ratings/star-rating.min.css' %}" media="all" type="text/css" />
