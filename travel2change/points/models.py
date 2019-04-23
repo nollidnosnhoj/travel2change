@@ -12,8 +12,8 @@ class PointValue(models.Model):
         return "{0} points for {1}.".format(self.value, self.key)
 
 
-class AwardedPoints(models.Model):
-    target = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name=_('awarded_points'))
+class AwardedPoint(models.Model):
+    target = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name=_('awardedpoint_target'))
     point_value = models.ForeignKey(PointValue, blank=True, null=True, on_delete=models.CASCADE)
     reason = models.CharField(_('reason'), max_length=255, blank=True)
     points = models.IntegerField(_('points'), default=0)
@@ -28,7 +28,6 @@ class AwardedPoints(models.Model):
     def save(self, *args, **kwargs):
         if self.point_value:
             self.points = self.point_value.value
-        self.target.update_points(self.points)
         super().save(*args, **kwargs)
 
 
@@ -41,11 +40,16 @@ def award_points(target, key, reason=""):
             point_value = PointValue.objects.get(key=key)
             points = point_value.value
         except PointValue.DoesNotExist:
-            raise ImproperlyConfigured('PointValue for {0} does not exist'.format(key))
-    award_points = AwardedPoints(points=points, point_value=point_value, reason=reason)
+            reason = "Did not setup {0} pointvalue in admin.".fomrat(key)
+            points = 0
+    award_points = AwardedPoint(points=points, point_value=point_value, reason=reason)
     if isinstance(target, get_user_model()):
         award_points.target = target
     else:
         raise ImproperlyConfigured('target param in award_points function needs to be a user model')
     award_points.save()
     return award_points
+
+
+def unaward_points(target, key):
+    pass
