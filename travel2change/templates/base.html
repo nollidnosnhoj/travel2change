@@ -37,11 +37,11 @@
     </head>
     <body>
         {% cms_toolbar %}
-        {% include 'partials/navigation.html' %}
-        {% include 'partials/messages.html' %}
-        {% block jumbo %}
-        {% endblock jumbo %}
+        {% include 'partials/header.html' %}
         <main id="main">
+            {% include 'partials/messages.html' %}
+            {% block jumbo %}
+            {% endblock jumbo %}
             {% block container %}
             {% endblock container %}
         </main>
