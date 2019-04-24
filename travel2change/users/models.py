@@ -48,6 +48,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     @transaction.atomic
     def update_points(self, given_points):
+        """
+        Will update the user's points based on give_points parameter. Important to enforce transaction.atomic to this function to keep points consistent. 
+
+        Parameters:
+            given_points (int) - Points that will update the user's points. Positive to add. Negative to subtract.
+        """
         total = self.points
         if -(given_points) > total:
             self.points = 0

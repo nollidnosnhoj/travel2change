@@ -31,7 +31,7 @@ class AwardedPoint(models.Model):
         super().save(*args, **kwargs)
 
 
-def award_points(target, key, reason=""):
+def get_points(key):
     point_value = None
     if isinstance(key, int) and not isinstance(key, bool):
         points = key
@@ -40,8 +40,22 @@ def award_points(target, key, reason=""):
             point_value = PointValue.objects.get(key=key)
             points = point_value.value
         except PointValue.DoesNotExist:
-            reason = "Did not setup {0} pointvalue in admin.".fomrat(key)
             points = 0
+    return point_value, points
+
+
+def award_points(target, key, reason=""):
+    """
+    This is a helper function for awarding points to a user.
+    The key param can either be a int or string. Int will convert the key to points.
+    String will get the PointValue object based on the key value.
+    
+    Parameters:
+        target (User) - The user instance that will be awarded points
+        key (int or string) - Determine the amount of points the user will be awarded.
+        reason (string) - Reasons to award user instance
+    """
+    point_value, points = get_points(key)
     award_points = AwardedPoint(points=points, point_value=point_value, reason=reason)
     if isinstance(target, get_user_model()):
         award_points.target = target
@@ -52,4 +66,17 @@ def award_points(target, key, reason=""):
 
 
 def unaward_points(target, key):
-    pass
+    """
+    This will undo the award_points function (delete the AwardedPoint object) and update the user's points
+
+    Parameters:
+        target (User instance) - The user that will be unawarded.
+        key (int or string) - Find the amount of points to undo.
+    """
+    point_value, points = get_points(key)
+    try:
+        award_points = AwardedPoint.objects.get(target=target, point_value=point_value, points=points)
+    except AwardedPoint.DoesNotExist:
+        return
+    award_points.delete()
+    return award_points
