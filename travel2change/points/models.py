@@ -32,6 +32,14 @@ class AwardedPoint(models.Model):
 
 
 def get_points(key):
+    """
+    This is a helper function for getting points from the key string.
+    If the key is an integer, it will use the integer as points.\n
+    If the key is a string, it will get the PointValue based on the key.
+
+    Parameters:
+        key (string or int)
+    """
     point_value = None
     if isinstance(key, int) and not isinstance(key, bool):
         points = key
@@ -46,9 +54,10 @@ def get_points(key):
 
 def award_points(target, key, reason=""):
     """
-    This is a helper function for awarding points to a user.
-    The key param can either be a int or string. Int will convert the key to points.
-    String will get the PointValue object based on the key value.
+    This is a helper function for awarding points to a user.\n
+    The key param can either be a int or string.\n
+        Int will convert the key to points.\n
+        String will get the PointValue object based on the key value.
     
     Parameters:
         target (User) - The user instance that will be awarded points
