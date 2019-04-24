@@ -170,10 +170,17 @@
 		</script><br />
 		<script src="https://maps.googleapis.com/maps/api/js?key={% google_maps_api %}&libraries=places&callback=initMap"
 				async defer></script>
-			{% if wizard.steps.prev %}
-				<button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
-			{% endif %}
-		<button type="submit" class="btn btn-success">Next</button>
+		<div class="clearfix">
+			<div class="float-left">
+				{% if wizard.steps.prev %}
+					<button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
+				{% endif %}
+				<button type="submit" class="btn btn-success">Next</button>
+			</div>
+			<div class="float-right">
+				<a href="{% url 'activities:create' %}?reset" alt="Reset Activity Form" title="Reset Activity Form" class="btn btn-dark">Reset</a>
+			</div>
+		</div>
     </form>
 </div>
 {% endblock content %}
