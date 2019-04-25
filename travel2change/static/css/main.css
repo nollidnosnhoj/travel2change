@@ -62,7 +62,7 @@ a .activity-card {
     font-size: 0.9rem;
 }
 .activity-card .card-img-top {
-    height: 25vh;
+    height: 20vh;
     object-fit: cover;
 }
 

@@ -32,11 +32,11 @@ def is_valid_queryparam(param):
 class ActivityBrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 10
+    paginate_by = 12
     context_object_name = 'activityBrowse'
 
     def get_queryset(self):
-        qs = Activity.objects.approved()
+        qs = Activity.objects.select_related('host__user').select_related('region').approved()
 
         q = self.request.GET.get('q')
         title = self.request.GET.get('title')
@@ -96,8 +96,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         return context
    
     def get_object(self):
-        return self.model.objects.select_related('host__user')\
-            .get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
+        return self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
    
     # process review form
     def post(self, request, *args, **kwargs):
@@ -116,6 +115,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             award_points(new_review.user, 'review_photo')
         award_points(new_review.user, 'review_create')
         new_review.save()
+        self.object.review_count += 1
         return super().form_valid(form)
    
     def get_success_url(self):

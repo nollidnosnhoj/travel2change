@@ -1,6 +1,13 @@
 {% extends "container.html" %}
 {% load crispy_forms_tags sekizai_tags cache staticfiles %}
 {% block title %}Step {{ wizard.steps.step1 }} - Activity Creation Wizard{% endblock title %}
+{% block styles %}
+<style>
+#div_id_5-fh_item_id {
+    display: none;
+}
+</style>
+{% endblock styles %}
 {% block content %}
 <div class="row justify-content-center">
     <form action="" method="POST" class="col-lg">
@@ -34,3 +41,14 @@
     </form>
 </div>
 {% endblock content %}
+{% block scripts %}
+<script>
+    $('#id_5-price').on('input', function () {
+        if (this.value > 0.00) {
+            $('#div_id_5-fh_item_id').show();
+        } else {
+            $('#div_id_5-fh_item_id').hide();
+        }
+    });
+</script>
+{% endblock scripts %}

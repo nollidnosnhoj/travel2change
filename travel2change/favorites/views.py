@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -31,17 +29,7 @@ class SetFavoritesView(View):
                 user=request.user, activity=activity,
             )
             if not created:
-                cooldown_time = favorite.created + timedelta(minutes=settings.FAVORITE_COOLDOWN_IN_MINUTES)
-                if (cooldown_time >= datetime.now()):
-                    favorite.delete()
-                else:
-                    remaining_time = datetime.now() - cooldown_time
-                    response = JsonResponse({
-                        'error': 'You are in cooldown for favoriting this activity. Please wait {0} to try again.'
-                        .format(int(remaining_time.total_seconds() / 60))
-                    })
-                    response.status_code = 404
-                    return response
+                favorite.delete()
             added = '#d63031'
             removed = '#b2bec3'
             response = JsonResponse({

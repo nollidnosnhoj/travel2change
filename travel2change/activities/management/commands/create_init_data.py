@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from activities.models import Region, Tag, Category
+
+User = get_user_model()
 
 regions_name = (
     'Island Of Hawaii',
@@ -43,13 +46,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for i in range(len(regions_name)):
-            region = Region(name=regions_name[i], slug=regions_slug[i])
-            region.save()
+            region, created = Region.objects.get_or_create(name=regions_name[i], slug=regions_slug[i])
+            if created:
+                region.save()
         for i in range(len(categories_name)):
-            cat = Category(name=categories_name[i], slug=categories_slug[i])
-            cat.save()
+            cat, created = Category.objects.get_or_create(name=categories_name[i], slug=categories_slug[i])
+            if created:
+                cat.save()
         for i in range(len(tags_name)):
-            tag = Tag(name=tags_name[i], slug=tags_slug[i])
-            tag.save()
+            tag, created = Tag.objects.get_or_create(name=tags_name[i], slug=tags_slug[i])
+            if created:
+                tag.save()
         
         self.stdout.write(self.style.SUCCESS('Successfully created regions, categories, and tags'))

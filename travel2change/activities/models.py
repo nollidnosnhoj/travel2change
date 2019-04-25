@@ -77,7 +77,7 @@ class Region(models.Model):
         if self.image:
             return self.image.url
         else:
-            return '/static/img/defaults/default_region.jpg'
+            return '/media/defaults/default_region.jpg'
 
 
 class Tag(models.Model):
@@ -201,7 +201,7 @@ class Activity(models.Model):
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
                         blank=False,
-                        default='/static/img/defaults/default_featured_activity.jpg',
+                        default='defaults/default_featured_activity.jpg',
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.'),
                         validators=[validate_image_size],
