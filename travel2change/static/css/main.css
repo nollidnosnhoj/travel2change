@@ -49,6 +49,7 @@
 
 .activity-card {
     height: 100% !important;
+    border: 2px solid #ddd;
 }
 a .activity-card {
     color: #212529;
@@ -60,7 +61,7 @@ a .activity-card {
     font-size: 0.9rem;
 }
 .activity-card .card-img-top {
-    height: 15vh;
+    height: 20vh;
     object-fit: cover;
 }
 
