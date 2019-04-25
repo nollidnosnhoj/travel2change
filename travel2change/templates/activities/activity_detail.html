@@ -19,41 +19,43 @@
 {% render_model_block activity %}
 <div class="row">
     <article class="single-activity col-lg-8">
-        <section class="activity-title-cover jumbotron">
-            <h1 class="display-4">{{ activity.title }}</h1>
-            <hr class="my-4">
-            <div class="row">
-                <div class="activity-host col-md-8">
-                    <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
-                </div>
-                <div class="activity-actions col-md-4">
-                    <span class="edit-profile">
-                        {% if request.user == activity.host.user %}
-                        <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="btn btn-primary btn-sm">
-                            <i class="far fa-edit"></i> Edit
-                        </a>
-                        {% endif %}
-                    
-                        {% if request.user.is_staff or request.user.is_superuser %}
-                        {% if not activity.is_approved %}
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
-                            <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank"
-                                data-toggle="tooltip" title="Approve" alt="Approve Activity">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank"
-                                data-toggle="tooltip" title="Disapprove" alt="Disapprove Activity">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                        {% endif %}
-                        {% endif %}
-                    </span>
-                </div>
-            </div>
-        </section>
         <section class="card">
+            <img src="{{ activity.featured_photo.url }}" style="width: 100%;height:50vh;object-fit:cover;" alt="{{ activity.title }}" title="{{ activity.title }}" />
             <div class="activity-body card-body">
+                <section class="activity-title-cover jumbotron">
+                    <h1 class="display-4">{{ activity.title }}</h1>
+                    <hr class="my-4">
+                    <div class="row">
+                        <div class="activity-host col-md-8">
+                            <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
+                        </div>
+                        <div class="activity-actions col-md-4">
+                            <span class="edit-profile">
+                                {% if request.user == activity.host.user %}
+                                <a href="{% url 'activities:update' activity.region.slug activity.slug %}"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="far fa-edit"></i> Edit
+                                </a>
+                                {% endif %}
+                
+                                {% if request.user.is_staff or request.user.is_superuser %}
+                                {% if not activity.is_approved %}
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
+                                    <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank"
+                                        data-toggle="tooltip" title="Approve" alt="Approve Activity">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a class="btn btn-danger" href="{% url 'moderations:disapprove' activity.pk %}" target="_blank"
+                                        data-toggle="tooltip" title="Disapprove" alt="Disapprove Activity">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </section>
                 <section class="clearfix">
                     <button type="button"
                             class="btn favorite-button"
