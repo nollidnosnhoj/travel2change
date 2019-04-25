@@ -27,6 +27,8 @@ class Command(BaseCommand):
         cat_exists = Category.objects.first()
         tag_exists = Tag.objects.first()
 
+        list_of_items = [141924, 140923, 137631, 137081, 133563, ]
+
         if region_exists and cat_exists and tag_exists:
             # Get the max pk for regions, categories, and tags
             max_region_pk = Region.objects.all().aggregate(max_pk=Max('pk')).get('max_pk')
@@ -57,6 +59,7 @@ class Command(BaseCommand):
                         region=Region.objects.get(pk=region_pk),
                         address='Somewhere',
                         is_featured=random.randint(0, 5),
+                        fh_item_id=random.choice(list_of_items)
                     )
                     is_approved = random.randint(0, 5)
                     instance.status = 'approved' if is_approved > 0 else 'unapproved'
