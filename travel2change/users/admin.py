@@ -31,7 +31,8 @@ class CustomUserAdmin(UserAdmin):
         'last_name',
         'is_active',
         'is_staff',
-        'date_joined'
+        'date_joined',
+        'points',
     )
     list_filter = ('is_active', 'is_staff', )
     fieldsets = (

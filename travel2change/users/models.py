@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -19,6 +19,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active       = models.BooleanField(default=True)
     is_staff        = models.BooleanField(default=False)
     is_superuser    = models.BooleanField(default=False)
+    points          = models.IntegerField(_('points'), default=0, editable=False)
 
     objects = CustomUserManager()
 
@@ -47,6 +48,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+    
+    @transaction.atomic
+    def update_points(self, given_points):
+        """
+        Will update the user's points based on give_points parameter. Important to enforce transaction.atomic to this function to keep points consistent. 
+
+        Parameters:
+            given_points (int) - Points that will update the user's points. Positive to add. Negative to subtract.
+        """
+        total = self.points
+        if -(given_points) > total:
+            self.points = 0
+        else:
+            self.points += given_points
+        self.save()
 
 
 class Host(models.Model):

@@ -103,6 +103,7 @@ LOCAL_APPS = (
     'moderations',
     'favorites',
     'reviews',
+    'points',
     'travel2change',
 )
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTRAP_APPS + THIRD_PARTY_APPS
