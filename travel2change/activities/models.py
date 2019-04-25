@@ -77,7 +77,7 @@ class Region(models.Model):
         if self.image:
             return self.image.url
         else:
-            return '/static/img/regions/default-region.jpg'
+            return '/static/img/defaults/default_region.jpg'
 
 
 class Tag(models.Model):
