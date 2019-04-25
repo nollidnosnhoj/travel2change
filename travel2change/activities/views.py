@@ -96,8 +96,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         return context
    
     def get_object(self):
-        return self.model.objects.select_related('host__user')\
-            .get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
+        return self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
    
     # process review form
     def post(self, request, *args, **kwargs):
