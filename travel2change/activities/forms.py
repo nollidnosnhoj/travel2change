@@ -50,8 +50,10 @@ class FeaturedPhotoForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['featured_photo', ]
-        widget = {
-            'featured_photo': forms.ClearableFileInput(attrs={'required': True})
+        widgets = {
+            'featured_photo': forms.ClearableFileInput(attrs={
+                'required': True,
+            })
         }
 
 

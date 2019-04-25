@@ -8,6 +8,7 @@
         <h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2>
         {{ wizard.management_form }}
         {{ wizard.form|crispy }}
+        {{ wizard.form.errors }}
         <div class="clearfix">
             <div class="float-left">
                 {% if wizard.steps.prev %}
