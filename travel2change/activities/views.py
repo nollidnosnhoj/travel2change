@@ -32,11 +32,11 @@ def is_valid_queryparam(param):
 class ActivityBrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 10
+    paginate_by = 12
     context_object_name = 'activityBrowse'
 
     def get_queryset(self):
-        qs = Activity.objects.approved()
+        qs = Activity.objects.select_related('host').approved()
 
         q = self.request.GET.get('q')
         title = self.request.GET.get('title')
