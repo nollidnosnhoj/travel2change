@@ -1,5 +1,6 @@
 .t2c-navbar {
-    border-bottom: 0.094em solid #000;
+    background-color: #fff !important;
+    border-bottom: 0.094em solid #ddd;
 }
 
 .fullvh {
