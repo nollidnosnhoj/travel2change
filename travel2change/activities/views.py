@@ -36,7 +36,7 @@ class ActivityBrowseView(ListView):
     context_object_name = 'activityBrowse'
 
     def get_queryset(self):
-        qs = Activity.objects.select_related('host').approved()
+        qs = Activity.objects.select_related('host__user').select_related('region').approved()
 
         q = self.request.GET.get('q')
         title = self.request.GET.get('title')
@@ -115,6 +115,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             award_points(new_review.user, 'review_photo')
         award_points(new_review.user, 'review_create')
         new_review.save()
+        self.object.review_count += 1
         return super().form_valid(form)
    
     def get_success_url(self):

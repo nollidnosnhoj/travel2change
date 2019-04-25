@@ -88,7 +88,7 @@ class HostActivitiesPublicListView(HostListView):
     template_name = 'users/host_activities_list.html'
 
     def get_queryset(self):
-        return Activity.objects.approved().filter(host=self.host).order_by("-approved_time")
+        return Activity.objects.select_related('host__user').select_related('region').approved().filter(host=self.host).order_by("-approved_time")
 
 
 class HostActivitiesDashboardView(DetailView):
@@ -101,7 +101,7 @@ class HostActivitiesDashboardView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['activities'] = Activity.objects.all().filter(host=self.object).distinct().order_by('-status', '-created')
+        context['activities'] = Activity.objects.select_related('host__user').select_related('region').all().filter(host=self.object).distinct().order_by('-status', '-created')
         return context
 
 
