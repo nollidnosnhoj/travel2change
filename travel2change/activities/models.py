@@ -201,7 +201,7 @@ class Activity(models.Model):
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
                         blank=False,
-                        default='/defaults/default_featured_activity.jpg',
+                        default='defaults/default_featured_activity.jpg',
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.'),
                         validators=[validate_image_size],
