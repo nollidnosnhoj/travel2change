@@ -15,7 +15,7 @@ from django.views.generic import (
     ListView,
 )
 from django.views.generic.edit import FormMixin
-from formtools.wizard.views import SessionWizardView
+from formtools.wizard.views import NamedUrlSessionWizardView
 from favorites.models import Favorite
 from reviews.forms import ReviewForm
 from reviews.models import Review
@@ -226,19 +226,19 @@ def photo_delete(request, pk):
     return HttpResponse("Photo deleted successfully.")
 
 
-class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, SessionWizardView):
+class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, NamedUrlSessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     permission_denied_message = "You must be a host to view page."
 
     STEP_TEMPLATES = {
-        "0": "activities/wizard_templates/default.html",
         "1": "activities/wizard_templates/default.html",
         "2": "activities/wizard_templates/default.html",
         "3": "activities/wizard_templates/default.html",
-        "4": "activities/wizard_templates/price_fh.html",
-        "5": "activities/wizard_templates/location.html",
-        "6": "activities/wizard_templates/featured_photo.html",
-        "7": "activities/wizard_templates/confirmation.html",
+        "4": "activities/wizard_templates/default.html",
+        "5": "activities/wizard_templates/price_fh.html",
+        "6": "activities/wizard_templates/location.html",
+        "7": "activities/wizard_templates/featured_photo.html",
+        "8": "activities/wizard_templates/confirmation.html",
     }
 
     def test_func(self):
@@ -247,6 +247,11 @@ class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, SessionWizar
     def get_template_names(self):
         """ Grab dictionary of templates for wizard """
         return [self.STEP_TEMPLATES[self.steps.current]]
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['form_data'] = self.get_all_cleaned_data()
+        return context
 
     def done(self, form_list, **kwargs):
         # Call when the wizard is completed.

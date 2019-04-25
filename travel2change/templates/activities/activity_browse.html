@@ -40,7 +40,7 @@
 
 <div class="row">
 	{% for activity in activityBrowse %}
-	<div class="col-lg-3" style="padding-top:50px;">
+	<div class="col-6 col-lg-3" style="padding-top:50px;">
 		{% include 'activities/partials/activity_card.html' with activity=activity %}
 	</div>
 	{% empty %}

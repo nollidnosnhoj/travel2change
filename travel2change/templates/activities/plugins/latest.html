@@ -1,7 +1,7 @@
 {% load humanize i18n %}
 <div class="row">
     {% for activity in activities %}
-    <div class="col-md-{{ col }}">
+    <div class="col-6 col-md-{{ col }}">
         {% include 'activities/partials/activity_card.html' with activity=activity %}
         <br />
     </div>

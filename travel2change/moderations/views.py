@@ -12,6 +12,7 @@ from activities.models import Activity
 from .mixins import StaffUserOnlyMixin
 
 class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
+    """ Show all the unapproved activities """
     model = Activity
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
@@ -23,6 +24,10 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
 
 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
+    """
+    Will approve the activity, making the activity public to view for everyone, 
+    and will send a notification email to the host.
+    """
     model = Activity
     fields = ('fh_item_id', )
     template_name = 'moderations/moderation_approval.html'
@@ -43,6 +48,10 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
 
 
 class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
+    """
+    Will disapprove the activity, meaning the email will notify the host, and
+    the activity will be deleted from the database.
+    """
     success_message = "Activity has been successfully disapproved. Email sent."
     template_name = "moderations/moderation_disapproval.html"
     success_url = reverse_lazy("moderations:queue")
@@ -51,7 +60,6 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
         return get_object_or_404(Activity, pk=self.kwargs['pk'])
     
     def delete(self, request, *args, **kwargs):
-        # Notify users about disapproval, then delete object
         reasons = request.POST.get('reasons', 'N/A')
         activity = self.get_object()
         subject = "Your Activity Was Not Approved."
@@ -61,7 +69,14 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
 
 
 def send_notification(instance, subject, template_prefix, **kwargs):
-    # Send email notification to the host about approval/disapproval.
+    """
+    Send email to the activity's host.
+    
+    Paramters:
+        instance - the activity instance.
+        subject - The subject line
+        template_prefix - Template prefix that the email will use.
+    """
     template = "moderations/templates/{0}_email.txt".format(template_prefix)
     msg = render_to_string(template, {'activity': instance, **kwargs})
     send_mail(subject, msg, settings.SERVER_EMAIL, [instance.host.user.email], )
