@@ -24,12 +24,12 @@
             <div class="activity-body card-body">
                 <section class="activity-title-cover jumbotron">
                     <h1 class="display-4">{{ activity.title }}</h1>
-                    <hr class="my-4">
                     <div class="row">
                         <div class="activity-host col-md-8">
-                            <p class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></p>
+                            <div class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></div>
+                            <div class="modified" style="font-size:1rem;"><em>Last Modified on {{ activity.modified|date:"M d, Y"  }}</em></div>
                         </div>
-                        <div class="activity-actions col-md-4">
+                        <div class="activity-actions col-md-4 my-3">
                             <span class="edit-profile">
                                 {% if request.user == activity.host.user %}
                                 <a href="{% url 'activities:update' activity.region.slug activity.slug %}"
@@ -37,7 +37,6 @@
                                     <i class="far fa-edit"></i> Edit
                                 </a>
                                 {% endif %}
-                
                                 {% if request.user.is_staff or request.user.is_superuser %}
                                 {% if not activity.is_approved %}
                                 <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">

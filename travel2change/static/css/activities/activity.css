@@ -1,8 +1,20 @@
+body {
+    background: linear-gradient(180deg, white 0%, white 25%, #000000, #f9f9f9 25%, #f9f9f9 100%);
+}
+
 .photo-row, .edit-profile, .fareharbor-widget, .social_share {
     margin-bottom: 2rem !important;
 }
 .single-activity .jumbotron {
     background-color: transparent;
+}
+.single-activity .activity-title-cover {
+    border-radius: 0 !important;
+    border-bottom: 1px solid #ddd;
+}
+.single-activity .activity-host .modified {
+    font-size: 0.75rem;
+    color: #b2bec3;
 }
 .single-activity section {
     margin-bottom: 2rem;
@@ -30,5 +42,8 @@
 @media (max-width: 768px) { 
     .single-activity .activity-actions {
         text-align: left;
+    }
+    .single-activity .activity-title-cover .display-4 {
+        font-size: 2rem;
     }
  }
