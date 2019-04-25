@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="activity-host col-md-8">
                             <div class="lead">Hosted by <a href="{{ activity.host.get_absolute_url }}">{{ activity.host.name }}</a></div>
-                            <div class="modified" style="font-size:1rem;"><em>Last Modified on {{ activity.modified|date:"M d, Y"  }}</em></div>
+                            <div class="modified"><em>Last Modified on {{ activity.modified|date:"M d, Y"  }}</em></div>
                         </div>
                         <div class="activity-actions col-md-4 my-3">
                             <span class="edit-profile">
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="clearfix">
+                <section class="fav-share clearfix">
                     <button type="button"
                             class="btn favorite-button"
                             data-url="{% url 'favorites:set' activity.pk %}"

@@ -19,6 +19,9 @@ body {
 .single-activity section {
     margin-bottom: 2rem;
 }
+.single-activity .fav-share {
+    margin-bottom: 1rem;
+}
 .single-activity div li {
     line-height: 2rem;
 }
