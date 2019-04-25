@@ -33,10 +33,10 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link ml-1" href="{% url 'account_login' %}">{% trans "Login" %}</a>
+          <a class="nav-link" href="{% url 'account_login' %}">{% trans "Login" %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ml-1" href="{% url 'account_signup' %}">{% trans "Register" %}</a>
+          <a class="nav-link" href="{% url 'account_signup' %}">{% trans "Register" %}</a>
         </li>
         {% endif %}
       </ul>

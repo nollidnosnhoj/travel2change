@@ -19,6 +19,13 @@ class AwardedPoint(models.Model):
     points = models.IntegerField(_('points'), default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def key(self):
+        if self.point_value:
+            return self.point_value.key
+        else:
+            return None
+
     def __str__(self):
         val = self.point_value
         if self.point_value is None:
