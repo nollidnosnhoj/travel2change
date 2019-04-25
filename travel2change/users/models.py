@@ -9,6 +9,9 @@ from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom user model that uses the email address as the username field.
+    """
     email           = models.EmailField(_('email address'), unique=True)
     first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
     last_name       = models.CharField(_('last name'), max_length=60, blank=False, null=False)
@@ -63,6 +66,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Host(models.Model):
+    """
+    This host object will create a profile for the user. This will also grant user host permissions.
+    """
     user            = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     _name           = models.CharField(
                         _('name'),

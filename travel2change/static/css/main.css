@@ -1,5 +1,6 @@
 .t2c-navbar {
-    border-bottom: 0.094em solid #000;
+    background-color: #fff !important;
+    border-bottom: 0.094em solid #ddd;
 }
 
 .fullvh {
@@ -49,6 +50,7 @@
 
 .activity-card {
     height: 100% !important;
+    border: 2px solid #ddd;
 }
 a .activity-card {
     color: #212529;
@@ -60,7 +62,7 @@ a .activity-card {
     font-size: 0.9rem;
 }
 .activity-card .card-img-top {
-    height: 20vh;
+    height: 25vh;
     object-fit: cover;
 }
 

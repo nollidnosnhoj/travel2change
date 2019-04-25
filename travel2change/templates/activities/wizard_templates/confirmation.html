@@ -17,11 +17,89 @@
             <hr>
             <p class="mb-0">Clicking <strong>Submit</strong> means you have filled out the form correctly.</p>
         </div>
+        <div class="table-responsive-sm">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th colspan='2'>Activity Preview</th>
+                    </tr>
+                    <tr>
+                        <td>Title</td>
+                        <td>{{ form_data.title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Host</td>
+                        <td>{{ request.user.host }}</td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td>{{ form_data.description }}</td>
+                    </tr>
+                    <tr>
+                        <td>Region</td>
+                        <td>{{ form_data.region }}</td>
+                    </tr>
+                    <tr>
+                        <td>Highlights</td>
+                        <td>{{ form_data.highlights|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Requirements</td>
+                        <td>{{ form_data.requirements|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Categories</td>
+                        <td>
+                            <ul>
+                                {% for cat in form_data.categories.all %}
+                                <li>{{ cat }}</li>
+                                {% empty %}
+                                <li>None</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tags</td>
+                        <td>
+                            <ul>
+                                {% for tag in form_data.tags.all %}
+                                <li>{{ tag }}</li>
+                                {% empty %}
+                                <li>None</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Price</td>
+                        <td>{{ form_data.price }}</td>
+                    </tr>
+                    <tr>
+                        <td>FareHarbor Item ID</td>
+                        <td>{{ form_data.fh_item_id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Location</td>
+                        <td>
+                            {{ form_data.address }} ({{form_data.latitude}}, {{ form_data.longitude }})
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <br />
-        {% if wizard.steps.prev %}
-            <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
-        {% endif %}
-        <button type="submit" class="btn btn-success">Submit</button>
+        <div class="clearfix">
+            <div class="float-left">
+                {% if wizard.steps.prev %}
+                    <button class="btn btn-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
+                {% endif %}
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            <div class="float-right">
+                <a href="{% url 'activities:create' %}?reset" alt="Reset Activity Form" title="Reset Activity Form" class="btn btn-dark">Reset</a>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock content %}

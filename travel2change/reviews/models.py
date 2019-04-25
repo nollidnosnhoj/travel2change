@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from activities.models import Activity
+from activities.validators import validate_image_size
 
 User = get_user_model()
 
@@ -32,6 +33,7 @@ class Review(models.Model):
                         upload_to=get_review_image_filename,
                         blank=True,
                         null=True,
+                        validators=[validate_image_size],
                     )
 
     show_name       = models.BooleanField(default=False,

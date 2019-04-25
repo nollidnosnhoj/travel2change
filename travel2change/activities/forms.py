@@ -50,6 +50,11 @@ class FeaturedPhotoForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['featured_photo', ]
+        widgets = {
+            'featured_photo': forms.ClearableFileInput(attrs={
+                'required': True,
+            })
+        }
 
 
 class ConfirmationForm(forms.Form):
@@ -58,14 +63,14 @@ class ConfirmationForm(forms.Form):
 
 """ Form that corresponds to each step of the activity creation """
 ACTIVITY_CREATE_FORMS_LIST = [
-    ("0", BasicInfoForm),
-    ("1", HighlightsForm),
-    ("2", RequirementsForm),
-    ("3", CategoriesTagsForm),
-    ("4", PriceForm),
-    ("5", LocationForm),
-    ("6", FeaturedPhotoForm),
-    ("7", ConfirmationForm),
+    ("1", BasicInfoForm),
+    ("2", HighlightsForm),
+    ("3", RequirementsForm),
+    ("4", CategoriesTagsForm),
+    ("5", PriceForm),
+    ("6", LocationForm),
+    ("7", FeaturedPhotoForm),
+    ("8", ConfirmationForm),
 ]
 
 

@@ -10,6 +10,7 @@ from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
 from users.models import Host
+from .validators import validate_image_size
 
 
 User = get_user_model()
@@ -59,7 +60,8 @@ class Region(models.Model):
     image = models.ImageField(
         upload_to=get_region_image_filename,
         blank=True,
-        help_text=_('Image to display in region widget.')
+        help_text=_('Image to display in region widget.'),
+        validators=[validate_image_size],
     )
 
     objects = models.Manager()
@@ -75,7 +77,7 @@ class Region(models.Model):
         if self.image:
             return self.image.url
         else:
-            return '/static/img/regions/default-region.jpg'
+            return '/static/img/defaults/default_region.jpg'
 
 
 class Tag(models.Model):
@@ -199,9 +201,10 @@ class Activity(models.Model):
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
                         blank=False,
-                        default='defaults/default_region.jpg',
+                        default='/static/img/defaults/default_featured_activity.jpg',
                         help_text=_('This photo will be featured on listings and the top'
-                                    'of your activity page.')
+                                    'of your activity page.'),
+                        validators=[validate_image_size],
                     )
     fh_item_id      = models.PositiveIntegerField(
                         verbose_name=_('fareharbor item id'),
@@ -277,7 +280,7 @@ class Activity(models.Model):
 
 class ActivityPhoto(models.Model):
     activity        = models.ForeignKey(Activity, related_name='photos', on_delete=models.CASCADE)
-    file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'))
+    file            = models.ImageField(upload_to=get_photo_image_filename, verbose_name=_('Photo'), validators=[validate_image_size], )
 
 
 """                         ACTIVITY CMS PLUGINS                            """

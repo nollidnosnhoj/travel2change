@@ -294,6 +294,11 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters'
 )
+THUMBNAIL_ALIASES = {
+    '': {
+        'featured_photo': {'size': (500, 500), 'crop': True},
+    }
+}
 # https://github.com/divio/djangocms-bootstrap4
 DJANGOCMS_BOOTSTRAP4_TAG_CHOICES = ['div', 'section', 'article', 'header', 'footer', 'aside']
 DJANGOCMS_BOOTSTRAP4_CAROUSEL_TEMPLATES = (
@@ -338,3 +343,4 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
 
 MAX_PHOTOS_PER_ACTIVITY = 5
 GOOGLE_MAPS_API = env('GOOGLE_MAPS_API')
+FAVORITE_COOLDOWN_IN_MINUTES = 30
