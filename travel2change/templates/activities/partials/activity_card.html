@@ -8,7 +8,7 @@
         {% endthumbnail %}
         <div class="card-body">
             <h4 class="card-title">{{activity.title}}</h4>
-            <p class="card-text">{{activity.host.name}}</p>
+            <p class="card-text">{{activity.host.name}} {% if not activity.is_free %}<span data-toggle="tooltip" data-placement="top" title="{{ activity.price }}">($)</span>{% endif %}</p>
             <p class="card-text">{{activity.region}}</p>
         </div>
     </div>

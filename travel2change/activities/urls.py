@@ -2,6 +2,7 @@ from django.conf.urls import url
 from activities.forms import ACTIVITY_CREATE_FORMS_LIST
 from activities.views import (
     ActivityBrowseView,
+    ActivityBrowseRegionView,
     ActivityDetailView,
     ActivityCreationView,
     ActivityUpdateView,
@@ -25,5 +26,6 @@ urlpatterns = [
     url(r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)/photos/', ActivityPhotoUploadView.as_view(), name='photos'),  # Photo upload URL
     url(r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)/edit/', ActivityUpdateView.as_view(), name='update'),  # Activity Update URL
     url(r'(?P<region>[\w-]+)/(?P<slug>[\w-]+)/', ActivityDetailView.as_view(), name='detail'),  # Activity detail URL
+    url(r'(?P<region>[\w-]+)/', ActivityBrowseRegionView.as_view(), name="browse_region"),
     url(r'^', ActivityBrowseView.as_view(), name="browse"),
 ]
