@@ -86,7 +86,6 @@ class HostActivitiesPublicListView(HostListView):
     model = Activity
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
-    paginate_by = 12
 
     def get_queryset(self):
         return Activity.objects.select_related('host__user').select_related('region').approved().filter(host=self.host).order_by("-approved_time")
