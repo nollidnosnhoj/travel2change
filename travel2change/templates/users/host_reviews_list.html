@@ -16,11 +16,11 @@
 {% addtoblock "css" %}
 <link rel="stylesheet" href="{% static 'css/users/profile.css' %}">
 {% endaddtoblock %}
-{% if reviews %}
-{% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
-{% else %}
+{% for review in reviews %}
+{% include 'reviews/partials/review_host_card.html' with review=review %}
+{% empty %}
 <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
-{% endif %}
+{% endfor %}
 {% endblock content %}
 {% block scripts %}
     <script src="{% static 'js/star-ratings/star-rating.js' %}" type="text/javascript"></script>

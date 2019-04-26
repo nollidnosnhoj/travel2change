@@ -2,6 +2,7 @@ from django. contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Subquery
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
 from users.models import Host
@@ -112,6 +113,6 @@ class HostReviewsListView(HostListView):
     template_name = 'users/host_reviews_list.html'
     
     def get_queryset(self):
-        activities = Activity.objects.approved().filter(host=self.host)
-        reviews = Review.objects.filter(activity__in=activities).order_by("-created").distinct()
+        activities = list(Activity.objects.approved().filter(host=self.host).values_list('pk', flat=True))
+        reviews = Review.objects.select_related('activity__host').filter(activity__in=activities)
         return reviews

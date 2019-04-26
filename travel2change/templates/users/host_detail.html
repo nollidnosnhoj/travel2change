@@ -72,7 +72,7 @@
                 <a href="{% url 'host_reviews' host.slug %}">Show More Reviews</a>
             </div>
             {% for review in reviews %}
-                {% include 'reviews/partials/review_host_card.html' with reviews=reviews %}
+                {% include 'reviews/partials/review_host_card.html' with review=review %}
             {% empty %}
                 <p>No one hasn't reviewed any of {{ host.name }} activities yet.</p>
             {% endfor %}
