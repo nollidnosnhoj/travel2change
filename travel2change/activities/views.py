@@ -147,6 +147,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         award_points(new_review.user, 'review_create')
         new_review.save()
         self.object.review_count += 1
+        messages.success(self.request, "Review successfully submitted")
         return super().form_valid(form)
    
     def get_success_url(self):
@@ -176,7 +177,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         })
 
 
-class ActivityUpdateView(LoginRequiredMixin, UpdateView):
+class ActivityUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Activity
     fields = (
         'title',
