@@ -238,10 +238,6 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader'
             ],
-            'libraries': {
-                'sorl_thumbnail': 'sorl.thumbnail.templatetags.thumbnail',
-                'thumbnail': 'easy_thumbnails.templatetags.thumbnail',
-            },
         },
     },
 ]

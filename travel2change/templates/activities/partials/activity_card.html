@@ -1,11 +1,11 @@
-{% load sorl_thumbnail %}
+{% load sorl_thumbnail staticfiles %}
 <a href="{{ activity.get_absolute_url }}" id="activity_button">
     <div class="activity-card card">
-        {% if activity.featured_photo %}
         {% thumbnail activity.featured_photo "500x500" crop="center" as im %}
         <img class="card-img-top" src="{{ im.url }}" alt="{{ activity.title }}">
+        {% empty %}
+        <img class="card-img-top" src="{% static 'img/no_image_available.jpg' %}" alt="{{ activity.title }}">
         {% endthumbnail %}
-        {% endif %}
         <div class="card-body">
             <h4 class="card-title">{{activity.title}}</h4>
             <p class="card-text">{{activity.host.name}}</p>

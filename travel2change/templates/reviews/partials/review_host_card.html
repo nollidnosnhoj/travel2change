@@ -1,4 +1,4 @@
-{% load humanize %}
+{% load humanize sorl_thumbnail %}
 <div class="review-card card">
     <div class="card-header clearfix">
         <div class="float-left">
@@ -11,7 +11,9 @@
             {% if review.photo %}
             <div class="mr-3">
                 <a data-fancybox="reviewphotos" href="{{ review.photo.url }}">
-                    <img src="{{ review.photo.url }}" class="img-thumbnail" />
+                    {% thumbnail review.photo "250" crop="center" as im %}
+                    <img src="{{ im.url }}" class="img-thumbnail" />
+                    {% endthumbnail %}
                 </a>
             </div>
             {% endif %}

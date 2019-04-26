@@ -9,6 +9,7 @@ from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
 from model_utils import Choices
 from model_utils.fields import MonitorField, StatusField
+from sorl.thumbnail import ImageField
 from users.models import Host
 from .validators import validate_image_size
 
@@ -57,13 +58,12 @@ class ActivityQuerySet(models.QuerySet):
 class Region(models.Model):
     name = models.CharField(max_length=60, blank=False)
     slug = models.SlugField(max_length=20, unique=True)
-    image = models.ImageField(
+    image = ImageField(
         upload_to=get_region_image_filename,
         blank=True,
         help_text=_('Image to display in region widget.'),
         validators=[validate_image_size],
     )
-
     objects = models.Manager()
 
     class Meta:
@@ -197,11 +197,11 @@ class Activity(models.Model):
                         help_text=_("Cost of participation."
                                     "\nIf it's free, then leave it as 0.00 or blank")
                     )
-    featured_photo  = models.ImageField(
+    featured_photo  = ImageField(
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
-                        blank=False,
-                        default='defaults/default_featured_activity.jpg',
+                        blank=True,
+                        null=True,
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.'),
                         validators=[validate_image_size],

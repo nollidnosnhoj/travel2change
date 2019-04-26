@@ -2,6 +2,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from sorl.thumbnail import ImageField
 from activities.models import Activity
 from activities.validators import validate_image_size
 
@@ -28,14 +29,12 @@ class Review(models.Model):
                     )
     content         = models.TextField(_('content'), blank=False)
     rating          = models.IntegerField(choices=RATING_CHOICES)
-    photo           = models.ImageField(
+    photo           = ImageField(
                         _('review photo'),
                         upload_to=get_review_image_filename,
-                        blank=True,
-                        null=True,
+                        blank=True, null=True,
                         validators=[validate_image_size],
                     )
-
     show_name       = models.BooleanField(default=False,
                         help_text=_('Show your name in public. You can see still your name, regardless if checked or not.'))
     show_email      = models.BooleanField(default=False,
