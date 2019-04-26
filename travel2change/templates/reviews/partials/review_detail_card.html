@@ -1,3 +1,4 @@
+{% load sorl_thumbnail %}
 <section class="card">
     <div class="card-body">
         {% if reviews %}
@@ -23,7 +24,9 @@
             {% if review.photo %}
                 <div class="review-photo">
                     <a data-fancybox="reviewphotos" href="{{ review.photo.url }}">
-                        <img src="{{ review.photo.url }}" class="img-thumbnail" />
+                        {% thumbnail review.photo "500" crop="center" as im %}
+                        <img src="{{ im.url }}" class="img-thumbnail" />
+                        {% endthumbnail %}
                     </a>
                 </div>
             {% endif %}

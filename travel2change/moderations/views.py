@@ -16,7 +16,6 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
     model = Activity
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
-    paginate_by = 10
 
     def get_queryset(self):
         # Order Unapproved Activities by Created Time Ascending

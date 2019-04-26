@@ -29,39 +29,53 @@ def is_valid_queryparam(param):
     return (param != '' and param is not None)
 
 
-class ActivityBrowseView(ListView):
+class BrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 12
+    paginate_by = 10
     context_object_name = 'activityBrowse'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.q = None
+        self.title = None
+        self.categories = None
+        self.tags = None
+        self.price = None
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = Activity.objects.select_related('host__user').select_related('region').approved()
 
-        q = self.request.GET.get('q')
-        title = self.request.GET.get('title')
-        region = self.request.GET.get('region')
-        categories = self.request.GET.get('categories')
-        tags = self.request.GET.getlist('tags')
+        if self.region:
+            qs = qs.filter(region__slug=self.region)
 
-        if is_valid_queryparam(q):
+        self.q = self.request.GET.get('q')
+        self.title = self.request.GET.get('title')
+        self.categories = self.request.GET.get('categories')
+        self.tags = self.request.GET.getlist('tags')
+        self.price = self.request.GET.get('price')
+
+        if is_valid_queryparam(self.q):
             from django.db.models import Q
             qs = qs.filter(
-                Q(title__icontains=q) | Q(region__slug=q) | Q(categories__slug=q) | Q(tags__slug=q)
+                Q(title__icontains=self.q) | Q(region__slug=self.q) | Q(categories__slug=self.q) | Q(tags__slug=self.q)
             ).distinct()
 
-        if is_valid_queryparam(region):
-            qs = qs.filter(region__slug=region)
+        if is_valid_queryparam(self.categories):
+            qs = qs.filter(categories__slug=self.categories)
 
-        if is_valid_queryparam(categories):
-            qs = qs.filter(categories__slug=categories)
+        if is_valid_queryparam(self.tags) and self.tags:
+            for tag in self.tags:
+                qs = qs.filter(tags__slug=self.tag).distinct()
 
-        if is_valid_queryparam(tags) and tags:
-            for tag in tags:
-                qs = qs.filter(tags__slug=tag).distinct()
-
-        if is_valid_queryparam(title):
-            qs = qs.filter(title__icontains=title)
+        if is_valid_queryparam(self.title):
+            qs = qs.filter(title__icontains=self.title)
+        
+        if is_valid_queryparam(self.price):
+            if self.price == 'free':
+                qs = qs.filter(price__exact=0)
+            if self.price == 'paid':
+                qs = qs.filter(price__gt=0)
         
         return qs.order_by("-is_featured")
     
@@ -70,7 +84,24 @@ class ActivityBrowseView(ListView):
         context['regions'] = Region.objects.all()
         context['categories'] = Category.objects.all()
         context['tags'] = Tag.objects.all()
+        try:
+            context['current_region'] = Region.objects.get(slug=self.region)
+        except Region.DoesNotExist:
+            context['current_region'] = 'All Regions'
         return context
+
+
+class ActivityBrowseRegionView(BrowseView):
+    def dispatch(self, request, *args, **kwargs):
+        self.region = self.kwargs['region']
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ActivityBrowseView(BrowseView):
+    def dispatch(self, request, *args, **kwargs):
+        self.region = None
+        return super().dispatch(request, *args, **kwargs)
+
 
 class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, DetailView):
     """ View for showing the details of the activity """

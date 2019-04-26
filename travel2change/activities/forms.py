@@ -50,11 +50,6 @@ class FeaturedPhotoForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['featured_photo', ]
-        widgets = {
-            'featured_photo': forms.ClearableFileInput(attrs={
-                'required': True,
-            })
-        }
 
 
 class ConfirmationForm(forms.Form):

@@ -55,7 +55,7 @@ class HostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        activities = Activity.objects.approved().filter(host=self.object).order_by('-approved_time')
+        activities = Activity.objects.select_related('region').select_related('host__user').approved().filter(host=self.object).order_by('-approved_time')
         reviews = Review.objects.filter(activity__in=activities).order_by('-created').distinct()
         # Display 5 activities of the host's, ordered by the creation time
         context['activities'] = activities[:self.number_of_activites_in_profile]

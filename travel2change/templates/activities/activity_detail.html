@@ -1,5 +1,5 @@
 {% extends "container.html" %}
-{% load cms_tags google_maps_api crispy_forms_tags social_share cache staticfiles %}
+{% load cms_tags google_maps_api crispy_forms_tags social_share sorl_thumbnail staticfiles %}
 {% block title %}{{ activity.title }} - travel2change{% endblock title %}
 {% block content %}
 {% block styles %}
@@ -20,7 +20,11 @@
 <div class="row">
     <article class="single-activity col-lg-8">
         <section class="card">
-            <img src="{{ activity.featured_photo.url }}" style="width: 100%;height:50vh;object-fit:cover;" alt="{{ activity.title }}" title="{{ activity.title }}" />
+            {% if activity.featured_photo %}
+            {% thumbnail activity.featured_photo "1280x720" crop="center" as im %}
+            <img src="{{ im.url }}" style="width: 100%;height:50vh;object-fit:cover;" alt="{{ activity.title }}" title="{{ activity.title }}" />
+            {% endthumbnail %}
+            {% endif %}
             <div class="activity-body card-body">
                 <section class="activity-title-cover jumbotron">
                     <h1 class="display-4">{{ activity.title }}</h1>
@@ -103,7 +107,16 @@
                 <section class="location">
                     <h2>Address</h2>
                     <p>{{ activity.address }}</p>
-                    <div id="map" style="height: 300px;"></div>
+                    <div id="map" style="height: 300px;margin-bottom: 2rem;"></div>
+                    <span class="directions">
+                        <a  href="https://maps.google.com/maps?daddr={{activity.latitude}},{{activity.longitude}}"
+                            target="_blank"
+                            class="btn btn-light"
+                            alt="Get Directions"
+                        >
+                            Get Directions
+                        </a>
+                    </span>
                     <script>
                     function initMap() {
                         var myLatLng = {
