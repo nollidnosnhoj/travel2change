@@ -1,8 +1,10 @@
-{% load thumbnail %}
+{% load sorl_thumbnail %}
 <a href="{{ activity.get_absolute_url }}" id="activity_button">
     <div class="activity-card card">
         {% if activity.featured_photo %}
-        <img class="card-img-top" src="{% thumbnail activity.featured_photo 500x500 crop %}" alt="{{ activity.title }}">
+        {% thumbnail activity.featured_photo "500x500" crop="center" as im %}
+        <img class="card-img-top" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ activity.title }}">
+        {% endthumbnail %}
         {% endif %}
         <div class="card-body">
             <h4 class="card-title">{{activity.title}}</h4>

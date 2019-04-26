@@ -8,11 +8,13 @@
     </div>
     <div class="card-body">
         <div class="media">
+            {% if review.photo %}
             <div class="mr-3">
                 <a data-fancybox="reviewphotos" href="{{ review.photo.url }}">
                     <img src="{{ review.photo.url }}" class="img-thumbnail" />
                 </a>
             </div>
+            {% endif %}
             <div class="media-body">
                 <h5 class="card-title">
                     Activity: <a

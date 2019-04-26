@@ -96,6 +96,7 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'django_social_share',
     'formtools',
+    'sorl.thumbnail',
 )
 LOCAL_APPS = (
     'users',
@@ -237,6 +238,10 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader'
             ],
+            'libraries': {
+                'sorl_thumbnail': 'sorl.thumbnail.templatetags.thumbnail',
+                'easy_thumbnails': 'easy_thumbnails.templatetags.thumbnail',
+            },
         },
     },
 ]

@@ -13,7 +13,11 @@
       </ul>
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
-        <a href="{% url 'activities:create' %}" class="nav-link" alt="Host Activity" title="Host Activity"><i class="far fa-edit"></i> {% trans 'Host Activity' %}</a>
+        {% if user.host %}
+        <a href="{% url 'activities:create' %}" class="nav-link" alt="Host Activity" title="Host Activity">
+          <i class="far fa-edit"></i> {% trans 'Host Activity' %}
+        </a>
+        {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
             aria-haspopup="true" aria-expanded="false">
