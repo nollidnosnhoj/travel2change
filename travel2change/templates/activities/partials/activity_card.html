@@ -3,7 +3,7 @@
     <div class="activity-card card">
         {% if activity.featured_photo %}
         {% thumbnail activity.featured_photo "500x500" crop="center" as im %}
-        <img class="card-img-top" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ activity.title }}">
+        <img class="card-img-top" src="{{ im.url }}" alt="{{ activity.title }}">
         {% endthumbnail %}
         {% endif %}
         <div class="card-body">

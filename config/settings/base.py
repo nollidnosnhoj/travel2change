@@ -240,7 +240,7 @@ TEMPLATES = [
             ],
             'libraries': {
                 'sorl_thumbnail': 'sorl.thumbnail.templatetags.thumbnail',
-                'easy_thumbnails': 'easy_thumbnails.templatetags.thumbnail',
+                'thumbnail': 'easy_thumbnails.templatetags.thumbnail',
             },
         },
     },
