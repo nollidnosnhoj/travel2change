@@ -107,7 +107,16 @@
                 <section class="location">
                     <h2>Address</h2>
                     <p>{{ activity.address }}</p>
-                    <div id="map" style="height: 300px;"></div>
+                    <div id="map" style="height: 300px;margin-bottom: 2rem;"></div>
+                    <span class="directions">
+                        <a  href="https://maps.google.com/maps?daddr={{activity.latitude}},{{activity.longitude}}"
+                            target="_blank"
+                            class="btn btn-light"
+                            alt="Get Directions"
+                        >
+                            Get Directions
+                        </a>
+                    </span>
                     <script>
                     function initMap() {
                         var myLatLng = {
