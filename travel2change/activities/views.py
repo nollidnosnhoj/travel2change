@@ -32,7 +32,7 @@ def is_valid_queryparam(param):
 class BrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 12
+    paginate_by = 10
     context_object_name = 'activityBrowse'
 
     def dispatch(self, request, *args, **kwargs):
