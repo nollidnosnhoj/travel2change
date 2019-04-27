@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='description',
-            field=models.TextField(help_text='Briefly describe your activity.', max_length=400, verbose_name='description'),
+            field=models.TextField(help_text='Briefly describe your activity.', max_length=800, verbose_name='description'),
         ),
         migrations.AlterField(
             model_name='activity',
