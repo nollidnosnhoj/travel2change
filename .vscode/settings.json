@@ -13,5 +13,8 @@
     "python.linting.flake8Args": [
         "--ignore=E221, E126, E501, E301, W293, E128, E302",
         "--verbose",
-    ]
+    ],
+    "[plaintext]": {
+        "editor.quickSuggestions": false,
+    }
 }
