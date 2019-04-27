@@ -114,6 +114,8 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
+        if not self.object.is_approved:
+            messages.warning(request, "This activity is currently not published, and awaiting approval.")
         self.can_review = self.has_review_permission(request)
         return super().dispatch(request, *args, **kwargs)
  
@@ -148,6 +150,10 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         new_review.save()
         self.object.review_count += 1
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Review cannot be submitted. Please check for validation errors.")
+        return super().form_invalid(form)
    
     def get_success_url(self):
         """ Redirect to activity's photos page after successful upload """

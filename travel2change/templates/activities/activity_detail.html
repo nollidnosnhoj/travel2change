@@ -8,14 +8,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 {% endblock styles %}
 {% block content %}
-{% if not activity.is_approved %}
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    This activity is not approved yet, and is only visible to the host and staff users.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endif %}
 {% render_model_block activity %}
 <div class="single-activity card">
     <div id="activityPhotoControls" class="carousel slide" data-ride="carousel">
