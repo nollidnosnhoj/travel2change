@@ -91,7 +91,7 @@ def unaward_points(target, key):
     """
     point_value, points = get_points(key)
     try:
-        award_points = AwardedPoint.objects.get(target=target, point_value=point_value, points=points)
+        award_points = AwardedPoint.objects.filter(target=target, point_value=point_value, points=points).first()
     except AwardedPoint.DoesNotExist:
         return
     award_points.delete()
