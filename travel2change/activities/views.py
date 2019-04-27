@@ -74,7 +74,7 @@ class BrowseView(ListView):
 
         if is_valid_queryparam(self.tags) and self.tags:
             for tag in self.tags:
-                qs = qs.filter(tags__slug=self.tag).distinct()
+                qs = qs.filter(tags__slug=tag).distinct()
 
         if is_valid_queryparam(self.title):
             qs = qs.filter(title__icontains=self.title)

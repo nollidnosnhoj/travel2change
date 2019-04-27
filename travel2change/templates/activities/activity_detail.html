@@ -75,7 +75,7 @@
                         <div class="row">
                             {% for tag in activity.tags.all %}
                             <div class="col-6">
-                                <a href="{% url 'activities:browse' %}?tag={{tag.slug}}">{% if tag.font_awesome %}<i class="{{tag.font_awesome}}"></i>{% endif %}{{ tag.name }}</a>
+                                <a href="{% url 'activities:browse' %}?tags={{tag.slug}}">{% if tag.font_awesome %}<i class="{{tag.font_awesome}}"></i>{% endif %}{{ tag.name }}</a>
                             </div>
                             {% endfor %}
                         </div>
