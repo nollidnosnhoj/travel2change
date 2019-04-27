@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class PointValue(models.Model):
-    key = models.CharField(_('key'), max_length=50, help_text=_('Choose a key name of this point value'))
+    key = models.CharField(_('key'), max_length=50, unique=True, help_text=_('Choose a key name of this point value'))
     value = models.IntegerField(_('value'), blank=False, default=0)
 
     def __str__(self):
@@ -72,6 +72,8 @@ def award_points(target, key, reason=""):
         reason (string) - Reasons to award user instance
     """
     point_value, points = get_points(key)
+    if point_value is None:
+        reason = "{0} key cannot be found in PointValue table.".format(key)
     award_points = AwardedPoint(points=points, point_value=point_value, reason=reason)
     if isinstance(target, get_user_model()):
         award_points.target = target
