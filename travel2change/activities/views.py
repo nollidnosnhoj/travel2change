@@ -114,6 +114,8 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
+        if not self.object.is_approved:
+            messages.warning(request, "This activity is currently not published, and awaiting approval.")
         self.can_review = self.has_review_permission(request)
         return super().dispatch(request, *args, **kwargs)
  
@@ -149,6 +151,10 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         self.object.review_count += 1
         messages.success(self.request, "Review successfully submitted")
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Review cannot be submitted. Please check for validation errors.")
+        return super().form_invalid(form)
    
     def get_success_url(self):
         """ Redirect to activity's photos page after successful upload """
@@ -163,7 +169,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Activity successfully deleted."
 
     def get_object(self):
-        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
+        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -172,8 +178,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         """ Redirect to activity's photos page after successful upload """
         return reverse('activities:photos', kwargs={
-            'region': self.kwargs['region'],
-            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk'],
         })
 
 
@@ -197,7 +202,7 @@ class ActivityUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Activity successfully updated."
 
     def get_object(self):
-        return get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
+        return get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
 
     def form_invalid(self, form):
         messages.error(self.request, "Activity cannot be updated. Please check for validation errors.")
@@ -214,7 +219,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         """ Get the current activity """
-        self.activity = get_object_or_404(Activity, slug=self.kwargs['slug'], host=self.request.user.host)
+        self.activity = get_object_or_404(Activity, pk=self.kwargs['pk'], host=self.request.user.host)
         return super().dispatch(request, *args, **kwargs)
 
     # Upload the photos for the activities
@@ -243,8 +248,7 @@ class ActivityPhotoUploadView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('activities:photos', kwargs={
-            'region': self.kwargs['region'],
-            'slug': self.kwargs['slug'],
+            'pk': self.kwargs['pk'],
         })
     
     def get_context_data(self, **kwargs):

@@ -3,6 +3,9 @@ from .models import PointValue, AwardedPoint
 
 class AwardedPointAdmin(admin.ModelAdmin):
     list_display = ('target', 'key', 'points', 'reason')
+    fieldsets = (
+        (None, {'fields': ('target', 'points', 'reason', )}),
+    )
 
 
 admin.site.register(PointValue)
