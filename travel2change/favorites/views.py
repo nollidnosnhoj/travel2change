@@ -17,9 +17,6 @@ class FavoritesListView(LoginRequiredMixin, ListView):
 
 
 class SetFavoritesView(View):
-    """
-    This will either create or delete favorite object, based on whether it exists or not.
-    """
     model = Favorite
     
     def post(self, request, pk):
@@ -28,6 +25,7 @@ class SetFavoritesView(View):
             favorite, created = self.model.objects.get_or_create(
                 user=request.user, activity=activity,
             )
+            # If user already favorited, delete the favorite object (unfavorite)
             if not created:
                 favorite.delete()
             added = '#d63031'

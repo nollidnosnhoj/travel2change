@@ -2,7 +2,6 @@ from django. contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Subquery
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
 from users.models import Host
@@ -13,9 +12,6 @@ from reviews.models import Review
 User = get_user_model()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    """
-    Show the view where the user can update their first and last name.
-    """
     model = User
     fields = ['first_name', 'last_name', ]
     template_name = "users/user_update.html"
@@ -34,9 +30,6 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
-    """
-    This shows a list of reviews created by the viewing user.
-    """
     model = Review
     context_object_name = "reviews"
     template_name = "users/user_reviews.html"
@@ -46,9 +39,6 @@ class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
 
 
 class HostDetailView(DetailView):
-    """
-    This shows the host profile.
-    """
     model = Host
     context_object_name = 'host'
     number_of_activites_in_profile = 8
@@ -65,7 +55,6 @@ class HostDetailView(DetailView):
 
 
 class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    """ This updates the host profile """
     model = Host
     fields = ['_name', 'custom_slug', 'description', 'phone', 'website', 'fh_username', ]
     template_name_suffix = '_update'
@@ -83,7 +72,6 @@ class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 class HostActivitiesPublicListView(HostListView):
-    """ This shows a list of the host's activities, that can be viewed by anyone """
     model = Activity
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
@@ -93,7 +81,6 @@ class HostActivitiesPublicListView(HostListView):
 
 
 class HostActivitiesDashboardView(DetailView):
-    """ This shows a list of host's activities, only shown to the host """
     model = Host
     template_name = "users/host_activities_dashboard.html"
 
@@ -107,7 +94,6 @@ class HostActivitiesDashboardView(DetailView):
 
 
 class HostReviewsListView(HostListView):
-    """ This shows all the reviews for activities created by the host """
     model = Review
     context_object_name = "reviews"
     template_name = 'users/host_reviews_list.html'

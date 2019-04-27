@@ -23,7 +23,13 @@ from users.models import Host
 from points.models import award_points
 from .forms import PhotoUploadForm
 from .mixins import UnapprovedActivityMixin, ReviewCheck
-from .models import Activity, ActivityPhoto, Region, Category, Tag
+from .models import (
+    Activity,
+    ActivityPhoto,
+    Region,
+    Category,
+    Tag
+)
 
 def is_valid_queryparam(param):
     return (param != '' and param is not None)
@@ -32,7 +38,7 @@ def is_valid_queryparam(param):
 class BrowseView(ListView):
     model = Activity
     template_name = 'activities/activity_browse.html'
-    paginate_by = 10
+    paginate_by = 12
     context_object_name = 'activityBrowse'
 
     def dispatch(self, request, *args, **kwargs):
@@ -44,6 +50,7 @@ class BrowseView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
+        # get all approved activities
         qs = Activity.objects.select_related('host__user').select_related('region').approved()
 
         if self.region:
@@ -55,6 +62,7 @@ class BrowseView(ListView):
         self.tags = self.request.GET.getlist('tags')
         self.price = self.request.GET.get('price')
 
+        # filter by get var params
         if is_valid_queryparam(self.q):
             from django.db.models import Q
             qs = qs.filter(
@@ -104,8 +112,6 @@ class ActivityBrowseView(BrowseView):
 
 
 class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, DetailView):
-    """ View for showing the details of the activity """
- 
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
@@ -125,6 +131,7 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         context['reviews'] = Review.objects.select_related('activity').filter(activity=self.object).order_by('-created')
         context['can_review'] = self.can_review
         if self.request.user.is_authenticated:
+            # check if the user already favorited activity
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
    
@@ -270,6 +277,7 @@ class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, NamedUrlSess
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_photos'))
     permission_denied_message = "You must be a host to view page."
 
+    # Templates used for each step
     STEP_TEMPLATES = {
         "1": "activities/wizard_templates/default.html",
         "2": "activities/wizard_templates/default.html",

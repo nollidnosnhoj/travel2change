@@ -23,7 +23,6 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
 
 
 # A Confirmation View for Approving Activity
-# 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
     model = Activity
     fields = ('fh_item_id', )
@@ -65,6 +64,8 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
 def send_notification(instance, subject, template_prefix, **kwargs):
     """
     Send email to the activity's host.
+
+    template can be found in => templates/moderations/templates/
     
     Paramters:
         instance - the activity instance.
