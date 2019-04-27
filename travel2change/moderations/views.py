@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, ListView, UpdateView
@@ -24,7 +24,7 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
 
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
     """
-    Will approve the activity, making the activity public to view for everyone, 
+    Will approve the activity, making the activity public to view for everyone,
     and will send a notification email to the host.
     """
     model = Activity
@@ -38,11 +38,6 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
         instance.status = Activity.STATUS.approved
         send_notification(instance, "Your Activity Was Approved.", "approval")
         instance.save()
-        return redirect(
-            'activities:detail',
-            region=instance.region.slug,
-            slug=instance.slug,
-        )
         return super().form_valid(form)
 
 

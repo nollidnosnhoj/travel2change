@@ -84,7 +84,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
-        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
+        help_text=_('This will display an icon next to a tag. Format: <i class="(icon name)"></i>'))
 
     objects = models.Manager()
 
@@ -98,8 +98,6 @@ class Tag(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
     slug = models.SlugField(max_length=20, unique=True)
-    font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('category icon'),
-        help_text=_('This will display an icon next to a tag. Format: fa-(icon name)'))
 
     objects = models.Manager()
 
@@ -200,8 +198,7 @@ class Activity(models.Model):
     featured_photo  = ImageField(
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
-                        blank=True,
-                        null=True,
+                        blank=False,
                         help_text=_('This photo will be featured on listings and the top'
                                     'of your activity page.'),
                         validators=[validate_image_size],

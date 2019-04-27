@@ -15,7 +15,7 @@ class ActivityAdmin(FrontendEditableAdminMixin, admin.ModelAdmin):
         ('Location', {'fields': ('address', 'latitude', 'longitude', )}),
     )
     list_display = (
-        'title', 'host', 'approved_time', 'review_count',
+        'title', 'host', 'region', 'approved_time', 'created', 'review_count',
     )
     readonly_fields = ('slug', 'review_count', 'approved_time',)
     inlines = [ActivityPhotosInline, ]
