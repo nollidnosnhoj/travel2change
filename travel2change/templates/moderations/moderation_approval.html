@@ -2,23 +2,40 @@
 {% block title %}Approve {{ activity.title }}{% endblock title %}
 {% block content %}
 <div class="row">
-    <article>
+    <article class="col-md-8">
         <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">Approving Activity</h4>
             <p>
-                Approving an activity means someone has reviewed the activity and verified that it meets the guidelines. 
-                It also means that a FareHarbor item has been created for the user. 
+                Once the activity is approved, it will be published for everyone to see.<br />
+                Please make sure that the FareHarbor widget is using the correct FareHarbor Item ID.
             </p>
             <hr>
             <p class="mb-0">
-                If the activity is free, then a FareHarbor item will be provided. If not, then the 
-                host will need to have their own FareHarbor item ID.
+                If the activity is free, then travel2change will provide a FareHarbor item ID.<br />
+                If not, then the host of the activity will need to provide a FareHarbori item ID.
+            </p>
+            <hr>
+            <p class="mb-0">
+                The host will receive an email about the activity approval.
             </p>
         </div>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="submit" class="btn btn-success">Approve Activity</button>
         </form>
     </article>
+    <aside class="col-md-4">
+        <div>
+            <p><strong>FareHarbor username: </strong>{{ object.host.get_fh_username }}</p>
+            <p><strong>FareHarbor item ID: </strong>{{ object.fh_item_id }}</p>
+        </div>
+        {% if object.fh_item_id %}
+        <div>
+            <script
+                src="https://fareharbor.com/embeds/script/calendar/{{ object.host.get_fh_username }}/items/{{ object.fh_item_id }}/?fallback=simple&flow=18919">
+            </script>
+        </div>
+        {% endif %}
+    </aside>
 </div>
 {% endblock content %}
