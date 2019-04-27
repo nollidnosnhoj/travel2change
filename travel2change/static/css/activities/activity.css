@@ -5,16 +5,30 @@ body {
 .photo-row, .edit-profile, .fareharbor-widget, .social_share {
     margin-bottom: 2rem !important;
 }
-.single-activity .jumbotron {
-    background-color: transparent;
+.single-activity .activity_gallery {
+    width: 100%;
+    max-height: 50vh;
+    object-fit: cover;
 }
 .single-activity .activity-title-cover {
     border-radius: 0 !important;
     border-bottom: 1px solid #ddd;
+    background-color: transparent;
+    padding: 1.5rem;
 }
 .single-activity .activity-host .modified {
     font-size: 0.75rem;
     color: #b2bec3;
+}
+.single-activity .activity-tags div {
+    margin-top:0.25rem; margin-bottom:0.25rem;
+}
+.single-activity .activity-tags a {
+    text-decoration: none;
+}
+.single-activity .activity-tags i {
+    margin-right: 5px;
+    font-size: 18px;
 }
 .single-activity section {
     margin-bottom: 2rem;

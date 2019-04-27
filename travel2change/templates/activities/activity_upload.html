@@ -1,15 +1,14 @@
-{% extends "container.html" %}{% load crispy_forms_tags sekizai_tags cache staticfiles %}
+{% extends "container.html" %}{% load crispy_forms_tags sekizai_tags sorl_thumbnail staticfiles %}
 {% block title %}Edit Photos - {{ activity.title }}{% endblock title %}
 {% block content %}
 {% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static 'css/activities/activity.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 {% endaddtoblock %}
 <div class="row">
     <aside class="col-sm-4">
         <div class="list-group">
-            <a href="{% url 'activities:update' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action">Edit Activity</a>
-            <a href="{% url 'activities:photos' activity.region.slug activity.slug %}" class="list-group-item list-group-item-action active">Edit Images</a>
+            <a href="{% url 'activities:update' activity.pk %}" class="list-group-item list-group-item-action">Edit Activity</a>
+            <a href="{% url 'activities:photos' activity.pk %}" class="list-group-item list-group-item-action active">Edit Images</a>
             <a href="{{ activity.get_absolute_url }}" class="list-group-item list-group-item-action">View Activity</a>
         </div>
         <br />
@@ -29,11 +28,14 @@
             {% for photo in photos %}
             <div class="photo-img col-6 col-md-4">
                 <a data-fancybox="gallery" href="{{ photo.file.url }}" title="{{ photo.file.name }}" alt="{{ photo.file.name }}">
-                    <img    src="{{ photo.file.url }}" 
-                            alt="{{ activity.title }} - Photo #{{ forloop.counter1 }}"
+                    {% thumbnail photo.file "200x200" crop="center" as im %}
+                    <img    src="{{ im.url }}" 
+                            width="{{ im.width }}"
+                            height="{{ im.height }}"
                             class="img-thumbnail"
-                            style="width:25vh;height:25vh;margin:0.5rem 0;"
+                            style="margin:0.5rem 0;"
                     >
+                    {% endthumbnail %}
                 </a>
                 <button class="delete_photo btn btn-danger btn-sm" data-url="{% url 'activities:photo_delete' photo.pk %}">Delete</button></a>
             </div>
