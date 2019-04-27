@@ -23,6 +23,7 @@ class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse('user_reviews')
 
+
 class DeleteReview(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Review
     success_message = "Review successfully removed."

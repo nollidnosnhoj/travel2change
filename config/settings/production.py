@@ -3,7 +3,7 @@ from config.settings.base import env
 
 # GENERAL
 SECRET_KEY = env('SECRET_KEY')
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['.nollidnosnhoj.com'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['.travel2change.org'])
 
 INSTALLED_APPS += ('gunicorn', )  # noqa F405
 

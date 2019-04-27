@@ -12,28 +12,40 @@ gettext = lambda s: s # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 SITE_DOMAIN = env('SITE_DOMAIN', default='127.0.0.1:8000')
+
+# Google API
+GOOGLE_MAPS_API = env('GOOGLE_MAPS_API')
+
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = 'Pacific/Honolulu'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
 USE_L10N = True
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
+
+# http://docs.django-cms.org/en/latest/how_to/install.html#language-settings
 LANGUAGES = (
     ('en', gettext('en')),
 )
 
 # APPS
 # ------------------------------------------------------------------------------
+# Django Core Apps
 DJANGO_APPS = (
     'djangocms_admin_style',
     'django.contrib.auth',
@@ -47,6 +59,7 @@ DJANGO_APPS = (
     'django.contrib.humanize',
     'django.contrib.redirects',
 )
+# Django CMS Apps
 DJANGO_CMS_APPS = (
     'djangocms_modules',
     'cms',
@@ -71,6 +84,7 @@ DJANGO_CMS_APPS = (
     'djangocms_history',
     'djangocms_attributes_field',
 )
+# Django CMS Bootstrap Apps
 DJANGO_CMS_BOOTSTRAP_APPS = (
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
@@ -88,11 +102,13 @@ DJANGO_CMS_BOOTSTRAP_APPS = (
     'djangocms_bootstrap4.contrib.bootstrap4_tabs',
     'djangocms_bootstrap4.contrib.bootstrap4_utilities',
 )
+# Third party apps
 THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'autoslug',
+    'axes',
     'crispy_forms',
     'django_cleanup.apps.CleanupConfig',
     'django_filters',
@@ -100,6 +116,7 @@ THIRD_PARTY_APPS = (
     'formtools',
     'sorl.thumbnail',
 )
+# Local (travel2change) apps
 LOCAL_APPS = (
     'users',
     'activities',
@@ -113,41 +130,39 @@ INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + DJANGO_CMS_APPS + DJANGO_CMS_BOOTSTR
 
 # URLS
 # ------------------------------------------------------------------------------
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = 'config.urls'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # DATABASE
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-# ------------------------------------------------------------------------------
-DATABASES = {
-    'default': env.db('DATABASE_URL'),
-}
+DATABASES = {'default': env.db('DATABASE_URL'), }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # MIGRATIONS
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-# ------------------------------------------------------------------------------
-MIGRATION_MODULES = {
-
-}
+MIGRATION_MODULES = {}
 
 # AUTHENTICATION
-# ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesModelBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = 'users.CustomUser'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 LOGIN_REDIRECT_URL = "/"
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = 'account_login'
 
 # PASSWORDS
-# ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
@@ -158,12 +173,10 @@ PASSWORD_HASHERS = [
 
 # EMAIL
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-# ------------------------------------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-# ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool('ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
@@ -174,7 +187,6 @@ ACCOUNT_FORMS = {'signup': 'users.forms.SignupForm'}
 
 # MIDDLEWARE
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
-# ------------------------------------------------------------------------------
 MIDDLEWARE = [
     'django.middleware.cache.UpdateCacheMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
@@ -197,25 +209,27 @@ MIDDLEWARE = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-# ------------------------------------------------------------------------------
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = str(BASE_DIR('staticfiles'))
+
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = (
-    str(DATA_DIR.path('static')),
-)
+STATICFILES_DIRS = (str(DATA_DIR.path('static')), )
+
 # MEDIA
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/2.2/topics/files/
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = str(BASE_DIR('media'))
 
 # TEMPLATES
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
-# ------------------------------------------------------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -244,6 +258,8 @@ TEMPLATES = [
         },
     },
 ]
+# Django Crispy Forms
+# https://django-crispy-forms.readthedocs.io/en/latest/
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_CLASS_CONVERTERS = {
     'textinput': "form-control cst__radius",
@@ -255,6 +271,9 @@ CRISPY_CLASS_CONVERTERS = {
     'passwordinput': "form-control cst__radius",
     'select': "form-control cst__radius",
 }
+
+# Django Messages
+# https://docs.djangoproject.com/en/2.2/ref/contrib/messages
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',
@@ -264,8 +283,9 @@ MESSAGE_TAGS = {
 }
 
 # DJANGO CMS
-# ------------------------------------------------------------------------------
 # http://docs.django-cms.org/en/latest/reference/configuration.html#std:setting-CM
+
+# http://docs.django-cms.org/en/latest/reference/configuration.html#cms-languages
 CMS_LANGUAGES = {
     1: [
         {
@@ -282,16 +302,20 @@ CMS_LANGUAGES = {
         'hide_untranslated': False,
     },
 }
+
 # http://docs.django-cms.org/en/latest/introduction/02-templates_placeholders.html?highlight=CMS_TEMPLATES#templates
 CMS_TEMPLATES = (
     ('home.html', 'Homepage'),
     ('fullwidth.html', 'Fullwidth'),
     ('signup.html', 'Sign Up')
 )
+
 # http://docs.django-cms.org/en/latest/topics/permissions.html#cms-permission-mode
 CMS_PERMISSION = True
+
 # http://docs.django-cms.org/en/latest/reference/configuration.html#std:setting-CMS_PLACEHOLDER_CONF
 CMS_PLACEHOLDER_CONF = {}
+
 # https://easy-thumbnails.readthedocs.io/en/latest/ref/settings/#easy_thumbnails.conf.Settings.THUMBNAIL_PROCESSORS
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -299,11 +323,8 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters'
 )
-THUMBNAIL_ALIASES = {
-    '': {
-        'featured_photo': {'size': (500, 500), 'crop': True},
-    }
-}
+
+# Django CMS Bootstrap
 # https://github.com/divio/djangocms-bootstrap4
 DJANGOCMS_BOOTSTRAP4_TAG_CHOICES = ['div', 'section', 'article', 'header', 'footer', 'aside']
 DJANGOCMS_BOOTSTRAP4_CAROUSEL_TEMPLATES = (
@@ -346,5 +367,11 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('custom', _('Custom')),
 )
 
-MAX_PHOTOS_PER_ACTIVITY = env.int('MAX_PHOTOS_PER_ACTIVITY', default=5)
-GOOGLE_MAPS_API = env('GOOGLE_MAPS_API')
+# Django Axes
+# https://django-axes.readthedocs.io/en/latest/index.html
+AXES_USERNAME_FORM_FIELD = 'login'
+
+# Other Settings
+
+# Maximum Photos per Activity
+MAX_PHOTOS_PER_ACTIVITY = 5

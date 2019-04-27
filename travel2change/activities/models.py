@@ -115,14 +115,15 @@ class Activity(models.Model):
     host            = models.ForeignKey(
                         Host,
                         related_name=_("host"),
-                        on_delete=models.CASCADE
+                        on_delete=models.CASCADE,
+                        help_text=_('The host that is hosting the activity.')
                     )
     title           = models.CharField(
                         verbose_name=_("title"),
                         max_length=255,
                         blank=False,
                         null=False,
-                        help_text=_("Insert a name for your activity"),
+                        help_text=_("Give a name for your activity that will attract travelers."),
                     )
     slug            = AutoSlugField(
                         populate_from='title',
@@ -131,7 +132,7 @@ class Activity(models.Model):
     description     = models.TextField(
                         verbose_name=_("description"),
                         max_length=400,
-                        help_text=_("Describe the activity. (Max. 400 characters)")
+                        help_text=_("Briefly describe your activity.")
                     )
     highlights      = models.TextField(
                         verbose_name=_("highlights"),
@@ -151,14 +152,14 @@ class Activity(models.Model):
                         verbose_name=_("region"),
                         related_name=_("activities"),
                         related_query_name=_("activity"),
-                        help_text=_("Choose a region where you activity will be held."),
+                        help_text=_("Choose a region where your activity takes place."),
                         on_delete=models.CASCADE
                     )
     categories      = models.ManyToManyField(
                         Category,
                         verbose_name=_('categories'),
                         blank=False,
-                        help_text=_("Select categories the best fits your activity.")
+                        help_text=_("Select what type(s) of activity you are hosting.")
                     )
     tags            = models.ManyToManyField(
                         Tag,
@@ -192,15 +193,13 @@ class Activity(models.Model):
                         default=0.00,
                         blank=True,
                         validators=[MinValueValidator(0.00)],
-                        help_text=_("Cost of participation."
-                                    "\nIf it's free, then leave it as 0.00 or blank")
+                        help_text=_("Cost for participating. Leave blank or 0 if it's free.")
                     )
     featured_photo  = ImageField(
                         upload_to=get_featured_image_filename,
                         verbose_name=_('featured photo'),
                         blank=False,
-                        help_text=_('This photo will be featured on listings and the top'
-                                    'of your activity page.'),
+                        help_text=_('This image will show up on your activity card when browsing.'),
                         validators=[validate_image_size],
                     )
     fh_item_id      = models.PositiveIntegerField(
@@ -208,7 +207,7 @@ class Activity(models.Model):
                         blank=True,
                         null=True,
                         default=None,
-                        help_text=_('This is the FareHarbor item for your activity.')
+                        help_text=_('This is the ID number of your FareHarbor item. Leave blank if your activity is free.')
                     )
 
     """ Private fields """

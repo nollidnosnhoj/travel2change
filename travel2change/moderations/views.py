@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, ListView, UpdateView
@@ -11,29 +11,32 @@ from django.views.generic import DeleteView, ListView, UpdateView
 from activities.models import Activity
 from .mixins import StaffUserOnlyMixin
 
+# Shows all the unapproved (awaiting approval) activities in a view
+# Only staff users (is_staff or is_superuser) can access it
 class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
-    """ Show all the unapproved activities """
     model = Activity
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
 
     def get_queryset(self):
-        # Order Unapproved Activities by Created Time Ascending
         return self.model.objects.unapproved().all().order_by('created')
 
 
+# A Confirmation View for Approving Activity
 class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
-    """
-    Will approve the activity, making the activity public to view for everyone,
-    and will send a notification email to the host.
-    """
     model = Activity
     fields = ('fh_item_id', )
     template_name = 'moderations/moderation_approval.html'
     success_message = 'Activity has successfully been approved! Email sent.'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.fh_item_id is None:
+            messages.error(self.request, "Please enter a FareHarbor Item ID for this activity before approving.")
+            return redirect(self.object)
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        # Change status to approve, and send email to host
         instance = form.save(commit=False)
         instance.status = Activity.STATUS.approved
         send_notification(instance, "Your Activity Was Approved.", "approval")
@@ -42,10 +45,6 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
 
 
 class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
-    """
-    Will disapprove the activity, meaning the email will notify the host, and
-    the activity will be deleted from the database.
-    """
     success_message = "Activity has been successfully disapproved. Email sent."
     template_name = "moderations/moderation_disapproval.html"
     success_url = reverse_lazy("moderations:queue")
@@ -65,6 +64,8 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
 def send_notification(instance, subject, template_prefix, **kwargs):
     """
     Send email to the activity's host.
+
+    template can be found in => templates/moderations/templates/
     
     Paramters:
         instance - the activity instance.

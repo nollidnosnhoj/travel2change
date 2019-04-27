@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 from django.utils.translation import ugettext as _
+from allauth.account.forms import LoginForm
 from allauth.account.forms import SignupForm as BaseSignupForm
 from users.models import Host
 
@@ -45,3 +46,11 @@ class SignupForm(BaseSignupForm):
             host = Host.objects.create(user=user)
             host.save()
         return user
+
+# Overriding Django Allauth LoginForm to compat with Django Axes
+# https://django-axes.readthedocs.io/en/latest/usage.html#integration-with-django-allauth
+class LoginForm(LoginForm):
+    def user_credentials(self):
+        credentials = super().user_credentials()
+        credentials['login'] = credentials.get('email') or credentials.get('username')
+        return credentials
