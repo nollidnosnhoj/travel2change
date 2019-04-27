@@ -92,9 +92,6 @@ def unaward_points(target, key):
         key (int or string) - Find the amount of points to undo.
     """
     point_value, points = get_points(key)
-    try:
-        award_points = AwardedPoint.objects.filter(target=target, point_value=point_value, points=points).first()
-    except AwardedPoint.DoesNotExist:
-        return
-    award_points.delete()
-    return award_points
+    award_points = AwardedPoint.objects.filter(target=target, point_value=point_value, points=points).first()
+    if award_points:
+        award_points.delete()
