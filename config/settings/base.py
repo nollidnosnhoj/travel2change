@@ -16,6 +16,7 @@ DEBUG = env.bool('DEBUG', False)
 LANGUAGE_CODE = 'en'
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
+SITE_DOMAIN = env('SITE_DOMAIN', default='127.0.0.1:8000')
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -343,5 +344,5 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('custom', _('Custom')),
 )
 
-MAX_PHOTOS_PER_ACTIVITY = 5
+MAX_PHOTOS_PER_ACTIVITY = env.int('MAX_PHOTOS_PER_ACTIVITY', default=5)
 GOOGLE_MAPS_API = env('GOOGLE_MAPS_API')
