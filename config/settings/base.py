@@ -366,7 +366,7 @@ DJANGOCMS_BOOTSTRAP4_COLOR_STYLE_CHOICES = (
     ('custom', _('Custom')),
 )
 DJANGOCMS_ICON_SETS = [
-    ('fontawesome', 'fa', 'Font Awesome'),
+    ('fontawesome5', 'fa', 'Font Awesome'),
 ]
 
 # Django Axes
