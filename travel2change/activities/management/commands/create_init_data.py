@@ -36,8 +36,6 @@ tags_name = (
     'Food Included',
     'Intermediate',
     'Intense',
-    'Transportation Included',
-    'Transportation Upon Request',
 )
 
 tags_slug = tuple(map(slugify, tags_name))
