@@ -74,12 +74,17 @@
                     <section class="activity-tags">
                         <div class="row">
                             {% for tag in activity.tags.all %}
-                            <div class="col-6">
-                                <a href="{% url 'activities:browse' %}?tags={{tag.slug}}">{% if tag.font_awesome %}<i class="{{tag.font_awesome}}"></i>{% endif %}{{ tag.name }}</a>
+                            <div class="col-sm-6">
+                                <a class="btn" style="padding: 0.1rem 0.75rem;" href="{% url 'activities:browse' %}?tags={{tag.slug}}">
+                                    {% if tag.font_awesome %}<i class="{{tag.font_awesome}} text-primary"></i>{% endif %}{{ tag.name }}
+                                </a>
                             </div>
                             {% endfor %}
                         </div>
                     </section>
+                    <div class="d-block d-sm-block d-md-none">
+                        <button type="button" id="book-now" class="btn btn-primary btn-block btn-lg">Book Now!</a>
+                    </div>
                 </section>
                 <section class="fav-share clearfix">
                     <button type="button"
@@ -220,6 +225,11 @@ $('[data-action="favorite"]').click(function() {
             $('.favorite-button i').show();
         }
     });
+});
+$("#book-now").click(function() {
+    $('html,body').animate({
+        scrollTop: $(".fareharbor-widget").offset().top},
+        'slow');
 });
 </script>
 {% endblock scripts %}
