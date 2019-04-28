@@ -306,8 +306,7 @@ CMS_LANGUAGES = {
 # http://docs.django-cms.org/en/latest/introduction/02-templates_placeholders.html?highlight=CMS_TEMPLATES#templates
 CMS_TEMPLATES = (
     ('home.html', 'Homepage'),
-    ('fullwidth.html', 'Fullwidth'),
-    ('signup.html', 'Sign Up')
+    ('default_page.html', 'Default'),
 )
 
 # http://docs.django-cms.org/en/latest/topics/permissions.html#cms-permission-mode
