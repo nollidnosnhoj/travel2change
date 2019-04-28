@@ -2,6 +2,15 @@
 # Created by https://www.gitignore.io/api/django
 # Edit at https://www.gitignore.io/?templates=django
 
+# production stuff
+.editorconfig
+.gitattributes
+RUN
+pytest.ini
+python
+staticfiles/
+travel2change.pid
+
 # Mac Junk Stuff
 .DS_Store/
 node_modules/
