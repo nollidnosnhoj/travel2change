@@ -9,7 +9,7 @@ RUN
 pytest.ini
 python
 staticfiles/
-travel2change.pid
+*.pid
 
 # Mac Junk Stuff
 .DS_Store/
