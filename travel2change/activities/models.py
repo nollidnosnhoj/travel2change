@@ -233,8 +233,6 @@ class Activity(models.Model):
                         validators=[MaxValueValidator(5)],
                         help_text=_('Each featured tier will determine if the activity will be featured in certain areas on the website.')
                     )
-    # Number of reviews for activity
-    review_count    = models.IntegerField(blank=False, default=0, verbose_name=_("review count"))
 
     objects         = ActivityQuerySet.as_manager()
 
