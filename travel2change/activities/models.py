@@ -96,7 +96,7 @@ class Tag(models.Model):
     
 
 class Category(models.Model):
-    name = models.CharField(max_length=60, blank=False, null=False, unique=True, verbose_name=_('activity category'))
+    name = models.CharField(max_length=60, blank=False, null=False, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
 
     objects = models.Manager()
