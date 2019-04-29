@@ -1,4 +1,4 @@
-{% load i18n menu_tags staticfiles %}
+{% load new_activities i18n menu_tags staticfiles %}
 <header class="navbar navbar-expand-lg navbar-light bg-light t2c-navbar">
   <div class="container-fluid">
     <a class="navbar-brand" href="/"><img src="{% static '/img/logo.png' %}" alt="travel2change" title="travel2change" style="width:196px;height:35px;"></a>
@@ -15,7 +15,15 @@
         {% if user.is_authenticated %}
         {% if user.host %}
         <a href="{% url 'activities:create' %}" class="nav-link" alt="Host Activity" title="Host Activity">
-          <i class="far fa-edit"></i> {% trans 'Host Activity' %}
+          <i class="fas fa-pen-square"></i> {% trans 'Host Activity' %}
+        </a>
+        {% endif %}
+        {% if user.is_staff or user.is_superuser %}
+        <a href="{% url 'moderations:queue' %}" class="nav-link" alt="Moderations" title="Moderations">
+          <i class="fas fa-clipboard-check"></i> {% trans "Moderation" %} 
+          <span class="badge badge-success">
+            {% new_activities %}
+          </span>
         </a>
         {% endif %}
         <li class="nav-item dropdown">
@@ -25,9 +33,6 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a href="{% url 'user_update' %}" class="dropdown-item">{% trans "Account" %}</a>
-            {% if user.is_staff or user.is_superuser %}
-            <a href="{% url 'moderations:queue' %}" class="dropdown-item">{% trans "Moderation" %}</a>
-            {% endif %}
             <a href="{% url 'favorites:list' %}" class="dropdown-item">{% trans "Favorites" %}</a>
             {% if user.host %}
               <a href="{% url 'host_detail' user.host.slug %}" class="dropdown-item">{% trans "Profile" %}</a>
