@@ -56,8 +56,9 @@ class ActivityQuerySet(models.QuerySet):
         return self.approved().filter(is_featured=True)
 
 class Region(models.Model):
-    name = models.CharField(max_length=60, blank=False)
-    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(max_length=60, blank=False, help_text=_('Name of the region'))
+    slug = models.SlugField(max_length=20, unique=True,
+        help_text=_('Name of the region in slug form. (alphanumeric, hyphens, and underscores)'))
     image = ImageField(
         upload_to=get_region_image_filename,
         blank=True,
@@ -81,8 +82,10 @@ class Region(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(max_length=60, blank=False, null=False, unique=True,
+        help_text=_('Name of the tag'))
+    slug = models.SlugField(max_length=20, unique=True,
+        help_text=_('Name of the tag in slug form (alphanumeric, hyphen, and underscores)'))
     font_awesome = models.CharField(max_length=60, blank=True, verbose_name=_('tag icon'),
         help_text=_('This will display an icon next to a tag. Format: <i class="(icon name)"></i>'))
 
@@ -96,8 +99,10 @@ class Tag(models.Model):
     
 
 class Category(models.Model):
-    name = models.CharField(max_length=60, blank=False, null=False, unique=True)
-    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(max_length=60, blank=False, null=False, unique=True,
+        help_text=_('Name of the category'))
+    slug = models.SlugField(max_length=20, unique=True,
+        help_text=_('Name of the category in slug form (alphanumeric, hyphens, and underscores)'))
 
     objects = models.Manager()
 
