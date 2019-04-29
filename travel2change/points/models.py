@@ -95,3 +95,10 @@ def unaward_points(target, key):
     award_points = AwardedPoint.objects.filter(target=target, point_value=point_value, points=points).first()
     if award_points:
         award_points.delete()
+
+def points_awarded(target):
+    if not isinstance(target, get_user_model()):
+        raise ImproperlyConfigured("Target parameter needs to be a AUTH USER model")
+    qs = AwardedPoint.objects.filter(target=target)
+    p = qs.aggregate(models.Sum("points")).get("points__sum", 0)
+    return 0 if p is None else p
