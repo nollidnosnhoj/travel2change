@@ -18,12 +18,7 @@ class HostAdmin(admin.ModelAdmin):
     )
 
 
-class HostAdminInline(admin.TabularInline):
-    model = Host
-
-
 class CustomUserAdmin(UserAdmin):
-    inlines = [HostAdminInline, ]
     model = User
     list_display = (
         'email',
@@ -38,11 +33,11 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Information', {'fields': ('first_name', 'last_name',)}),
-        ('Permissions', {'fields': ('is_active', 'is_staff',)})
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', )})
     )
     add_fieldsets = (
         (None, {
-            'classes': ('wide'),
+            'classes': ('wide', ),
             'fields': (
                 'email',
                 'first_name',
@@ -51,6 +46,15 @@ class CustomUserAdmin(UserAdmin):
                 'password2',
             )
         }),
+        ('Permissions', {
+            'classes': ('wide', ),
+            'fields': (
+                'is_active',
+                'is_staff',
+                'is_superuser',
+                'groups',
+            )
+        })
     )
     search_fields = ('email', 'first_name', 'last_name',)
     ordering = ('email', 'first_name', 'last_name', 'date_joined',)
