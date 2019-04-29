@@ -40,6 +40,10 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=Tr
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
 SECURE_BROWSER_XSS_FILTER = True
 
+# CELERY
+# https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with-django.html
+# CELERY_BROKER_URL = 'amqp://localhost'
+
 # STORAGES
 # ==================================================================================
 # INSTALLED_APPS += ['storages']

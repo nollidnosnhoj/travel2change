@@ -1,5 +1,6 @@
 -r ./base.txt
 
+celery==4.3.0
 python-memcached==1.59
 gunicorn==19.9.0
 django-storages==1.7.1
