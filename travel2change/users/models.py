@@ -16,9 +16,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
     last_name       = models.CharField(_('last name'), max_length=60, blank=False, null=False)
     date_joined     = models.DateTimeField(default=timezone.now)
-    is_active       = models.BooleanField(default=True)
-    is_staff        = models.BooleanField(default=False)
-    is_superuser    = models.BooleanField(default=False)
+    is_active       = models.BooleanField(
+                        _('Active'),
+                        default=True,
+                        help_text=_('Designates whether this user account should be considered active.'),
+                    )
+    is_staff        = models.BooleanField(
+                        _('Staff'),
+                        default=False,
+                        help_text=_('Designates whether this user can access the admin site.'),
+                    )
+    is_superuser    = models.BooleanField(
+                        _('Superuser'),
+                        default=False,
+                        help_text=_('Designates that this user has all permissions without explicitly assigning them.'),
+                    )
     points          = models.IntegerField(_('points'), default=0, editable=False)
 
     objects = CustomUserManager()
@@ -42,17 +54,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     @property
     def full_name(self):
         return self.get_full_name()
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
     
     @transaction.atomic
     def update_points(self, given_points):
         """
-        Will update the user's points based on give_points parameter. Important to enforce transaction.atomic to this function to keep points consistent. 
+        Will update the user's points based on give_points parameter. Important to enforce transaction.atomic to this function to keep points consistent.
 
         Parameters:
             given_points (int) - Points that will update the user's points. Positive to add. Negative to subtract.
