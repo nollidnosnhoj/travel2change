@@ -100,6 +100,12 @@ class Host(models.Model):
                         blank=True,
                         help_text=_('Tell us about you or your organization.'),
                     )
+    contact_email   = models.EmailField(
+                        _('contact email'),
+                        max_length=255,
+                        blank=True,
+                        help_text=_('Enter an email address that you like visitors to contact.')
+                    )
     phone           = PhoneNumberField(
                         _('phone'),
                         blank=True,

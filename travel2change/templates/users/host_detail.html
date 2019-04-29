@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <th scope="row">Website</th>
-                        <td>{% if host.website %}{{ host.website }}{% else %}N/A{% endif %}</td>
+                        <td>{% if host.website %}<a href="{{ host.website }}" target="_blank">Website</a>{% else %}N/A{% endif %}</td>
                     </tr>
                 </tbody>
             </table>
