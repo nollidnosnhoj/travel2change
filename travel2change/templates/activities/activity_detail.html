@@ -147,7 +147,7 @@
                     {% endif %}
                     <h3>
                         {% if activity.review_count > 0 %}
-                        {{ activity.average_rating }} stars out of {{ activity.review_count }} reviews
+                        {{ activity.average_rating }} stars out of {{ activity.review_count }} review{{ review_count|pluralize:"s"}}
                         {% endif %}
                     </h3>
                     <br />

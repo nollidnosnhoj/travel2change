@@ -277,6 +277,10 @@ class Activity(models.Model):
         if avg_rating is None:
             return 0.00
         return avg_rating
+    
+    @property
+    def review_count(self):
+        return self.reviews.all().count()
 
 
 class ActivityPhoto(models.Model):
