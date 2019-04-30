@@ -4,7 +4,7 @@ from config.settings.base import env
 # GENERAL
 DEBUG = env.bool('DEBUG', True)
 SECRET_KEY = env('SECRET_KEY', default='ysevxx@=t#8v4=&!&yqf*iv^=&$%wxapyh1shdm7skx8k4d!bc')
-ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
 
 # CACHES
 CACHES = {
@@ -36,5 +36,3 @@ INTERNAL_IPS = ['127.0.0.1', '10.0.2.2']
 INSTALLED_APPS += ('django_extensions', )
 
 THUMBNAIL_DEBUG = True
-
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])

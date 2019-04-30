@@ -7,6 +7,8 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['.travel2change.org'])
 
 INSTALLED_APPS += ('gunicorn', )  # noqa F405
 
+DEBUG = False
+
 # DATABASES
 DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
