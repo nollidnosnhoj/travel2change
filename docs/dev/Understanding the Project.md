@@ -51,3 +51,17 @@ To learn more about templates, click here: <https://docs.djangoproject.com/en/2.
 
 ### travel2change Applications
 
+**Activities** - Application that handles the activities in the project. This allows user to create, modify, view, and delete activities.
+
+**Favorites** - Application that handles all the favoriting of activities. This allow users to favorite activities.
+
+**Moderations** - Application that handles the moderation of the activities. This allows for users with permissions to moderate activities.
+
+**Reviews** - Application that handles the reviews for each activity. This allows users to create a review for an activity.
+
+**Points** - Application that handles the points system.
+
+**Users** - Application that handles all the users and hosts. The user is a custom user model that only accepts an email address (not a username). 
+
+<https://docs.djangoproject.com/en/2.2/topics/auth/customizing/#specifying-a-custom-user-model>
+
