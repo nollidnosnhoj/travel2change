@@ -17,7 +17,7 @@ from .validators import validate_image_size
 User = get_user_model()
 
 def get_featured_image_filename(instance, filename):
-    """ Path to store activity's featured photo """
+    """ Path for activity's featured photos """
     ext = filename.split('.')[-1]
     if instance.pk:
         return 'uploads/activities/featured-photos/activity_{0}.{1}'.format(instance.pk, ext)
@@ -41,21 +41,33 @@ class ActivityQuerySet(models.QuerySet):
     """ Activity Queries """
 
     def approved(self):
+        """ Query approved activities """
         return self.filter(status="approved")
     
     def unapproved(self):
+        """ Query unapproved activities """
         return self.filter(status="unapproved")
 
     def free(self):
+        """ Query free activities """
         return self.approved().filter(is_free=True)
     
     def paid(self):
+        """ Query paid activities """
         return self.approved().filter(is_free=False)
 
     def featured(self):
-        return self.approved().filter(is_featured=True)
+        """ Query featured activities (Greater than tier 0)"""
+        return self.approved().filter(is_featured__gt=0)
 
 class Region(models.Model):
+    """
+    Create a Region instance.
+	Parameters:
+		name (CharField) - Name of the region
+		slug (SlugField) - Name of the region in slug form. (alphanumeric, hyphens, and underscores)
+		image (ImageField) - Image to display in region widget.
+    """
     name = models.CharField(max_length=60, blank=False, help_text=_('Name of the region'))
     slug = models.SlugField(max_length=20, unique=True,
         help_text=_('Name of the region in slug form. (alphanumeric, hyphens, and underscores)'))
@@ -75,6 +87,7 @@ class Region(models.Model):
     
     @property
     def get_image_url(self):
+		""" Get region's image if available. If not, show placeholder """
         if self.image:
             return self.image.url
         else:
@@ -82,6 +95,13 @@ class Region(models.Model):
 
 
 class Tag(models.Model):
+	"""
+	Create a Tag instance.
+	Paramters:
+		name (CharField) - Name of the tag
+		slug (SlugField) - Name of the tag in slug form (alphanumeric, hyphen, and underscores)
+		font_awesome (CharField) - This will display an icon next to a tag. Format: <i class="(icon name)"></i>
+	"""
     name = models.CharField(max_length=60, blank=False, null=False, unique=True,
         help_text=_('Name of the tag'))
     slug = models.SlugField(max_length=20, unique=True,
@@ -99,6 +119,12 @@ class Tag(models.Model):
     
 
 class Category(models.Model):
+	"""
+    Create a Category instance.
+	Parameters:
+		name (CharField) - Name of the region
+		slug (SlugField) - Name of the region in slug form. (alphanumeric, hyphens, and underscores)
+	"""
     name = models.CharField(max_length=60, blank=False, null=False, unique=True,
         help_text=_('Name of the category'))
     slug = models.SlugField(max_length=20, unique=True,
@@ -116,6 +142,27 @@ class Category(models.Model):
 
 
 class Activity(models.Model):
+	"""
+	Create an Activity instance
+	Parameters:
+		host (ForeignKey, Host)
+		title (CharField) - title of the activity
+		slug (AutoSlugField) - Auto generate a slug based on the title of the activity
+		description (CharField) - Briefly describe your activity
+		highlights (CharField) - List what makes this activity unique. New line = new bullet
+		requirements (CharField) - List what the participants require to participate. New line = new bullet
+		region (ForeignKey, Region) - Choose a region where your activity takes place
+		categories (ManyToManyField, Category) - Select what type(s) of activity you are hosting
+		tags (ManyToManyField, Tag) - Select tag(s) that best describe your activity
+		address (CharField) - Enter a meeting place for the activity
+		latitude (DecimalField) - max_digits=9, decimal_places=6
+		longitude (DecimalField) - max_digits=9, decimal_places=6
+		price (DecimalField) - price of activity. leave blank or 0 if free.
+		featured_photo (ImageField) - This image will show up on your activity card when browsing
+		fh_item_id (PositiveIntegerField) - FareHarbor item ID
+		
+		status (StatusField) - either approved or unapproved. default to unapproved.
+	"""
     STATUS          = Choices('unapproved', 'approved')
     host            = models.ForeignKey(
                         Host,
@@ -267,10 +314,12 @@ class Activity(models.Model):
     
     @property
     def is_approved(self):
+		# Check if activity is approved
         return self.status == self.STATUS.approved
 
     @property
     def average_rating(self):
+		# Accumulate average ratings based on activity's review
         avg_rating = self.reviews.all().aggregate(Avg('rating')).get('rating__avg')
         if avg_rating is None:
             return 0.00
@@ -278,6 +327,7 @@ class Activity(models.Model):
     
     @property
     def review_count(self):
+		# Count all the reviews for the activity
         return self.reviews.all().count()
 
 
