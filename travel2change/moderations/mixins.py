@@ -1,14 +1,11 @@
-from django.conf import settings
-from django.http import Http404
-from django.http import (
-    HttpResponseRedirect
-)
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
-class StaffUserOnlyMixin(object):
-    # access mixin : staff only
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseRedirect(settings.LOGIN_URL)
-        if not request.user.is_staff and not request.user.is_superuser:
-            raise Http404
-        return super().dispatch(request, *args, **kwargs)
+
+class ModeratorsOnlyMixin(PermissionRequiredMixin):
+    # Only users with the required permissions can view
+    permission_required = (
+        'activities.view_activity',
+        'activities.add_activity',
+        'activities.change_activity',
+        'activities.delete_activity',
+    )

@@ -18,7 +18,7 @@
           <i class="fas fa-pen-square"></i> {% trans 'Host Activity' %}
         </a>
         {% endif %}
-        {% if user.is_staff or user.is_superuser %}
+        {% if perms.activities.view_activity and perms.activities.change_activity and perms.activities.delete_activity and perms.activities.add_activity %}
         <a href="{% url 'moderations:queue' %}" class="nav-link" alt="Moderations" title="Moderations">
           <i class="fas fa-clipboard-check"></i> {% trans "Moderation" %} 
           <span class="badge badge-success">

@@ -9,11 +9,11 @@ from django.urls import reverse_lazy
 from django.views.generic import DeleteView, ListView, UpdateView
 
 from activities.models import Activity
-from .mixins import StaffUserOnlyMixin
+from .mixins import ModeratorsOnlyMixin
 
 # Shows all the unapproved (awaiting approval) activities in a view
 # Only staff users (is_staff or is_superuser) can access it
-class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
+class ModerationActivityQueue(ModeratorsOnlyMixin, ListView):
     model = Activity
     template_name = "moderations/moderation_queue.html"
     context_object_name = "activities"
@@ -23,7 +23,7 @@ class ModerationActivityQueue(StaffUserOnlyMixin, ListView):
 
 
 # A Confirmation View for Approving Activity
-class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
+class ActivityApprovalView(ModeratorsOnlyMixin, SuccessMessageMixin, UpdateView):
     model = Activity
     fields = ('fh_item_id', )
     template_name = 'moderations/moderation_approval.html'
@@ -46,7 +46,7 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
+class ActivityDisapprovalView(ModeratorsOnlyMixin, DeleteView):
     success_message = "Activity has been successfully disapproved. Email sent."
     template_name = "moderations/moderation_disapproval.html"
     success_url = reverse_lazy("moderations:queue")
