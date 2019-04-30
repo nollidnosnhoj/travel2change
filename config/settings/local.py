@@ -36,3 +36,5 @@ INTERNAL_IPS = ['127.0.0.1', '10.0.2.2']
 INSTALLED_APPS += ('django_extensions', )
 
 THUMBNAIL_DEBUG = True
+
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
