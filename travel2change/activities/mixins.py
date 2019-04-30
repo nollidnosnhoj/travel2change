@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import AccessMixin
 from django.http import Http404
 
 class UnapprovedActivityMixin(AccessMixin):
+    """ This sets permissions for unapproved activities """
     def dispatch(self, request, *args, **kwargs):
         if not self.object.is_approved:
             if not request.user.is_authenticated:
@@ -13,6 +14,7 @@ class UnapprovedActivityMixin(AccessMixin):
 
 
 class ReviewCheck(object):
+    """ This checks if user can review """
     def has_review_permission(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return False

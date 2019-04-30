@@ -5,6 +5,7 @@ from django.http import (
 )
 
 class StaffUserOnlyMixin(object):
+    # access mixin : staff only
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponseRedirect(settings.LOGIN_URL)

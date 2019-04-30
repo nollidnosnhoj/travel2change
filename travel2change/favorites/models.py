@@ -7,6 +7,12 @@ from activities.models import Activity
 User = get_user_model()
 
 class Favorite(models.Model):
+    """
+    Create a Favorite instance
+    Parameters:
+        user (ForeignKey, get_user_model)
+        activity (ForeignKey, Activity)
+    """
     user        = models.ForeignKey(User, db_index=False, on_delete=models.CASCADE, related_name=_('favorites'), blank=False)
     activity    = models.ForeignKey(Activity, db_index=False, on_delete=models.CASCADE, blank=False)
     created     = models.DateTimeField(auto_now_add=True)

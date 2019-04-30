@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import (
     DetailView,
@@ -42,6 +42,7 @@ class BrowseView(ListView):
     context_object_name = 'activityBrowse'
 
     def dispatch(self, request, *args, **kwargs):
+        # initialize GET variables
         self.q = None
         self.title = None
         self.categories = None
@@ -53,9 +54,11 @@ class BrowseView(ListView):
         # get all approved activities
         qs = Activity.objects.select_related('host__user').select_related('region').approved()
 
+        # If region variable is defined, query region
         if self.region:
             qs = qs.filter(region__slug=self.region)
 
+        # get GET variable
         self.q = self.request.GET.get('q')
         self.title = self.request.GET.get('title')
         self.categories = self.request.GET.get('categories')
@@ -68,24 +71,21 @@ class BrowseView(ListView):
             qs = qs.filter(
                 Q(title__icontains=self.q) | Q(region__slug=self.q) | Q(categories__slug=self.q) | Q(tags__slug=self.q)
             ).distinct()
-
         if is_valid_queryparam(self.categories):
             qs = qs.filter(categories__slug=self.categories)
-
         if is_valid_queryparam(self.tags) and self.tags:
             for tag in self.tags:
                 qs = qs.filter(tags__slug=tag).distinct()
-
         if is_valid_queryparam(self.title):
             qs = qs.filter(title__icontains=self.title)
-        
         if is_valid_queryparam(self.price):
             if self.price == 'free':
                 qs = qs.filter(price__exact=0)
             if self.price == 'paid':
                 qs = qs.filter(price__gt=0)
         
-        return qs.order_by("-is_featured")
+        # sort by featured tier
+        return qs.order_by("-is_featured", "-approved_time")
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -152,9 +152,11 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
         new_review.user = self.request.user
         new_review.activity = self.object
         if new_review.photo:
+            # award points for review photo upload
             award_points(new_review.user, 'review_photo')
-        award_points(new_review.user, 'review_create')
         new_review.save()
+        # award points for creating review
+        award_points(new_review.user, 'review_create')
         messages.success(self.request, "Review successfully submitted")
         return super().form_valid(form)
     
@@ -302,7 +304,12 @@ class ActivityCreationView(LoginRequiredMixin, UserPassesTestMixin, NamedUrlSess
 
     def done(self, form_list, **kwargs):
         # Call when the wizard is completed.
-        host = Host.objects.get(user=self.request.user)
+        try:
+            host = Host.objects.get(user=self.request.user)
+        except Host.DoesNotExist:
+            messages.error(self.request, "You must be a host to create activity.")
+            return redirect('/')
+        # create activity based on form data
         form_dict = self.get_all_cleaned_data()
         activity_tags = form_dict.pop('tags')
         activity_categories = form_dict.pop('categories')

@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
-# Validate the max size of image
 def validate_image_size(image):
+    # validate image size
     file_size = image.file.size
     limit_mb = 3
     if file_size > limit_mb * (1024 * 1024):

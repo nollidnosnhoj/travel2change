@@ -49,3 +49,5 @@ Replace `application` with the name of the application, and typeofview with the 
 
 To learn more about templates, click here: <https://docs.djangoproject.com/en/2.2/topics/templates/>
 
+### travel2change Applications
+

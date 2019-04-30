@@ -31,6 +31,7 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
+        # FareHarbor item is required to proceed.
         if self.object.fh_item_id is None:
             messages.error(self.request, "Please enter a FareHarbor Item ID for this activity before approving.")
             return redirect(self.object)
@@ -39,6 +40,7 @@ class ActivityApprovalView(StaffUserOnlyMixin, SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.status = Activity.STATUS.approved
+        # send approval email
         send_notification(instance, "Your Activity Was Approved.", "approval")
         instance.save()
         return super().form_valid(form)
@@ -56,6 +58,7 @@ class ActivityDisapprovalView(StaffUserOnlyMixin, DeleteView):
         reasons = request.POST.get('reasons', 'N/A')
         activity = self.get_object()
         subject = "Your Activity Was Not Approved."
+        # send disapproval email
         send_notification(activity, subject, "disapproval", reasons=reasons)
         messages.success(request, self.success_message)
         return super().delete(request, *args, **kwargs)
