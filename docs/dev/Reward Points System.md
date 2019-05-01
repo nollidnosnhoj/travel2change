@@ -49,3 +49,43 @@ def unfavorite_item(self, user, item):
 Notice that we use 'favorite' as the key parameter. It is recommended to keep the key parameter consistent. If you award points for favoriting an item, and it uses the key 'favorite', then unawarding points should also use 'favorite'.
 
 The admin/staff could create Point Value objects in the Django Admin. 
+
+### Example from the project
+
+In the project, when a review is created or deleted, it will either add or remove points respectively from the target user. We done this using signals.
+
+In /reviews/signals.py
+
+```python
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
+from points.models import award_points, unaward_points
+from .models import Review
+
+@receiver(post_save, sender=Review)
+def award_points_for_review(sender, instance, created, **kwargs):
+    """ Award points when a review is created """
+    if created:
+        award_points(instance.user, 'review_create')
+        # if the review has a photo when created, award points
+        if instance.photo:
+            award_points(instance.user, 'review_photo')
+
+
+@receiver(pre_delete, sender=Review)
+def unaward_points_for_review(sender, instance, using, **kwargs):
+    """ Unaward points when a review is deleted """
+    unaward_points(instance.user, 'review_create')
+
+```
+
+When a review is saved, it will send a signal to the `award_points_for_review` method to call. If the review was created, it will reward points to the user. When the review is created, it will also check if a photo was uploaded. 
+
+Same with deleting a review; however, we a signaling the function before it is deleted, so we can access the instance.
+
+Read more about Django Signals:
+
+<https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html>
+
+<https://docs.djangoproject.com/en/2.2/topics/signals/>
+
