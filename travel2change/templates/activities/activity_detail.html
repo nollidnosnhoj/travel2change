@@ -59,7 +59,7 @@
                                     </a>
                                     {% endif %}
                                     {% if request.user.is_staff or request.user.is_superuser %}
-                                    {% if not activity.is_approved %}
+                                    {% if activity.status == 'unapproved' %}
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Mod Actions">
                                         <a class="btn btn-success" href="{% url 'moderations:approve' activity.pk %}" target="_blank"
                                             data-toggle="tooltip" title="Approve" alt="Approve Activity">

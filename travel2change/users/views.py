@@ -46,7 +46,7 @@ class HostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        activities = Activity.objects.select_related('region').select_related('host__user').approved().filter(host=self.object).order_by('-approved_time')
+        activities = Activity.objects.select_related('region').select_related('host__user').approved().filter(host=self.object).order_by('-created')
         reviews = Review.objects.select_related('activity__host').filter(activity__in=activities)
         context['activities'] = activities[:self.number_of_activites_in_profile]
         context['reviews'] = reviews[:self.number_of_reviews_in_profile]
@@ -84,7 +84,7 @@ class HostActivitiesListView(HostListView):
     template_name = 'users/host_activities_list.html'
 
     def get_queryset(self):
-        return Activity.objects.select_related('host__user').select_related('region').approved().filter(host=self.host).order_by("-approved_time")
+        return Activity.objects.select_related('host__user').select_related('region').approved().filter(host=self.host).order_by("-created")
 
 
 class HostAccountActivitiesListView(DetailView):

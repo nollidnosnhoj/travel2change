@@ -18,7 +18,7 @@ class UnapprovedActivityMixin(AccessMixin):
             if self.object.host.user != request.user:
                 # If the user does not have moderation permission
                 if not request.user.has_perm('activities.moderate_activity'):
-                    raise Http404("Activity has not been approved yet.")
+                    raise Http404("Activity is either awaiting approval, or inactive.")
         return super().dispatch(request, *args, **kwargs)
 
 

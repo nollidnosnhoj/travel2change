@@ -85,7 +85,7 @@ class BrowseView(ListView):
                 qs = qs.filter(price__gt=0)
         
         # sort by featured tier
-        return qs.order_by("-is_featured", "-approved_time")
+        return qs.order_by("-is_featured", "-created")
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -120,8 +120,10 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
     def dispatch(self, request, *args, **kwargs):
         # Get activity object
         self.object = self.get_object()
-        if not self.object.is_approved:
+        if self.object.status == Activity.STATUS.unapproved:
             messages.warning(request, "This activity is currently not published, and awaiting approval.")
+        if self.object.status == Activity.STATUS.inactive:
+            messages.info(request, "This activity is inactive. Please contact staff to activate this activity.")
         self.can_review = self.has_review_permission(request)
         return super().dispatch(request, *args, **kwargs)
  

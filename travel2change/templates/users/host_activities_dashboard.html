@@ -45,6 +45,15 @@
                             >
                                 <i class="fas fa-pause-circle"></i>
                             </span>
+                            {% elif activity.status == 'inactive' %}
+                            <span   class="badge badge-secondary mr-1"
+                                    data-toggle="tooltip"
+                                    data-placement="left"
+                                    title="Inactive"
+                                    alt="Inactive"
+                            >
+                                <i class="fas fa-bed"></i>
+                            </span>
                             {% endif %}
                             <a href="{{ activity.get_absolute_url}}">{{ activity.title }}</a>
                         </h6>

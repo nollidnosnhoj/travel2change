@@ -47,6 +47,9 @@ class ActivityQuerySet(models.QuerySet):
     def unapproved(self):
         """ Query unapproved activities """
         return self.filter(status="unapproved")
+    
+    def inactive(self):
+        return self.filter(status='inactive')
 
     def free(self):
         """ Query free activities """
@@ -163,7 +166,7 @@ class Activity(models.Model):
         
         status (StatusField) - either approved or unapproved. default to unapproved.
     """
-    STATUS          = Choices('unapproved', 'approved')
+    STATUS          = Choices('unapproved', 'approved', 'inactive', )
     host            = models.ForeignKey(
                         Host,
                         related_name=_("host"),
@@ -265,11 +268,9 @@ class Activity(models.Model):
     """ Private fields """
 
     # Activity status (Approved or Unapproved)
-    status          = StatusField(default=STATUS.unapproved)
+    status          = StatusField(default=STATUS.unapproved, help_text=_('What is the current status of the activity?'))
     # Time when activity status is approved
-    approved_time   = MonitorField(monitor='status', when=['approved'])
-    # Time when activity was submitted
-    created         = models.DateTimeField(auto_now_add=True)
+    created   = MonitorField(monitor='status', when=['approved'])
     # Time when activity is modified
     modified        = models.DateTimeField(auto_now=True)
     # Boolean field to check if activity is featured

@@ -80,5 +80,5 @@ class ActivityWizardForm(forms.ModelForm):
     class Meta:
         model = Activity
         exclude = [
-            'approved_time', 'created', 'modified', 'slug',
+            'created', 'modified', 'slug',
         ]
