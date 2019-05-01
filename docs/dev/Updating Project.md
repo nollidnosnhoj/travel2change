@@ -10,11 +10,21 @@ After you are done updating the project, make sure you commit your changes and p
 
 You can do the development in your local machine, and when you want to update the site, you can just upload the updated files in the project folder in WinSCP.
 
+### Updating models.py
+
+If you have updated a model and already created the migration file, you will need to migrate the migrations to the database. Enter this on the SSH server:
+
+`python3 manage.py migrate` 
+
+*assuming the current directory is the project folder*
+
 ### Collect Static Files Again
 
-If you updated a style sheet, static image, or anything in the static folder, you will need to collect the static file again.
+If you updated a style sheet, static image, or anything in the static folder, you will need to collect the static file again. Enter this on the SSH server:
 
 `python3 manage.py collectstatic`
+
+*assuming the current directory is the project folder*
 
 ### Restart the Server
 

@@ -65,3 +65,24 @@ To learn more about templates, click here: <https://docs.djangoproject.com/en/2.
 
 <https://docs.djangoproject.com/en/2.2/topics/auth/customizing/#specifying-a-custom-user-model>
 
+**To create a new application, enter this in the command line:**
+
+`python manage.py startapp app-name` 
+
+You may need to move the app folder from the root to travel2change folder.
+
+### Updating models.py
+
+If you modify an application's `models.py`, then you will need to make a migration of this change. Migrations are Django's way of propagating changes you made to the models into your database schema. In your local environment (assuming your virtual environment is enabled), enter:
+
+`python manage.py makemigrations app-name` 
+
+*replacing app-name with the name of the application*
+
+This will create a migration file.
+
+However, you will need to apply these migrations into the database, enter:
+
+`python manage.py migrate` 
+
+<https://docs.djangoproject.com/en/2.2/topics/migrations/>
