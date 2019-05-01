@@ -286,6 +286,10 @@ class Activity(models.Model):
     class Meta:
         verbose_name = _("activity")
         verbose_name_plural = _("activities")
+        permissions = (
+            # This permission allows them to view unapproved activities and moderation queue.
+            ('moderate_activity', 'Can Moderate Activity'),
+        )
 
     def __str__(self):
         return self.title

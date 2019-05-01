@@ -19,6 +19,7 @@ mod_group_perms = (
     'add_activityphoto',
     'change_activityphoto',
     'delete_activityphoto',
+    'moderate_activity',
 )
 
 regions_name = (
