@@ -14,7 +14,6 @@ class ReviewAdmin(admin.ModelAdmin):
         (_('Options'), {'fields': ('show_name', 'show_email', )})
     )
     list_display = ('activity', 'user', 'rating', 'created', )
-    list_filter = ('activity', 'created', 'modified', )
     search_fields = ('user', 'activity', )
     readonly_fields = ('created', 'modified', )
 

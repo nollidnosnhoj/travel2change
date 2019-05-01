@@ -3,8 +3,11 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# Create your models here.
+
 class PointValue(models.Model):
+    """
+    Create an instance to give certain amount of points a key value. Example: 100 points = 'key_string'
+    """
     key = models.CharField(_('key'), max_length=50, unique=True, help_text=_('Choose a key name of this point value'))
     value = models.IntegerField(_('value'), blank=False, default=0)
 
@@ -13,6 +16,9 @@ class PointValue(models.Model):
 
 
 class AwardedPoint(models.Model):
+    """
+    An instance to award points to a target user
+    """
     target = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name=_('awardedpoint_target'))
     point_value = models.ForeignKey(PointValue, blank=True, null=True, on_delete=models.CASCADE)
     reason = models.CharField(_('reason'), max_length=255, blank=True)
@@ -97,6 +103,7 @@ def unaward_points(target, key):
         award_points.delete()
 
 def points_awarded(target):
+    """ Show how many points the target user have """
     if not isinstance(target, get_user_model()):
         raise ImproperlyConfigured("Target parameter needs to be a AUTH USER model")
     qs = AwardedPoint.objects.filter(target=target)

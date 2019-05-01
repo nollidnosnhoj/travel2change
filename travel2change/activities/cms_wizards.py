@@ -2,6 +2,8 @@ from cms.wizards.wizard_base import Wizard
 from cms.wizards.wizard_pool import wizard_pool
 from activities.forms import ActivityWizardForm
 
+# http://docs.django-cms.org/en/latest/reference/wizards.html
+
 class ActivityWizard(Wizard):
     pass
 

@@ -3,6 +3,8 @@ from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
 from activities.models import LatestActivities, FeaturedActivities, RegionsPluginModel
 
+# http://docs.django-cms.org/en/latest/how_to/custom_plugins.html
+
 @plugin_pool.register_plugin
 class LatestActivitiesPlugin(CMSPluginBase):
     model = LatestActivities

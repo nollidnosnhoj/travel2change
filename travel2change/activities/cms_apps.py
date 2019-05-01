@@ -4,6 +4,8 @@ from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
 
 
+# http://docs.django-cms.org/en/latest/how_to/apphooks.html#
+
 @apphook_pool.register
 class ActivitiesApp(CMSApp):
     app_name = "activities"
