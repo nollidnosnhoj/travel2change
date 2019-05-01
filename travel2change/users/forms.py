@@ -38,6 +38,11 @@ class SignupForm(BaseSignupForm):
 
     @transaction.atomic
     def save(self, request):
+        """
+        If the 'Create Host Profile' checked, it will create a host profile object.
+        It is important that transaction is atomic, since we are saving multiple
+            different objects at once.
+        """
         user = super().save(request)
         is_host = self.cleaned_data['is_host']
         user.first_name = self.cleaned_data['first_name']

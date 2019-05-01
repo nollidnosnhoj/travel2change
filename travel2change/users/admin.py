@@ -60,6 +60,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email', 'first_name', 'last_name', 'date_joined',)
     filter_horizontal = ()
 
+    # get points for the user
     def points(self, obj):
         return points_awarded(obj)
 

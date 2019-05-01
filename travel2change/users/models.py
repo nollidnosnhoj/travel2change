@@ -10,7 +10,7 @@ from users.managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """
-    Custom user model that uses the email address as the username field.
+    A custom user model that takes an email address as the username field.
     """
     email           = models.EmailField(_('email address'), unique=True)
     first_name      = models.CharField(_('first name'), max_length=60, blank=False, null=False)
@@ -110,18 +110,25 @@ class Host(models.Model):
 
     @property
     def name(self):
-        """ If host name is defined, use it as the host name
-            If not, use the user's full name """
+        """
+        If host name is defined, use it as the host name.
+        If not, use the user's full name.
+        """
         return self._name if self._name else self.user.full_name
 
     @property
     def profile_slug(self):
-        """ If custom slug is defined, use it as slug.
-            If not, use the host's name """
+        """
+        If custom slug is defined, use it as slug.
+        If not, use the host's name.
+        """
         return self.custom_slug if self.custom_slug else self.name
     
     @property
     def get_fh_username(self):
+        """
+        If the fareharbor username is not present, default to 'travel2change'
+        """
         if self.fh_username is None or self.fh_username == "":
             return _('travel2change')
         return self.fh_username

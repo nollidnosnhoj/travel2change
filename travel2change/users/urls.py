@@ -6,8 +6,8 @@ from django.utils.decorators import method_decorator
 from users.forms import LoginForm
 from users.views import (
     HostReviewsListView,
-    HostActivitiesPublicListView,
-    HostActivitiesDashboardView,
+    HostActivitiesListView,
+    HostAccountActivitiesListView,
     HostDetailView,
     HostUpdateView,
     UserUpdateView,
@@ -20,10 +20,10 @@ LoginView.form_invalid = method_decorator(axes_form_invalid)(LoginView.form_inva
 
 urlpatterns = [
     path('hosts/<slug:slug>/reviews/', HostReviewsListView.as_view(), name='host_reviews'),
-    path('hosts/<slug:slug>/activities/', HostActivitiesPublicListView.as_view(), name="host_activities"),
+    path('hosts/<slug:slug>/activities/', HostActivitiesListView.as_view(), name="host_activities"),
     path('hosts/<slug:slug>/', HostDetailView.as_view(), name="host_detail"),
     path('accounts/reviews/', UserReviewsListView.as_view(), name="user_reviews"),
-    path('accounts/host/activities/', HostActivitiesDashboardView.as_view(), name="host_activities_dashboard"),
+    path('accounts/host/activities/', HostAccountActivitiesListView.as_view(), name="host_activities_dashboard"),
     path('accounts/host/', HostUpdateView.as_view(), name="host_update"),
     path('accounts/login/', LoginView.as_view(form_class=LoginForm), name='account_login'),
     path('accounts/', UserUpdateView.as_view(), name='user_update'),
