@@ -52,6 +52,11 @@
                                         class="btn btn-primary btn-sm">
                                         <i class="far fa-edit"></i> Edit
                                     </a>
+                                    {% elif perms.activities.moderate_activity %}
+                                    <a href="/admin/activities/activity/{{activity.pk}}/change/"
+                                        class="btn btn-primary btn-sm">
+                                        <i class="far fa-edit"></i> Edit
+                                    </a>
                                     {% endif %}
                                     {% if request.user.is_staff or request.user.is_superuser %}
                                     {% if not activity.is_approved %}
