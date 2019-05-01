@@ -155,8 +155,6 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             # award points for review photo upload
             award_points(new_review.user, 'review_photo')
         new_review.save()
-        # award points for creating review
-        award_points(new_review.user, 'review_create')
         messages.success(self.request, "Review successfully submitted")
         return super().form_valid(form)
     
