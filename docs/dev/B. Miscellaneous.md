@@ -1,3 +1,21 @@
+## Misc Settings
+
+### Max File Size of Photos
+
+Some image field has a validator that validates the size of the image.
+
+Go to `activities/validators.py` 
+
+```python
+def validate_image_size(image):
+    # validate image size
+    file_size = image.file.size
+    limit_mb = 3  # change here
+    if file_size > limit_mb * (1024 * 1024):
+        raise ValidationError('File Size Must be below {0} MB'.format(limit_mb))
+```
+If you want to change the limit from 3 MB, change the `3` to whatever number. Just be aware of your storage space.
+
 ## Backups
 
 Django supports backups.
