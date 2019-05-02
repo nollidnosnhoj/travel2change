@@ -185,6 +185,10 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup': 'users.forms.SignupForm'}
 
+# Django Axes
+# https://django-axes.readthedocs.io/en/latest/index.html
+AXES_USERNAME_FORM_FIELD = 'login'
+
 # MIDDLEWARE
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
@@ -372,11 +376,10 @@ DJANGOCMS_ICON_SETS = [
     ('fontawesome5', 'fa', 'Font Awesome'),
 ]
 
-# Django Axes
-# https://django-axes.readthedocs.io/en/latest/index.html
-AXES_USERNAME_FORM_FIELD = 'login'
-
 # Other Settings
 
 # Maximum Photos per Activity
 MAX_PHOTOS_PER_ACTIVITY = 5
+
+# Maximum image size in MB
+MAX_IMAGE_SIZE_MB = 5
