@@ -1,7 +1,7 @@
 <div class="row">
     {% for region in regions %}
     <div class="col-6 col-md-{{ col }}">
-        <a href="{% url 'activities:browse' %}?region={{ region.slug }}" alt="{{ region.name }}">
+        <a href="{% url 'activities:browse_region' region.slug %}" alt="{{ region.name }}">
             <div class="region-card" style="background-image: url('{{ region.get_image_url }}');">
                 <div class="layer">
                     <div class="region-name">{{ region.name }}</div>
