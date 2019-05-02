@@ -5,7 +5,7 @@ This means your activity will be listed and can be viewed by visitors of the web
 
 We also created a FareHarbor item for your activity, so travelers can book and get notify about the activity. Your FareHarbor item ID is: {{ activity.fh_item_id }}
 
-Visit your activity here: {{ activity.get_absolute_url }}
+Visit your activity here: {{ url }}
 
 Mahalo,
 travel2change

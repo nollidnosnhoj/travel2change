@@ -41,7 +41,12 @@ class ActivityApprovalView(ModeratorsOnlyMixin, SuccessMessageMixin, UpdateView)
         instance = form.save(commit=False)
         instance.status = Activity.STATUS.approved
         # send approval email
-        send_notification(instance, "Your Activity Was Approved.", "approval")
+        send_notification(
+            self.request,
+            instance,
+            "Your Activity Was Approved.", "approval",
+            url=self.request.build_absolute_uri(instance.get_absolute_url()),
+        )
         instance.save()
         return super().form_valid(form)
 
@@ -59,12 +64,12 @@ class ActivityDisapprovalView(ModeratorsOnlyMixin, DeleteView):
         activity = self.get_object()
         subject = "Your Activity Was Not Approved."
         # send disapproval email
-        send_notification(activity, subject, "disapproval", reasons=reasons)
+        send_notification(request, activity, subject, "disapproval", reasons=reasons)
         messages.success(request, self.success_message)
         return super().delete(request, *args, **kwargs)
 
 
-def send_notification(instance, subject, template_prefix, **kwargs):
+def send_notification(request, instance, subject, template_prefix, **kwargs):
     """
     Send email to the activity's host.
 
@@ -76,5 +81,8 @@ def send_notification(instance, subject, template_prefix, **kwargs):
         template_prefix - Template prefix that the email will use.
     """
     template = "moderations/templates/{0}_email.txt".format(template_prefix)
-    msg = render_to_string(template, {'activity': instance, **kwargs})
+    msg = render_to_string(template, {
+        'activity': instance,
+        **kwargs
+    })
     send_mail(subject, msg, settings.SERVER_EMAIL, [instance.host.user.email], )
