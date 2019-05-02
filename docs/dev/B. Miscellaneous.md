@@ -46,3 +46,6 @@ Click on the database name, click Export, check Structure and data, check Downlo
 
 This will create a .sql file. You can import it back using the SQL link between Schemas and Find.
 
+## Error Pages
+
+If you encounter an error page (404, 500, etc.), you will encounter our custom error page. Of course you can change it in the templates folder. You should see template entitled `404.html`, `500.html`, etc.
