@@ -1,8 +1,7 @@
 from django.conf import settings
-
+from django.core.mail.message import EmailMessage
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -44,7 +43,8 @@ class ActivityApprovalView(ModeratorsOnlyMixin, SuccessMessageMixin, UpdateView)
         send_notification(
             self.request,
             instance,
-            "Your Activity Was Approved.", "approval",
+            "Your Activity Was Approved.",
+            "approval",
             url=self.request.build_absolute_uri(instance.get_absolute_url()),
         )
         instance.save()
@@ -64,7 +64,13 @@ class ActivityDisapprovalView(ModeratorsOnlyMixin, DeleteView):
         activity = self.get_object()
         subject = "Your Activity Was Not Approved."
         # send disapproval email
-        send_notification(request, activity, subject, "disapproval", reasons=reasons)
+        send_notification(
+            request,
+            activity,
+            subject,
+            "disapproval",
+            reasons=reasons
+        )
         messages.success(request, self.success_message)
         return super().delete(request, *args, **kwargs)
 
@@ -79,10 +85,19 @@ def send_notification(request, instance, subject, template_prefix, **kwargs):
         instance - the activity instance.
         subject - The subject line
         template_prefix - Template prefix that the email will use.
+
+    https://docs.djangoproject.com/en/2.2/topics/email/
     """
     template = "moderations/templates/{0}_email.txt".format(template_prefix)
-    msg = render_to_string(template, {
+    context = {
         'activity': instance,
         **kwargs
-    })
-    send_mail(subject, msg, settings.SERVER_EMAIL, [instance.host.user.email], )
+    }
+    msg = render_to_string(template_name=template, context=context)
+    notif_mail = EmailMessage(
+        subject=subject,
+        body=msg,
+        from_email=settings.SERVER_EMAIL,
+        to=[instance.host.user.email],
+    )
+    notif_mail.send()
