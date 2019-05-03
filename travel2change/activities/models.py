@@ -308,9 +308,10 @@ class Activity(models.Model):
     def highlights_as_list(self):
         # Returns the Highlights Value as a List by splitting the commas
         return self.highlights.split('\n')
-
-    def get_favorite_count(self):
-        self.favorite_set.all().count()
+    
+    @property
+    def favorite_count(self):
+        return self.favorite_set.all().count()
 
     @property
     def is_free(self):

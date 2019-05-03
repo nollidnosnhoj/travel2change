@@ -73,7 +73,7 @@ def award_points(target, key, reason=""):
         String will get the PointValue object based on the key value.
     
     Parameters:
-        target (User) - The user instance that will be awarded points
+        target (AUTH_USER_MODEL) - The user instance that will be awarded points
         key (int or string) - Determine the amount of points the user will be awarded.
         reason (string) - Reasons to award user instance
     """
@@ -94,16 +94,23 @@ def unaward_points(target, key):
     This will undo the award_points function (delete the AwardedPoint object) and update the user's points
 
     Parameters:
-        target (User instance) - The user that will be unawarded.
+        target (AUTH_USER_MODEL) - The user that will be unawarded.
         key (int or string) - Find the amount of points to undo.
     """
     point_value, points = get_points(key)
+    # This will find an awarded point object that fits to lookup params (target, key).
+    # It does not matter the object, as long it fits the lookup params.
+    # If an object is found, delete it
     award_points = AwardedPoint.objects.filter(target=target, point_value=point_value, points=points).first()
     if award_points:
         award_points.delete()
 
 def points_awarded(target):
-    """ Show how many points the target user have """
+    """
+    This will sum up points in all the AwardedPoint object that targets the target param.
+    Paramters:
+        target (AUTH_USER_MODEL)
+    """
     if not isinstance(target, get_user_model()):
         raise ImproperlyConfigured("Target parameter needs to be a AUTH USER model")
     qs = AwardedPoint.objects.filter(target=target)

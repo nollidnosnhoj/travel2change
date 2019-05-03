@@ -1,3 +1,3 @@
 from django.db import models
 
-# Create your models here.
+# This application does not have any data to store.

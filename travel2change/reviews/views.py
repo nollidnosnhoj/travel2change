@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DeleteView, UpdateView
@@ -13,9 +14,6 @@ class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name_suffix = "_update"
     success_message = "Review successfully updated."
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     def get_object(self):
         return get_object_or_404(Review, pk=self.kwargs['pk'], user=self.request.user)
 
@@ -23,15 +21,16 @@ class UpdateReview(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('user_reviews')
 
 
-class DeleteReview(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class DeleteReview(LoginRequiredMixin, DeleteView):
     model = Review
     success_message = "Review successfully removed."
 
+    # ignore confirmation page. just delete the review
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
     
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        messages.success(request, self.success_message)
         return super().delete(request, *args, **kwargs)
     
     def get_success_url(self):

@@ -1,28 +1,39 @@
 import os
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import (
+    get_object_or_404,
+    redirect,
+    render,
+)
 from django.urls import reverse
 from django.views.generic import (
+    DeleteView,
     DetailView,
     FormView,
-    UpdateView,
-    DeleteView,
     ListView,
+    UpdateView,
 )
 from django.views.generic.edit import FormMixin
 from formtools.wizard.views import NamedUrlSessionWizardView
 from favorites.models import Favorite
+from points.models import award_points
 from reviews.forms import ReviewForm
 from reviews.models import Review
 from users.models import Host
-from points.models import award_points
-from .forms import PhotoUploadForm
-from .mixins import UnapprovedActivityMixin, ReviewCheck
+from .forms import (
+    ActivityUpdateForm,
+    PhotoUploadForm
+)
+from .mixins import UnapprovedActivityMixin
 from .models import (
     Activity,
     ActivityPhoto,
@@ -71,13 +82,17 @@ class BrowseView(ListView):
             qs = qs.filter(
                 Q(title__icontains=self.q) | Q(region__slug=self.q) | Q(categories__slug=self.q) | Q(tags__slug=self.q)
             ).distinct()
+
         if is_valid_queryparam(self.categories):
             qs = qs.filter(categories__slug=self.categories)
+
         if is_valid_queryparam(self.tags) and self.tags:
             for tag in self.tags:
                 qs = qs.filter(tags__slug=tag).distinct()
+
         if is_valid_queryparam(self.title):
             qs = qs.filter(title__icontains=self.title)
+
         if is_valid_queryparam(self.price):
             if self.price == 'free':
                 qs = qs.filter(price__exact=0)
@@ -111,7 +126,7 @@ class ActivityBrowseView(BrowseView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, DetailView):
+class ActivityDetailView(UnapprovedActivityMixin, FormMixin, DetailView):
     template_name = 'activities/activity_detail.html'
     model = Activity
     context_object_name = 'activity'
@@ -126,6 +141,9 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             messages.info(request, "This activity is inactive. Please contact staff to activate this activity.")
         self.can_review = self.has_review_permission(request)
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_object(self):
+        return self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
  
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -136,9 +154,6 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             # check if the user already favorited activity
             context['favorited'] = Favorite.objects.filter(user=self.request.user, activity=self.object).exists()
         return context
-   
-    def get_object(self):
-        return self.model.objects.select_related('host__user').get(region__slug=self.kwargs['region'], slug=self.kwargs['slug'])
    
     # process review form
     def post(self, request, *args, **kwargs):
@@ -170,9 +185,21 @@ class ActivityDetailView(UnapprovedActivityMixin, ReviewCheck, FormMixin, Detail
             'region': self.kwargs['region'],
             'slug': self.kwargs['slug'],
         })
+    
+    def has_review_permission(self, request, *args, **kwargs):
+        if not isinstance(self.object, Activity):
+            raise ImproperlyConfigured("'self.object' is not an activity instance")
+        if not request.user.is_authenticated:
+            return False
+        if not self.object.is_approved:
+            return False
+        if self.object.host.user == request.user:
+            return False
+        # only one review per activity
+        return self.object.reviews.count() < 1
 
 
-class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class ActivityDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "activities/activity_delete.html"
     success_message = "Activity successfully deleted."
 
@@ -191,21 +218,7 @@ class ActivityDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
 
 class ActivityUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Activity
-    fields = (
-        'title',
-        'region',
-        'description',
-        'highlights',
-        'requirements',
-        'categories',
-        'tags',
-        'featured_photo',
-        'price',
-        'address',
-        'latitude',
-        'longitude',
-    )
+    form_class = ActivityUpdateForm
     template_name_suffix = '_update'
     success_message = "Activity successfully updated."
 

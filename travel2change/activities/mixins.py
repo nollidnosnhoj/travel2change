@@ -20,15 +20,3 @@ class UnapprovedActivityMixin(AccessMixin):
                 if not request.user.has_perm('activities.moderate_activity'):
                     raise Http404("Activity is either awaiting approval, or inactive.")
         return super().dispatch(request, *args, **kwargs)
-
-
-class ReviewCheck(object):
-    """ This checks if user can review """
-    def has_review_permission(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return False
-        if not self.object.is_approved:
-            return False
-        if self.object.host.user == request.user:
-            return False
-        return self.object.reviews.count() < 1

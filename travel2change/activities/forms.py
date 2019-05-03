@@ -75,6 +75,24 @@ class PhotoUploadForm(forms.Form):
     }))
 
 
+class ActivityUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = (
+            'title',
+            'description',
+            'highlights',
+            'requirements',
+            'region',
+            'categories',
+            'tags',
+            'price',
+            'address',
+            'latitude', 'longitude',
+            'featured_photo',
+        )
+
+
 """ CMS Wizard Form """
 class ActivityWizardForm(forms.ModelForm):
     class Meta:

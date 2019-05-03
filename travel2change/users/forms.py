@@ -59,3 +59,9 @@ class LoginForm(LoginForm):
         credentials = super().user_credentials()
         credentials['login'] = credentials.get('email') or credentials.get('username')
         return credentials
+
+
+class HostUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Host
+        exclude = ('user', 'slug', )

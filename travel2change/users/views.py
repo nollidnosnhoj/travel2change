@@ -4,10 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView
-from users.models import Host
-from users.mixins import HostListView
 from activities.models import Activity
 from reviews.models import Review
+from .forms import HostUpdateForm
+from .models import Host
+from .mixins import HostMixin
 
 User = get_user_model()
 
@@ -29,7 +30,7 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('user_update')
 
 
-class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+class UserReviewsListView(LoginRequiredMixin, ListView):
     model = Review
     context_object_name = "reviews"
     template_name = "users/user_reviews.html"
@@ -41,8 +42,8 @@ class UserReviewsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
 class HostDetailView(DetailView):
     model = Host
     context_object_name = 'host'
-    number_of_activites_in_profile = 8
-    number_of_reviews_in_profile = 8
+    number_of_activites_in_profile = 8  # number of activities in profile page
+    number_of_reviews_in_profile = 8  # number of reviews in profile page
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -54,16 +55,7 @@ class HostDetailView(DetailView):
 
 
 class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Host
-    fields = [
-        '_name',
-        'custom_slug',
-        'description',
-        'contact_email',
-        'phone',
-        'website',
-        'fh_username',
-    ]
+    form_class = HostUpdateForm
     template_name_suffix = '_update'
     success_message = "Profile successfully updated."
 
@@ -78,7 +70,7 @@ class HostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('host_detail', kwargs={'slug': self.object.slug})
 
 
-class HostActivitiesListView(HostListView):
+class HostActivitiesListView(HostMixin, ListView):
     model = Activity
     context_object_name = "activities"
     template_name = 'users/host_activities_list.html'
@@ -87,20 +79,17 @@ class HostActivitiesListView(HostListView):
         return Activity.objects.select_related('host__user').select_related('region').approved().filter(host=self.host).order_by("-created")
 
 
-class HostAccountActivitiesListView(DetailView):
+class HostAccountActivitiesListView(LoginRequiredMixin, ListView):
     model = Host
     template_name = "users/host_activities_dashboard.html"
+    context_object_name = 'activities'
 
-    def get_object(self):
-        return get_object_or_404(Host, user=self.request.user)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['activities'] = Activity.objects.select_related('host__user').select_related('region').all().filter(host=self.object).distinct().order_by('-status', '-created')
-        return context
+    def get_queryset(self):
+        self.host = get_object_or_404(Host, user=self.request.user)
+        return Activity.objects.select_related('host__user').select_related('region').filter(host=self.host).distinct().order_by('-status', '-created')
 
 
-class HostReviewsListView(HostListView):
+class HostReviewsListView(HostMixin, ListView):
     model = Review
     context_object_name = "reviews"
     template_name = 'users/host_reviews_list.html'

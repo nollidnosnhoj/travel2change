@@ -27,18 +27,26 @@ class Review(models.Model):
                         on_delete=models.CASCADE,
                         related_name=_('reviews')
                     )
-    content         = models.TextField(_('content'), blank=False)
+    content         = models.TextField(_('content'), blank=False, max_length=500,
+                        help_text=_('Write about the activity.')
+                    )
     rating          = models.IntegerField(choices=RATING_CHOICES)
     photo           = ImageField(
                         _('review photo'),
                         upload_to=get_review_image_filename,
-                        blank=True, null=True,
+                        blank=True,
+                        null=True,
                         validators=[validate_image_size],
+                        help_text=_('Upload a photo you have taken during the activity.')
                     )
-    show_name       = models.BooleanField(default=False,
-                        help_text=_('Show your name in public. You can see still your name, regardless if checked or not.'))
-    show_email      = models.BooleanField(default=False,
-                        help_text=_('Email will only show for the host of the activity.'))
+    show_name       = models.BooleanField(
+                        default=False,
+                        help_text=_('Show your name in public. You can see still your name, regardless if checked or not.')
+                    )
+    show_email      = models.BooleanField(
+                        default=False,
+                        help_text=_('Email will only show for the host of the activity.')
+                    )
 
     created         = models.DateTimeField(auto_now_add=True)
     modified        = models.DateTimeField(auto_now=True)

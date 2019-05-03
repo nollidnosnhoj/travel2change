@@ -1,11 +1,9 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView
 from users.models import Host
 
-class HostListView(ListView):
+class HostMixin(object):
     """
-    This is a ListView that displays objects related to the host.\n
-    Use self.host to reference host instance
+    Creates a host variable that stores the host instance.
     """
     def dispatch(self, request, *args, **kwargs):
         self.host = get_object_or_404(Host, slug=kwargs['slug'])

@@ -17,6 +17,14 @@ class FavoritesListView(LoginRequiredMixin, ListView):
 
 
 class SetFavoritesView(View):
+    """
+    This is a normal view that should be called in ajax.
+    When a post is called, it will create a favorite object if one does not exist.
+    If it does exist, delete it.
+    This creates a toggle effect.
+
+    NOTE: Unfortunately, due to time, there is no cooldown.
+    """
     model = Favorite
     
     def post(self, request, pk):
@@ -28,8 +36,8 @@ class SetFavoritesView(View):
             # If user already favorited, delete the favorite object (unfavorite)
             if not created:
                 favorite.delete()
-            added = '#d63031'
-            removed = '#b2bec3'
+            added = '#d63031'  # red color
+            removed = '#b2bec3'  # gray color
             response = JsonResponse({
                 'result': added if created else removed
             })

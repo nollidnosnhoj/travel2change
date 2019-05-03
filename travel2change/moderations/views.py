@@ -45,7 +45,7 @@ class ActivityApprovalView(ModeratorsOnlyMixin, SuccessMessageMixin, UpdateView)
             instance,
             "Your Activity Was Approved.",
             "approval",
-            url=self.request.build_absolute_uri(instance.get_absolute_url()),
+            url=self.request.build_absolute_uri(instance.get_absolute_url()),  # This will return the absolute url instead of the relative url
         )
         instance.save()
         return super().form_valid(form)
