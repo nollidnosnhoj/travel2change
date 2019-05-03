@@ -50,7 +50,55 @@ Notice that we use 'favorite' as the key parameter. It is recommended to keep th
 
 The admin/staff could create Point Value objects in the Django Admin.
 
-### Example from the project
+## Show User's Points
+
+```python
+def points_awarded(target):
+    """
+    This will sum up points in all the AwardedPoint object that targets the target param.
+    Paramters:
+        target (AUTH_USER_MODEL)
+    """
+    if not isinstance(target, get_user_model()):
+        raise ImproperlyConfigured("Target parameter needs to be a AUTH USER model")
+    qs = AwardedPoint.objects.filter(target=target)
+    p = qs.aggregate(models.Sum("points")).get("points__sum", 0)
+    return 0 if p is None else p
+```
+
+The `points_awarded(target)` will return the amount of points the target user has. As shown, it will accumulate all the points in AwardedPoint object that has the target user. 
+
+If you want to show this on a template, go to a view, and modify the context_data
+
+```python
+class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    template_name = 'users/user_update.html'
+    # self.object is a current user instance
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from points.models import points_awarded
+        context['user_points'] = points_awarded(self.object)
+        return context
+```
+
+We imported `points_awarded` from `points.models` and return the function in the context dictionary.
+
+So when we go to our templates, we can call the context key to call the function.
+
+```html
+<div class="card">
+    <h5 class="card-header">{% trans "Reward Points" %}</h5>
+    <div class="card-body">
+        Points: {{ user_points }}
+    </div>
+</div>
+```
+
+We call `{{ user_points }}` to display the number of points. This will only work on templates that are linked to the view that has the `user_points` context.
+
+**Please note that this is not in the project, you will have to implement this on your own.**
+
+## Example from the project
 
 In the project, when a review is created or deleted, it will either add or remove points respectively from the target user. We done this using signals.
 
