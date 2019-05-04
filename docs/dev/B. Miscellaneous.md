@@ -66,3 +66,11 @@ Right now, all the static, media, and upload files are stored in the server. Alt
 If you want to upgrade your storage, you could invest in cloud storage. We have added `django-storages` to the requirements so you can get started.
 
 <https://github.com/jschneier/django-storages>
+
+## Celery
+
+Celery is an asynchronous task queue based on distributed message passing. Celery could be used to do tasks asynchrounous, so the client can do other things instead of waiting for the task to finish.
+
+We added added celery into the production.txt requirements. But celery also requires RabbitMQ, which Django Europe offers.
+
+If you are interested, you can read more here: https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with-django.html
