@@ -2,6 +2,6 @@
 
 This is the repository for travel2change. 
 
-## Documentation
+## Dev Doc
 
-Visit the wiki here: https://github.com/nollidnosnhoj/travel2change/wiki (WIP)
+The technical documentation is located in `/docs/dev/`
