@@ -1,8 +1,12 @@
-{% extends "container.html" %}{% load sekizai_tags social_share cache staticfiles %}
-{% block content %}
-    <h1>New comment</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Send</button>
-    </form>
-{% endblock %}
+{% load i18n crispy_forms_tags %}
+<div class="card">
+    <h5 class="card-header">{% trans "Add Review" %}</h5>
+    <div class="card-body">
+        <form method="POST" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    </div>
+</div>
+<br />
