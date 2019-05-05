@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import Activity
 
 
@@ -30,6 +31,12 @@ class PriceForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = ['price', 'fh_item_id', ]
+    
+    def clean(self):
+        price = self.cleaned_data['price']
+        fh_item = self.cleaned_data['fh_item_id']
+        if price > 0.00 and not fh_item:
+            raise ValidationError("Paid activities must have a FareHarbor item ID.")
 
 
 class LocationForm(forms.ModelForm):

@@ -22,7 +22,7 @@
             </p>
             <hr>
             <p class="mb-0">If you need help with setting up FareHarbor for your activity, contact us.</p>
-        </div><br />
+        </div>
         {{ wizard.management_form }}
         {{ wizard.form|crispy }}
         <div class="clearfix">
@@ -41,6 +41,11 @@
 {% endblock content %}
 {% block scripts %}
 <script>
+    if ($('#id_5-price').val() > 0.00) {
+        $('#div_id_5-fh_item_id').show();
+    } else {
+        $('#div_id_5-fh_item_id').hide();
+    }
     $('#id_5-price').on('input', function () {
         if (this.value > 0.00) {
             $('#div_id_5-fh_item_id').show();
