@@ -98,6 +98,14 @@ We call `{{ user_points }}` to display the number of points. This will only work
 
 **Please note that this is not in the project, you will have to implement this on your own.**
 
+## Import Required PointValue data
+
+In the project, we added `awarded_points` whenever the user created a review, and added a photo with it.
+
+The keys used are `review_create` and `review_photo`. If the key does not link to a PointValue, the user will not receive any points, so we need to create two PointValue objects that keys `review_create` and `review_photo`.
+
+Luckily, in the spreadsheet folder, we have created a spreadsheet that you can import to create the two objects. If you do not know what importing does, please refer to 07.1
+
 ## Example from the project
 
 In the project, when a review is created or deleted, it will either add or remove points respectively from the target user. We done this using signals.
