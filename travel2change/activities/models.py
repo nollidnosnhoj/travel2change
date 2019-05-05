@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import ugettext, ugettext_lazy as _
 from autoslug import AutoSlugField
 from cms.models.pluginmodel import CMSPlugin
@@ -95,6 +96,11 @@ class Region(models.Model):
             return self.image.url
         else:
             return '/media/defaults/default_region.jpg'
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Tag(models.Model):
@@ -120,6 +126,11 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
     
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    
 
 class Category(models.Model):
     """
@@ -142,6 +153,11 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Activity(models.Model):

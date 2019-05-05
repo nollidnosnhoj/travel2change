@@ -114,6 +114,7 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'django_social_share',
     'formtools',
+    'import_export',
     'sorl.thumbnail',
 )
 # Local (travel2change) apps
