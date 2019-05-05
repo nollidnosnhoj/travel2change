@@ -4,6 +4,7 @@ from import_export import fields, resources
 from import_export.admin import ImportExportModelAdmin, ImportExportActionModelAdmin
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 from activities.models import Activity, ActivityPhoto, Category, Tag, Region
+from users.models import Host
 
 class ActivityPhotosInline(admin.TabularInline):
     model = ActivityPhoto
@@ -24,20 +25,25 @@ class RegionResources(resources.ModelResource):
         fields = ('id', 'name', 'slug', )
     
 class ActivityResources(resources.ModelResource):
+    host = fields.Field(
+        column_name='host',
+        attribute='host',
+        widget=ForeignKeyWidget(Host, 'name'),
+    )
     region = fields.Field(
         column_name='region',
         attribute='region',
-        widget=ForeignKeyWidget(Region, 'name'),
+        widget=ForeignKeyWidget(Region, 'slug'),
     )
     tags = fields.Field(
         column_name='tags',
         attribute='tags',
-        widget=ManyToManyWidget(Tag, ',', 'name'),
+        widget=ManyToManyWidget(Tag, ',', 'slug'),
     )
     categories = fields.Field(
         column_name='categories',
         attribute='categories',
-        widget=ManyToManyWidget(Category, ',', 'name')
+        widget=ManyToManyWidget(Category, ',', 'slug')
     )
     class Meta:
         model = Activity
@@ -85,12 +91,15 @@ class ActivityAdmin(
 
 class CategoryAdmin(ImportExportModelAdmin, ImportExportActionModelAdmin, admin.ModelAdmin):
     resource_class = CategoryResources
+    list_display = ('name', 'slug', )
 
 class TagAdmin(ImportExportModelAdmin, ImportExportActionModelAdmin, admin.ModelAdmin):
     resource_class = TagResources
+    list_display = ('name', 'slug', )
 
 class RegionAdmin(ImportExportModelAdmin, ImportExportActionModelAdmin, admin.ModelAdmin):
     resource_class = RegionResources
+    list_display = ('name', 'slug', )
 
 
 admin.site.register(Activity, ActivityAdmin)
