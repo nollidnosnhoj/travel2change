@@ -1,15 +1,6 @@
 # travel2change Developer's Documentation
 
-- Chad Fukumitsu
-- Christopher Aranda
-- Iokepa Lapera
-- Kekoa Sanatana
-- Randall Johnson
-- Samantha Garcia
-
-# Table of Contents
-
-[TOC]
+Chad Fukumitsu, Christopher Aranda, Iokepa Lapera, Kekoa Sanatana, Randall Johnson, Samantha Garcia
 
 # Introduction
 
