@@ -14,7 +14,7 @@ class HostAdmin(admin.ModelAdmin):
         ('Contact Information', {'fields': ('phone', 'website',)})
     )
     list_display = (
-        'user', 'name', 'phone',
+        'name', 'user', 'phone', 'contact_email', 'pk',
     )
 
 

@@ -28,7 +28,7 @@ class ActivityResources(resources.ModelResource):
     host = fields.Field(
         column_name='host',
         attribute='host',
-        widget=ForeignKeyWidget(Host, 'name'),
+        widget=ForeignKeyWidget(Host),
     )
     region = fields.Field(
         column_name='region',
@@ -38,12 +38,12 @@ class ActivityResources(resources.ModelResource):
     tags = fields.Field(
         column_name='tags',
         attribute='tags',
-        widget=ManyToManyWidget(Tag, ',', 'slug'),
+        widget=ManyToManyWidget(Tag, ' ', 'slug'),
     )
     categories = fields.Field(
         column_name='categories',
         attribute='categories',
-        widget=ManyToManyWidget(Category, ',', 'slug')
+        widget=ManyToManyWidget(Category, ' ', 'slug')
     )
     class Meta:
         model = Activity
@@ -51,7 +51,6 @@ class ActivityResources(resources.ModelResource):
             'id',
             'title',
             'host',
-            'slug',
             'description',
             'highlights',
             'requirements',
