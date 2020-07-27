@@ -52,7 +52,7 @@ idna==2.8
 mccabe==0.6.1
 oauthlib==3.0.1
 phonenumberslite==8.10.6
-Pillow==6.2.0
+Pillow>=6.2.2
 psycopg2==2.7.7
 pycodestyle==2.5.0
 pycparser==2.19
